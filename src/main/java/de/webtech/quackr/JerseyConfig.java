@@ -8,9 +8,7 @@ import org.springframework.stereotype.Component;
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
-
         registerEndpoints();
-
     }
 
     private void registerEndpoints() {

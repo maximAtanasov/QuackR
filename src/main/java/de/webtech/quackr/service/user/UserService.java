@@ -2,7 +2,8 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.persistance.user.UserRepository;
-import de.webtech.quackr.service.user.domain.UserResource;
+import de.webtech.quackr.service.user.domain.CreateUserResource;
+import de.webtech.quackr.service.user.domain.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,20 +25,20 @@ public class UserService {
         this.userMapper = new UserMapper();
     }
 
-    public Collection<UserResource> getUsers() {
+    public Collection<GetUserResource> getUsers() {
         List<UserEntity> result = new ArrayList<>();
         userRepository.findAll().forEach(result::add);
         return userMapper.map(result);
     }
 
-    public UserResource getUserById(long id) {
+    public GetUserResource getUserById(long id) {
         Optional<UserEntity> entity = userRepository.findById(id);
         return entity.map(userMapper::map).orElse(null);
     }
 
-    public void createUser(String username, String password) throws UserAlreadyExistsException {
-        if(userRepository.findUserEntityByUsername(username) == null){
-            userRepository.save(new UserEntity(username, password));
+    public void createUser(CreateUserResource resource) throws UserAlreadyExistsException {
+        if(userRepository.findUserEntityByUsername(resource.getUsername()) == null){
+            userRepository.save(new UserEntity(resource.getUsername(), resource.getPassword()));
         } else {
             throw new UserAlreadyExistsException();
         }

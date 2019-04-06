@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserResource {
+public class GetUserResource {
 
     private Long id;
     private String username;
