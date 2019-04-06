@@ -1,6 +1,8 @@
 package de.webtech.quackr.persistance.quack;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface QuackRepository extends CrudRepository<Long, Quack> {
+@Repository
+public interface QuackRepository extends CrudRepository<QuackEntity, Long> {
 }
