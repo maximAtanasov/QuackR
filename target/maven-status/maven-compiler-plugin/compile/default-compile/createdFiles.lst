@@ -1,1 +1,14 @@
 de/webtech/quackr/QuackrApplication.class
+de/webtech/quackr/service/user/UsernameAlreadyInUseException.class
+de/webtech/quackr/service/user/UserService.class
+de/webtech/quackr/service/user/rest/UserController.class
+de/webtech/quackr/service/user/UserMapper.class
+de/webtech/quackr/service/quack/QuackService.class
+de/webtech/quackr/service/user/domain/CreateUserResource.class
+de/webtech/quackr/persistance/quack/QuackEntity.class
+de/webtech/quackr/JerseyConfig.class
+de/webtech/quackr/persistance/quack/QuackRepository.class
+de/webtech/quackr/persistance/user/UserEntity.class
+de/webtech/quackr/persistance/user/UserRepository.class
+de/webtech/quackr/service/user/domain/GetUserResource.class
+de/webtech/quackr/service/user/UserNotFoundException.class

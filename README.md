@@ -1,2 +1,2 @@
 # QuackR
-WebTech2 QuackR web app.
+WebTech2 BBQ & PartY web app.
