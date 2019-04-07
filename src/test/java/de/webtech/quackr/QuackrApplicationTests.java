@@ -9,6 +9,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class QuackrApplicationTests {
 
+	/**
+	 * Tests if an applicationContext can be successfully created.
+	 */
 	@Test
 	public void contextLoads() {
 	}

@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Collection;
 
+/**
+ * Database user entry.
+ */
 @Entity
 @Table(name = "QUACKR_USER")
 @Data

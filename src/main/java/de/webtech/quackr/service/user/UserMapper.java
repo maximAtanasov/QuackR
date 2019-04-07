@@ -7,13 +7,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class UserMapper {
+/**
+ * A mapper to map UserEntity objects to GetUserResource objects.
+ */
+class UserMapper {
 
-    public GetUserResource map(UserEntity entity){
+    /**
+     * Maps a single UserEntity to a GetUserResource
+     * @param entity The entity to map
+     * @return A GetUserResource created from the entity
+     */
+    static GetUserResource map(UserEntity entity){
         return new GetUserResource(entity.getId(), entity.getUsername(), entity.getRating());
     }
 
-    public List<GetUserResource> map(Collection<UserEntity> entities){
+    /**
+     * Maps a list of UserEntity objects to a List of GetUserResource objects.
+     * @param entities The list of entities.
+     * @return The list of resources created from the entities.
+     */
+    static List<GetUserResource> map(Collection<UserEntity> entities){
         List<GetUserResource> users = new ArrayList<>();
         for(UserEntity e : entities){
             users.add(new GetUserResource(e.getId(), e.getUsername(), e.getRating()));
