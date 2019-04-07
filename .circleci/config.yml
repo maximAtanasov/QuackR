@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
 
-    working_directory: ~/
+    working_directory: ~/quackr
 
     docker:
       - image: circleci/openjdk:8-jdk-browsers
