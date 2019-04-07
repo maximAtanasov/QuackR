@@ -1,6 +1,6 @@
 package de.webtech.quackr.persistance.user;
 
-import de.webtech.quackr.persistance.quack.QuackEntity;
+import de.webtech.quackr.persistance.event.EventEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,11 +21,14 @@ public class UserEntity {
 
     private String password;
 
-    @OneToMany
-    private Collection<QuackEntity> quacks;
+    private Long rating;
 
-    public UserEntity(String username, String password){
+    @OneToMany
+    private Collection<EventEntity> events;
+
+    public UserEntity(String username, String password, Long rating){
         this.username = username;
         this.password = password;
+        this.rating = rating;
     }
 }

@@ -1,1 +1,5 @@
 de/webtech/quackr/QuackrApplication.class
+de/webtech/quackr/persistance/event/EventEntity.class
+de/webtech/quackr/persistance/event/EventRepository.class
+de/webtech/quackr/service/event/EventService.class
+de/webtech/quackr/service/user/UsernameAlreadyExistsException.class

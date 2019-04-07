@@ -1,8 +1,8 @@
-package de.webtech.quackr.persistance.quack;
+package de.webtech.quackr.persistance.event;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface QuackRepository extends CrudRepository<QuackEntity, Long> {
+public interface EventRepository extends CrudRepository<EventEntity, Long> {
 }

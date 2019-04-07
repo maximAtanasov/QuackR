@@ -31,33 +31,37 @@ public class UserService {
         return userMapper.map(result);
     }
 
-    public GetUserResource getUserById(long id) {
+    public GetUserResource getUserById(long id) throws UserNotFoundException {
         Optional<UserEntity> entity = userRepository.findById(id);
-        return entity.map(userMapper::map).orElse(null);
+        if(entity.isPresent()){
+            return userMapper.map(entity.get());
+        }else{
+            throw new UserNotFoundException();
+        }
     }
 
-    public void createUser(CreateUserResource resource) throws UsernameAlreadyInUseException {
-        if(userRepository.existsByUsername(resource.getUsername())){
-            userRepository.save(new UserEntity(resource.getUsername(), resource.getPassword()));
-        } else {
-            throw new UsernameAlreadyInUseException();
+    public void createUser(CreateUserResource resource) throws UsernameAlreadyExistsException {
+        if(!userRepository.existsByUsername(resource.getUsername())){
+            userRepository.save(new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating()));
+        }else{
+            throw new UsernameAlreadyExistsException();
         }
     }
 
     public void deleteUser(long userId) throws UserNotFoundException {
         if(userRepository.existsById(userId)){
             userRepository.deleteById(userId);
-        } else {
+        }else{
             throw new UserNotFoundException();
         }
     }
 
-    public void editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UsernameAlreadyInUseException {
+    public void editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UsernameAlreadyExistsException {
         if(userRepository.existsById(userId)){
-            if(userRepository.existsByUsername(resource.getUsername())){
-                throw new UsernameAlreadyInUseException();
+            if(userRepository.findByUsername(resource.getUsername()).getId() != userId){
+                throw new UsernameAlreadyExistsException();
             }
-            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword());
+            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
             userEntity.setId(userId);
             userRepository.save(userEntity);
         } else {

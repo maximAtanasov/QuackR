@@ -1,6 +1,6 @@
 package de.webtech.quackr.service.user.rest;
 
-import de.webtech.quackr.service.user.UsernameAlreadyInUseException;
+import de.webtech.quackr.service.user.UsernameAlreadyExistsException;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.domain.CreateUserResource;
@@ -34,7 +34,11 @@ public class UserController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public GetUserResource getUser(@PathParam("id") long id) {
-        return userService.getUserById(id);
+        try {
+            return userService.getUserById(id);
+        } catch (UserNotFoundException e) {
+            return null;
+        }
     }
 
     @POST
@@ -43,7 +47,7 @@ public class UserController {
         try {
             userService.createUser(resource);
             return Response.status(Response.Status.CREATED.getStatusCode()).build();
-        } catch (UsernameAlreadyInUseException e){
+        } catch (UsernameAlreadyExistsException e){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode()).build();
         }
     }
@@ -53,10 +57,9 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editUser(CreateUserResource resource, @PathParam("id") long id) {
         try {
-            System.out.println(id);
             userService.editUser(resource, id);
             return Response.status(Response.Status.OK.getStatusCode()).build();
-        } catch (UserNotFoundException | UsernameAlreadyInUseException e){
+        } catch (UserNotFoundException | UsernameAlreadyExistsException e){
             return Response.status(Response.Status.NOT_FOUND.getStatusCode()).build();
         }
     }

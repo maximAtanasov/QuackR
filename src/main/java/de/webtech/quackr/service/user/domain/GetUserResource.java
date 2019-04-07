@@ -8,4 +8,5 @@ import lombok.Data;
 public class GetUserResource {
     private Long id;
     private String username;
+    private Long rating;
 }

@@ -8,4 +8,5 @@ import lombok.Getter;
 public class CreateUserResource {
     private String username;
     private String password;
+    private Long rating;
 }
