@@ -36,11 +36,32 @@ public class UserService {
         return entity.map(userMapper::map).orElse(null);
     }
 
-    public void createUser(CreateUserResource resource) throws UserAlreadyExistsException {
-        if(userRepository.findUserEntityByUsername(resource.getUsername()) == null){
+    public void createUser(CreateUserResource resource) throws UsernameAlreadyInUseException {
+        if(userRepository.existsByUsername(resource.getUsername())){
             userRepository.save(new UserEntity(resource.getUsername(), resource.getPassword()));
         } else {
-            throw new UserAlreadyExistsException();
+            throw new UsernameAlreadyInUseException();
+        }
+    }
+
+    public void deleteUser(long userId) throws UserNotFoundException {
+        if(userRepository.existsById(userId)){
+            userRepository.deleteById(userId);
+        } else {
+            throw new UserNotFoundException();
+        }
+    }
+
+    public void editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UsernameAlreadyInUseException {
+        if(userRepository.existsById(userId)){
+            if(userRepository.existsByUsername(resource.getUsername())){
+                throw new UsernameAlreadyInUseException();
+            }
+            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword());
+            userEntity.setId(userId);
+            userRepository.save(userEntity);
+        } else {
+            throw new UserNotFoundException();
         }
     }
 }
