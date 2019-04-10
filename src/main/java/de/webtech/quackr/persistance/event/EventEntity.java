@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Table(name = "EVENT")
@@ -19,7 +20,7 @@ public class EventEntity {
 
     private String location;
 
-    private Long date;
+    private Date date;
 
     private String description;
 

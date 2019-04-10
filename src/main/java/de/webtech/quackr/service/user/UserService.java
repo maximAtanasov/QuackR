@@ -43,7 +43,7 @@ public class UserService {
         if(entity.isPresent()){
             return UserMapper.map(entity.get());
         }else{
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(id);
         }
     }
 
@@ -72,7 +72,7 @@ public class UserService {
         if(userRepository.existsById(userId)){
             userRepository.deleteById(userId);
         }else{
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(userId);
         }
     }
 
@@ -96,7 +96,7 @@ public class UserService {
             return UserMapper.map(
                     userRepository.save(userEntity));
         } else {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException(userId);
         }
     }
 }

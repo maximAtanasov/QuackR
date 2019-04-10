@@ -47,7 +47,7 @@ public class UserController {
         try {
             return Response.ok(gson.toJson(userService.getUserById(id)), MediaType.APPLICATION_JSON).build();
         } catch (UserNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity("User with id " + id + " not found!").build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 
@@ -87,7 +87,7 @@ public class UserController {
                     .entity("A user with the username " + resource.getUsername() + " already exists!").build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity("User with id " + id + " not found!").build();
+                    .entity(e.getMessage()).build();
         }
     }
 
@@ -106,7 +106,7 @@ public class UserController {
             return Response.status(Response.Status.OK).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity("User with id " + id + " not found!").build();
+                    .entity(e.getMessage()).build();
         }
     }
 }
