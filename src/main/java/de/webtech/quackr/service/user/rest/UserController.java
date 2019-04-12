@@ -6,14 +6,14 @@ import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
 import de.webtech.quackr.service.user.domain.CreateUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/users")
-@Component
+@RestController
 public class UserController {
 
     private final UserService userService;
@@ -64,7 +64,7 @@ public class UserController {
                     .type(MediaType.APPLICATION_JSON).build();
         } catch (UserWithUsernameAlreadyExistsException e){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
-                    .entity("A user with the username " + resource.getUsername() + " already exists!").build();
+                    .entity(e.getMessage()).build();
         }
     }
 
@@ -84,7 +84,7 @@ public class UserController {
                     .type(MediaType.APPLICATION_JSON).build();
         } catch (UserWithUsernameAlreadyExistsException e){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
-                    .entity("A user with the username " + resource.getUsername() + " already exists!").build();
+                    .entity(e.getMessage()).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(e.getMessage()).build();
