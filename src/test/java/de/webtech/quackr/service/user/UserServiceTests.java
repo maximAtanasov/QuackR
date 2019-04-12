@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -60,6 +61,7 @@ public class UserServiceTests {
     @Test
     public void testGetUserById() throws UserNotFoundException {
         GetUserResource result = userService.getUserById(1L);
+        Mockito.verify(userRepository, Mockito.times(1)).findById(anyLong());
         Assert.assertEquals("testUser", result.getUsername());
         Assert.assertEquals(0L, result.getRating().longValue());
     }
