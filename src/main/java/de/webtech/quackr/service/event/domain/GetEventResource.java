@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * Resource class used for retrieving event entities.
+ * Maps directly to JSON.
+ */
 @Data
 @NoArgsConstructor
 public class GetEventResource {
@@ -22,6 +26,8 @@ public class GetEventResource {
     private String description;
 
     private Long attendeeLimit;
+
+    private boolean isPublic;
 
     Collection<GetUserResource> attendees;
 }

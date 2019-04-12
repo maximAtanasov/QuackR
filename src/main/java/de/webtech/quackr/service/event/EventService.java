@@ -29,6 +29,28 @@ public class EventService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Return all events for the selected user.
+     * @param userId The id of the user.
+     * @return All events for the selected user.
+     * @throws UserNotFoundException Thrown when the selected user is not found.
+     */
+    public Collection<GetEventResource> getEvents(long userId) throws UserNotFoundException {
+        Optional<UserEntity> user = userRepository.findById(userId);
+        if(user.isPresent()){
+            return EventMapper.map(eventRepository.findByOrganizerId(userId));
+        } else {
+            throw new UserNotFoundException(userId);
+        }
+    }
+
+    /**
+     * Creates an event.
+     * @param resource A CreateEventResource object.
+     * @param userId The userId of the event organizer.
+     * @return A GetEventResource object.
+     * @throws UserNotFoundException Thrown if the user with userId is not found.
+     */
     public GetEventResource createEvent(CreateEventResource resource, long userId) throws UserNotFoundException {
         Optional<UserEntity> user = userRepository.findById(userId);
         if(user.isPresent()){
@@ -38,8 +60,9 @@ public class EventService {
             newEvent.setDate(resource.getDate());
             newEvent.setAttendeeLimit(resource.getAttendeeLimit());
             newEvent.setLocation(resource.getLocation());
-            user.get().getEvents().add(newEvent);
-            eventRepository.save(newEvent);
+            newEvent.setPublic(resource.isPublic());
+            newEvent.setOrganizer(user.get());
+                eventRepository.save(newEvent);
             userRepository.save(user.get());
             return EventMapper.map(newEvent);
         } else {
@@ -47,14 +70,27 @@ public class EventService {
         }
     }
 
+    /**
+     * Delete an event from the database.
+     * @param eventId The id of the event to delete.
+     * @throws EventNotFoundException Thrown if the event is not found.
+     */
     public void deleteEvent(long eventId) throws EventNotFoundException {
         if(eventRepository.existsById(eventId)){
             eventRepository.deleteById(eventId);
         }else{
-            throw new EventNotFoundException();
+            throw new EventNotFoundException(eventId);
         }
     }
 
+    /**
+     * Sets the attendees for an event.
+     * @param eventId The id of the event.
+     * @param users The attendees.
+     * @return A GetEventResource object.
+     * @throws EventNotFoundException Thrown if the event is not found.
+     * @throws UserNotFoundException Thrown if any user in users is not found.
+     */
     public GetEventResource setEventAttendees(long eventId, Collection<GetUserResource> users) throws EventNotFoundException, UserNotFoundException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
@@ -70,7 +106,45 @@ public class EventService {
             event.get().setAttendees(userEntities);
             return EventMapper.map(event.get());
         }else{
-            throw new EventNotFoundException();
+            throw new EventNotFoundException(eventId);
+        }
+    }
+
+    /**
+     * Retrieves a single event from the database.
+     * @param eventId The id of the event.
+     * @return A GetEventResource object.
+     * @throws EventNotFoundException Thrown if the event is not found.
+     */
+    public GetEventResource getEvent(long eventId) throws EventNotFoundException {
+        Optional<EventEntity> eventEntity = eventRepository.findById(eventId);
+        if(eventEntity.isPresent()){
+            return EventMapper.map(eventEntity.get());
+        }else{
+            throw new EventNotFoundException(eventId);
+        }
+    }
+
+    /**
+     * Edits an existing event in the database.
+     * @param resource A CreateEventResource containing the new data.
+     * @param eventId The id of the event to change.
+     * @return A GetEventResource object.
+     * @throws EventNotFoundException Thrown if the event is not found.
+     */
+    public GetEventResource editEvent(CreateEventResource resource, long eventId) throws EventNotFoundException {
+        Optional<EventEntity> eventEntity = eventRepository.findById(eventId);
+        if(eventEntity.isPresent()){
+            eventEntity.get().setTitle(resource.getTitle());
+            eventEntity.get().setPublic(resource.isPublic());
+            eventEntity.get().setLocation(resource.getLocation());
+            eventEntity.get().setDate(resource.getDate());
+            eventEntity.get().setAttendeeLimit(resource.getAttendeeLimit());
+            eventEntity.get().setDescription(resource.getDescription());
+            eventRepository.save(eventEntity.get());
+            return EventMapper.map(eventEntity.get());
+        }else{
+            throw new EventNotFoundException(eventId);
         }
     }
 }

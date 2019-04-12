@@ -1,11 +1,10 @@
 package de.webtech.quackr.persistance.user;
 
-import de.webtech.quackr.persistance.event.EventEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
  * Database user entry.
@@ -17,7 +16,8 @@ import java.util.Collection;
 public class UserEntity {
 
     @Id
-    @GeneratedValue
+    @GenericGenerator(name = "QUACK_USER_SEQUENCE", strategy = "sequence")
+    @GeneratedValue(generator = "QUACK_USER_SEQUENCE", strategy=GenerationType.SEQUENCE)
     private Long id;
 
     private String username;
@@ -25,9 +25,6 @@ public class UserEntity {
     private String password;
 
     private Long rating;
-
-    @OneToMany
-    private Collection<EventEntity> events;
 
     public UserEntity(String username, String password, Long rating){
         this.username = username;

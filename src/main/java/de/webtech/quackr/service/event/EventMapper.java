@@ -23,10 +23,15 @@ public class EventMapper {
         resource.setId(entity.getId());
         resource.setDate(entity.getDate());
         resource.setAttendeeLimit(entity.getAttendeeLimit());
-        resource.setAttendees(UserMapper.map(entity.getAttendees()));
+        if(entity.getAttendees() != null){
+            resource.setAttendees(UserMapper.map(entity.getAttendees()));
+        }else{
+            resource.setAttendees(new ArrayList<>());
+        }
         resource.setDescription(entity.getDescription());
         resource.setTitle(entity.getTitle());
         resource.setLocation(entity.getLocation());
+        resource.setPublic(entity.isPublic());
         return resource;
     }
 

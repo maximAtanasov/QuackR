@@ -59,7 +59,7 @@ public class UserService {
                     userRepository.save(new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating()))
             );
         }else{
-            throw new UserWithUsernameAlreadyExistsException();
+            throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
         }
     }
 
@@ -89,7 +89,7 @@ public class UserService {
         if(userRepository.existsById(userId)){
             if(userRepository.existsByUsername(resource.getUsername()) &&
                     userRepository.findByUsername(resource.getUsername()).getId() != userId){
-                throw new UserWithUsernameAlreadyExistsException();
+                throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
             }
             UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
             userEntity.setId(userId);
