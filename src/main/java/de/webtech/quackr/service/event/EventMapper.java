@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * A mapper to map EventEntity objects to GetEventResource objects.
  */
-public class EventMapper {
+class EventMapper {
 
     /**
      * Maps a single EventEntity to a GetEventResource

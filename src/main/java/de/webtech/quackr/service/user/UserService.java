@@ -55,9 +55,9 @@ public class UserService {
      */
     public GetUserResource createUser(CreateUserResource resource) throws UserWithUsernameAlreadyExistsException {
         if(!userRepository.existsByUsername(resource.getUsername())){
-            return UserMapper.map(
-                    userRepository.save(new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating()))
-            );
+            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
+            userRepository.save(userEntity);
+            return UserMapper.map(userEntity);
         }else{
             throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
         }
@@ -93,8 +93,8 @@ public class UserService {
             }
             UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
             userEntity.setId(userId);
-            return UserMapper.map(
-                    userRepository.save(userEntity));
+            userRepository.save(userEntity);
+            return UserMapper.map(userEntity);
         } else {
             throw new UserNotFoundException(userId);
         }

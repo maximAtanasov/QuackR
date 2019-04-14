@@ -117,10 +117,14 @@ public class EventServiceTests {
         resource.setPublic(false);
         resource.setAttendeeLimit(20L);
 
-        eventService.createEvent(resource, 1L);
+        GetEventResource result = eventService.createEvent(resource, 1L);
         Mockito.verify(userRepository, Mockito.times(1)).findById(anyLong());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
-
+        Assert.assertEquals(resource.getTitle(), result.getTitle());
+        Assert.assertEquals(resource.getDescription(), result.getDescription());
+        Assert.assertEquals(resource.getAttendeeLimit(), result.getAttendeeLimit());
+        Assert.assertEquals(resource.getDate(), result.getDate());
+        Assert.assertEquals(resource.getLocation(), result.getLocation());
     }
 
     /**
@@ -137,9 +141,15 @@ public class EventServiceTests {
         resource.setPublic(false);
         resource.setAttendeeLimit(20L);
 
-        eventService.editEvent(resource, 1L);
+        GetEventResource result = eventService.editEvent(resource, 1L);
         Mockito.verify(eventRepository, Mockito.times(1)).findById(any());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
+
+        Assert.assertEquals(resource.getTitle(), result.getTitle());
+        Assert.assertEquals(resource.getDescription(), result.getDescription());
+        Assert.assertEquals(resource.getAttendeeLimit(), result.getAttendeeLimit());
+        Assert.assertEquals(resource.getDate(), result.getDate());
+        Assert.assertEquals(resource.getLocation(), result.getLocation());
     }
 
     /**
