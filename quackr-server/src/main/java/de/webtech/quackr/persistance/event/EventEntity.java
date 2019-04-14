@@ -1,0 +1,41 @@
+package de.webtech.quackr.persistance.event;
+
+import de.webtech.quackr.persistance.user.UserEntity;
+import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.Date;
+
+/**
+ * Database event entry.
+ */
+@Entity
+@Table(name = "EVENT")
+@Data
+public class EventEntity {
+
+    @Id
+    @GenericGenerator(name = "EVENT_SEQUENCE", strategy = "sequence")
+    @GeneratedValue(generator = "EVENT_SEQUENCE", strategy=GenerationType.SEQUENCE)
+    private Long id;
+
+    private String title;
+
+    private String location;
+
+    private Date date;
+
+    private String description;
+
+    private Long attendeeLimit;
+
+    private boolean isPublic;
+
+    @OneToOne
+    private UserEntity organizer;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<UserEntity> attendees;
+}
