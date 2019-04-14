@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Tests for the EventMapper class.
  */
-public class EventMapperTests {
+public class EventMapperTest {
 
     /**
      * Tests the mapping of a single EventEntity to a GetEventResource object.

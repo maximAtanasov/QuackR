@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Tests for the UserMapper class.
  */
-public class UserMapperTests {
+public class UserMapperTest {
 
     /**
      * Tests the mapping of a single UserEntity to a GetUserResource object.

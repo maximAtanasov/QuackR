@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class UserServiceTests {
+public class UserServiceTest {
 
     @MockBean
     UserRepository userRepository;

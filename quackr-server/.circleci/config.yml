@@ -21,4 +21,4 @@ jobs:
             - ~/.m2
           key: quackr-{{ checksum "pom.xml" }}
 
-      - run: mvn install
+      - run: cd quackr-server && mvn install
