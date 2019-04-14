@@ -86,10 +86,12 @@ public class UserServiceTests {
     @Test
     public void testCreateUser() throws UserWithUsernameAlreadyExistsException {
         CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
-        userService.createUser(resource);
+        GetUserResource result = userService.createUser(resource);
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
         Mockito.verify(userRepository, Mockito.times(1)).existsByUsername(any());
 
+        Assert.assertEquals(resource.getUsername(), result.getUsername());
+        Assert.assertEquals(resource.getRating(), result.getRating());
     }
 
     /**
@@ -100,9 +102,13 @@ public class UserServiceTests {
     @Test
     public void testEditUser() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
         CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
-        userService.editUser(resource, 1L);
+        GetUserResource result = userService.editUser(resource, 1L);
         Mockito.verify(userRepository, Mockito.times(1)).existsByUsername(any());
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
+
+
+        Assert.assertEquals(resource.getUsername(), result.getUsername());
+        Assert.assertEquals(resource.getRating(), result.getRating());
     }
 
     /**

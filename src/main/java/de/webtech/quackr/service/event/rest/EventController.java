@@ -1,6 +1,7 @@
 package de.webtech.quackr.service.event.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.event.EventService;
 import de.webtech.quackr.service.event.domain.CreateEventResource;
@@ -43,7 +44,9 @@ public class EventController {
 
     /**
      * Handles a GET request to /users/{id}/events
-     * @return All events for the selected user in the database in a JSON format. (200 OK)
+     * @return The created event as JSON (200 OK), (404 NOT FOUND) If the user
+     * with the given id is not found or (400 BAD REQUEST) if the JSON body is missing
+     * required fields.
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +56,8 @@ public class EventController {
                     MediaType.APPLICATION_JSON).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (JsonSyntaxException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 

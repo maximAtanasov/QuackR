@@ -36,8 +36,7 @@ public class EventService {
      * @throws UserNotFoundException Thrown when the selected user is not found.
      */
     public Collection<GetEventResource> getEvents(long userId) throws UserNotFoundException {
-        Optional<UserEntity> user = userRepository.findById(userId);
-        if(user.isPresent()){
+        if(userRepository.existsById(userId)){
             return EventMapper.map(eventRepository.findByOrganizerId(userId));
         } else {
             throw new UserNotFoundException(userId);
@@ -62,7 +61,7 @@ public class EventService {
             newEvent.setLocation(resource.getLocation());
             newEvent.setPublic(resource.isPublic());
             newEvent.setOrganizer(user.get());
-                eventRepository.save(newEvent);
+            eventRepository.save(newEvent);
             userRepository.save(user.get());
             return EventMapper.map(newEvent);
         } else {
@@ -104,6 +103,7 @@ public class EventService {
                 }
             }
             event.get().setAttendees(userEntities);
+            eventRepository.save(event.get());
             return EventMapper.map(event.get());
         }else{
             throw new EventNotFoundException(eventId);
