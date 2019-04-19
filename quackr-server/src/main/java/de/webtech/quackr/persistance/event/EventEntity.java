@@ -5,7 +5,9 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -36,6 +38,9 @@ public class EventEntity {
     @OneToOne
     private UserEntity organizer;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<UserEntity> attendees;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private Collection<CommentEntity> comments;
 }

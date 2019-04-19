@@ -30,4 +30,7 @@ public class GetEventResource {
     private boolean isPublic;
 
     Collection<GetUserResource> attendees;
+
+    Collection<GetCommentResource> comments;
+
 }

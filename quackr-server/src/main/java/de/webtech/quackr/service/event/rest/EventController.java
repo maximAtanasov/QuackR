@@ -115,8 +115,6 @@ public class EventController {
         }
     }
 
-
-    //TODO: This will probably change
     /**
      * Adds attendees to an event in the database given the event id and the attendees.
      * @param resources A Collection of GetUserResources.
@@ -129,7 +127,27 @@ public class EventController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addAttendees(Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
-            return Response.status(Response.Status.OK).entity(gson.toJson(eventService.setEventAttendees(eventId, resources)))
+            return Response.status(Response.Status.OK).entity(gson.toJson(eventService.addEventAttendees(eventId, resources)))
+                    .type(MediaType.APPLICATION_JSON).build();
+        } catch (EventNotFoundException | UserNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+                    .entity(e.getMessage()).build();
+        }
+    }
+
+    /**
+     * Removes attendees to an event in the database given the event id and the attendees.
+     * @param resources A Collection of GetUserResources.
+     * @param eventId The event id.
+     * @return A GetEventResource with the edited user, an error message if another user with the same username already exists
+     * (400 BAD REQUEST) or a message indicating a user with the given id does not exist (404 NOT FOUND).
+     */
+    @POST
+    @Path("/{eventId}/add")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response removeAttendees(Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
+        try {
+            return Response.status(Response.Status.OK).entity(gson.toJson(eventService.removeEventAttendees(eventId, resources)))
                     .type(MediaType.APPLICATION_JSON).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())

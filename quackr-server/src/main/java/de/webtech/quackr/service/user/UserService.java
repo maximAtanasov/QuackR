@@ -6,6 +6,7 @@ import de.webtech.quackr.service.user.domain.CreateUserResource;
 import de.webtech.quackr.service.user.domain.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,9 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper = new UserMapper();
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -29,7 +32,7 @@ public class UserService {
     public Collection<GetUserResource> getUsers() {
         List<UserEntity> result = new ArrayList<>();
         userRepository.findAll().forEach(result::add);
-        return UserMapper.map(result);
+        return userMapper.map(result);
     }
 
     /**
@@ -41,7 +44,7 @@ public class UserService {
     public GetUserResource getUserById(long id) throws UserNotFoundException {
         Optional<UserEntity> entity = userRepository.findById(id);
         if(entity.isPresent()){
-            return UserMapper.map(entity.get());
+            return userMapper.map(entity.get());
         }else{
             throw new UserNotFoundException(id);
         }
@@ -57,7 +60,7 @@ public class UserService {
         if(!userRepository.existsByUsername(resource.getUsername())){
             UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
             userRepository.save(userEntity);
-            return UserMapper.map(userEntity);
+            return userMapper.map(userEntity);
         }else{
             throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
         }
@@ -94,7 +97,7 @@ public class UserService {
             UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
             userEntity.setId(userId);
             userRepository.save(userEntity);
-            return UserMapper.map(userEntity);
+            return userMapper.map(userEntity);
         } else {
             throw new UserNotFoundException(userId);
         }

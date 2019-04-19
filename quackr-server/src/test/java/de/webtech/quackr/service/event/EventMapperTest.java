@@ -4,6 +4,7 @@ import de.webtech.quackr.persistance.event.EventEntity;
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.service.event.domain.GetEventResource;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,6 +16,13 @@ import java.util.List;
  * Tests for the EventMapper class.
  */
 public class EventMapperTest {
+
+    private EventMapper eventMapper;
+
+    @Before
+    public void setUp(){
+        eventMapper = new EventMapper();
+    }
 
     /**
      * Tests the mapping of a single EventEntity to a GetEventResource object.
@@ -32,7 +40,7 @@ public class EventMapperTest {
         entity.setAttendees(new ArrayList<>());
         entity.setId(1L);
 
-        GetEventResource result = EventMapper.map(entity);
+        GetEventResource result = eventMapper.map(entity);
         Assert.assertEquals(entity.getId().longValue(), result.getId().longValue());
         Assert.assertEquals(entity.getTitle(), result.getTitle());
         Assert.assertEquals(entity.getDescription(), result.getDescription());
@@ -80,7 +88,7 @@ public class EventMapperTest {
         entity3.setId(3L);
 
         List<EventEntity> entities = Arrays.asList(entity1, entity2, entity3);
-        List<GetEventResource> result = EventMapper.map(entities);
+        List<GetEventResource> result = new ArrayList<>(eventMapper.map(entities));
         Assert.assertEquals(3, result.size());
 
         for(int i = 0; i < result.size(); i++){

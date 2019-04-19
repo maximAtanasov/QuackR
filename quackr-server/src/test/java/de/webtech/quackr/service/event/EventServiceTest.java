@@ -8,6 +8,7 @@ import de.webtech.quackr.service.event.domain.CreateEventResource;
 import de.webtech.quackr.service.event.domain.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
+import de.webtech.quackr.service.user.domain.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -161,5 +162,18 @@ public class EventServiceTest {
         eventService.deleteEvent(1L);
         Mockito.verify(eventRepository, Mockito.times(1)).existsById(any());
         Mockito.verify(eventRepository, Mockito.times(1)).deleteById(1L);
+    }
+
+    /**
+     * Tests the addEventAttendees() method of the service.
+     * @throws EventNotFoundException Not thrown in this test.
+     */
+    @Test
+    public void testAddAttendees() throws EventNotFoundException, UserNotFoundException {
+        eventService.addEventAttendees(1L, Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+
+        Mockito.verify(eventRepository, Mockito.times(1)).findById(any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(1L);
+        Mockito.verify(eventRepository, Mockito.times(1)).save(any());
     }
 }

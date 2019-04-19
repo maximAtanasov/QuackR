@@ -3,8 +3,10 @@ package de.webtech.quackr.service.user;
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.service.user.domain.GetUserResource;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +14,13 @@ import java.util.List;
  * Tests for the UserMapper class.
  */
 public class UserMapperTest {
+
+    private UserMapper userMapper;
+
+    @Before
+    public void setUp(){
+        userMapper = new UserMapper();
+    }
 
     /**
      * Tests the mapping of a single UserEntity to a GetUserResource object.
@@ -21,7 +30,7 @@ public class UserMapperTest {
         UserEntity entity = new UserEntity("testUser", "testPassword", 10L);
         entity.setId(1L);
 
-        GetUserResource result = UserMapper.map(entity);
+        GetUserResource result = userMapper.map(entity);
         Assert.assertEquals(1L, result.getId().longValue());
         Assert.assertEquals("testUser", result.getUsername());
         Assert.assertEquals(10L, result.getRating().longValue());
@@ -41,7 +50,7 @@ public class UserMapperTest {
         UserEntity entity3 = new UserEntity("testUser3", "testPassword", 30L);
         entity3.setId(3L);
 
-        List<GetUserResource> result = UserMapper.map(Arrays.asList(entity1, entity2, entity3));
+        List<GetUserResource> result = new ArrayList<>(userMapper.map(Arrays.asList(entity1, entity2, entity3)));
         Assert.assertEquals(3, result.size());
 
         Assert.assertEquals(1L, result.get(0).getId().longValue());

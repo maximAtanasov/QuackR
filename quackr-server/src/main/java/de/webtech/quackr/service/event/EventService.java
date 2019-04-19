@@ -10,6 +10,7 @@ import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.domain.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,11 +18,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class EventService {
 
     private final UserRepository userRepository;
 
     private final EventRepository eventRepository;
+
+    private final EventMapper eventMapper = new EventMapper();
 
     @Autowired
     public EventService(EventRepository eventRepository, UserRepository userRepository) {
@@ -37,7 +41,7 @@ public class EventService {
      */
     public Collection<GetEventResource> getEvents(long userId) throws UserNotFoundException {
         if(userRepository.existsById(userId)){
-            return EventMapper.map(eventRepository.findByOrganizerId(userId));
+            return eventMapper.map(eventRepository.findByOrganizerId(userId));
         } else {
             throw new UserNotFoundException(userId);
         }
@@ -63,7 +67,7 @@ public class EventService {
             newEvent.setOrganizer(user.get());
             eventRepository.save(newEvent);
             userRepository.save(user.get());
-            return EventMapper.map(newEvent);
+            return eventMapper.map(newEvent);
         } else {
             throw new UserNotFoundException(userId);
         }
@@ -83,14 +87,14 @@ public class EventService {
     }
 
     /**
-     * Sets the attendees for an event.
+     * Adds attendees for an event.
      * @param eventId The id of the event.
      * @param users The attendees.
      * @return A GetEventResource object.
      * @throws EventNotFoundException Thrown if the event is not found.
      * @throws UserNotFoundException Thrown if any user in users is not found.
      */
-    public GetEventResource setEventAttendees(long eventId, Collection<GetUserResource> users) throws EventNotFoundException, UserNotFoundException {
+    public GetEventResource addEventAttendees(long eventId, Collection<GetUserResource> users) throws EventNotFoundException, UserNotFoundException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
             List<UserEntity> userEntities = new ArrayList<>();
@@ -102,9 +106,37 @@ public class EventService {
                     throw new UserNotFoundException(user.getId());
                 }
             }
-            event.get().setAttendees(userEntities);
+            event.get().getAttendees().addAll(userEntities);
             eventRepository.save(event.get());
-            return EventMapper.map(event.get());
+            return eventMapper.map(event.get());
+        }else{
+            throw new EventNotFoundException(eventId);
+        }
+    }
+
+    /**
+     * Removes attendees from an event.
+     * @param eventId The id of the event.
+     * @param users The attendees.
+     * @return A GetEventResource object.
+     * @throws EventNotFoundException Thrown if the event is not found.
+     * @throws UserNotFoundException Thrown if any user in users is not found.
+     */
+    public GetEventResource removeEventAttendees(long eventId, Collection<GetUserResource> users) throws EventNotFoundException, UserNotFoundException {
+        Optional<EventEntity> event = eventRepository.findById(eventId);
+        if(event.isPresent()){
+            List<UserEntity> userEntities = new ArrayList<>();
+            for(GetUserResource user : users){
+                Optional<UserEntity> userEntity = userRepository.findById(user.getId());
+                if(userEntity.isPresent()){
+                    userEntities.add(userEntity.get());
+                }else{
+                    throw new UserNotFoundException(user.getId());
+                }
+            }
+            event.get().getAttendees().removeAll(userEntities);
+            eventRepository.save(event.get());
+            return eventMapper.map(event.get());
         }else{
             throw new EventNotFoundException(eventId);
         }
@@ -119,7 +151,7 @@ public class EventService {
     public GetEventResource getEvent(long eventId) throws EventNotFoundException {
         Optional<EventEntity> eventEntity = eventRepository.findById(eventId);
         if(eventEntity.isPresent()){
-            return EventMapper.map(eventEntity.get());
+            return eventMapper.map(eventEntity.get());
         }else{
             throw new EventNotFoundException(eventId);
         }
@@ -142,7 +174,7 @@ public class EventService {
             eventEntity.get().setAttendeeLimit(resource.getAttendeeLimit());
             eventEntity.get().setDescription(resource.getDescription());
             eventRepository.save(eventEntity.get());
-            return EventMapper.map(eventEntity.get());
+            return eventMapper.map(eventEntity.get());
         }else{
             throw new EventNotFoundException(eventId);
         }
