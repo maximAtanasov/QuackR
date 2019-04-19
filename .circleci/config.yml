@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
 
-    working_directory: ~/quackr
+    working_directory: ~/quackr/quackr-server
 
     docker:
       - image: circleci/openjdk:8-jdk-browsers
@@ -21,4 +21,4 @@ jobs:
             - ~/.m2
           key: quackr-{{ checksum "pom.xml" }}
 
-      - run: cd quackr-server && mvn install
+      - run: mvn install
