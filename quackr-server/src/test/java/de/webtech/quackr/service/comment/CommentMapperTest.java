@@ -1,7 +1,8 @@
-package de.webtech.quackr.service.event;
+package de.webtech.quackr.service.comment;
 
-import de.webtech.quackr.persistance.event.CommentEntity;
-import de.webtech.quackr.service.event.domain.GetCommentResource;
+import de.webtech.quackr.persistance.comment.CommentEntity;
+import de.webtech.quackr.service.comment.CommentMapper;
+import de.webtech.quackr.service.comment.domain.GetCommentResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,10 +37,11 @@ public class CommentMapperTest {
         Assert.assertEquals(entity.getDatePosted(), result.getDatePosted());
         Assert.assertEquals(entity.getText(), result.getText());
         Assert.assertEquals(entity.getPosterId(), result.getPosterId());
+        Assert.assertEquals(entity.getEventId(), result.getEventId());
     }
 
     /**
-     * Tests the mapping of a collection of EventEntity (ies) to a list of GetEventResources.
+     * Tests the mapping of a collection of CommentEntity (ies) to a list of GetCommentResources.
      */
     @Test
     public void testMapEntitiesToResources(){
@@ -70,6 +72,7 @@ public class CommentMapperTest {
             Assert.assertEquals(entities.get(i).getDatePosted(), result.get(i).getDatePosted());
             Assert.assertEquals(entities.get(i).getText(), result.get(i).getText());
             Assert.assertEquals(entities.get(i).getPosterId(), result.get(i).getPosterId());
+            Assert.assertEquals(entities.get(i).getEventId(), result.get(i).getEventId());
         }
     }
 }

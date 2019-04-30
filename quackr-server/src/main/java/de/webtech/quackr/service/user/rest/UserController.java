@@ -41,7 +41,7 @@ public class UserController {
      * @return The user with the given id if they exist (200 OK), or an error message (404 NOT FOUND).
      */
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("id") long id) {
         try {
@@ -76,7 +76,7 @@ public class UserController {
      * (400 BAD REQUEST) or a message indicating a user with the given id does not exist (404 NOT FOUND).
      */
     @POST
-    @Path("/{id}")
+    @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editUser(CreateUserResource resource, @PathParam("id") long id) {
         try {
@@ -98,7 +98,7 @@ public class UserController {
      * (404 NOT FOUND).
      */
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("id") long id) {
         try {

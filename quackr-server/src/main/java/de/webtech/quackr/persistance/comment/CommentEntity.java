@@ -1,4 +1,4 @@
-package de.webtech.quackr.persistance.event;
+package de.webtech.quackr.persistance.comment;
 
 import de.webtech.quackr.persistance.user.UserEntity;
 import lombok.Data;
@@ -27,4 +27,6 @@ public class CommentEntity {
     private Date datePosted;
 
     private Long posterId;
+
+    private Long eventId;
 }

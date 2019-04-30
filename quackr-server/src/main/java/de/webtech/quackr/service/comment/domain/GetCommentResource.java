@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.event.domain;
+package de.webtech.quackr.service.comment.domain;
 
 import de.webtech.quackr.service.user.domain.GetUserResource;
 import lombok.AllArgsConstructor;
@@ -16,4 +16,6 @@ public class GetCommentResource {
     private Date datePosted;
 
     private Long posterId;
+
+    private Long eventId;
 }

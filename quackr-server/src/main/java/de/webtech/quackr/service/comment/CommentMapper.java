@@ -1,8 +1,8 @@
-package de.webtech.quackr.service.event;
+package de.webtech.quackr.service.comment;
 
 import de.webtech.quackr.AbstractMapper;
-import de.webtech.quackr.persistance.event.CommentEntity;
-import de.webtech.quackr.service.event.domain.GetCommentResource;
+import de.webtech.quackr.persistance.comment.CommentEntity;
+import de.webtech.quackr.service.comment.domain.GetCommentResource;
 import de.webtech.quackr.service.user.UserMapper;
 
 public class CommentMapper extends AbstractMapper<GetCommentResource, CommentEntity> {
@@ -12,6 +12,6 @@ public class CommentMapper extends AbstractMapper<GetCommentResource, CommentEnt
     @Override
     public GetCommentResource map(CommentEntity entity){
         return new GetCommentResource(entity.getId(),
-                entity.getText(),entity.getDatePosted(), entity.getPosterId());
+                entity.getText(),entity.getDatePosted(), entity.getPosterId(), entity.getEventId());
     }
 }

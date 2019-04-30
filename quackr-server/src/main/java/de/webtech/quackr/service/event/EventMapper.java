@@ -2,13 +2,11 @@ package de.webtech.quackr.service.event;
 
 import de.webtech.quackr.AbstractMapper;
 import de.webtech.quackr.persistance.event.EventEntity;
+import de.webtech.quackr.service.comment.CommentMapper;
 import de.webtech.quackr.service.event.domain.GetEventResource;
 import de.webtech.quackr.service.user.UserMapper;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * A mapper to map EventEntity objects to GetEventResource objects.

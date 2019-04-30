@@ -1,13 +1,12 @@
 package de.webtech.quackr.persistance.event;
 
+import de.webtech.quackr.persistance.comment.CommentEntity;
 import de.webtech.quackr.persistance.user.UserEntity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 
 /**

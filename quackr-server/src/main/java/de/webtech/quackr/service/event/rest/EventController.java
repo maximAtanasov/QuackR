@@ -15,8 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collection;
 
-@Path("/users/{userId}/events")
 @RestController
+@Path("/events")
 public class EventController {
 
     private final EventService eventService;
@@ -33,6 +33,7 @@ public class EventController {
      * @return All events for the selected user in the database in a JSON format. (200 OK)
      */
     @GET
+    @Path("user/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEvents(@PathParam("userId") long id) {
         try {
@@ -49,6 +50,7 @@ public class EventController {
      * required fields.
      */
     @POST
+    @Path("user/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response addEvent(CreateEventResource resource, @PathParam("userId") long id) {
         try {
@@ -62,11 +64,11 @@ public class EventController {
     }
 
     /**
-     * Handles a GET request to /users/{id}/events/{eventId}
+     * Handles a GET request to /events/{eventId}
      * @return The event with the given id for the selected user in the database in a JSON format. (200 OK)
      */
     @GET
-    @Path("/{eventId}")
+    @Path("{eventId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEvent(@PathParam("eventId") long eventId) {
         try {
@@ -84,7 +86,7 @@ public class EventController {
      * (404 NOT FOUND).
      */
     @DELETE
-    @Path("/{eventId}")
+    @Path("{eventId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteEvent(@PathParam("eventId") long eventId) {
         try {
@@ -103,7 +105,7 @@ public class EventController {
      * (400 BAD REQUEST) or a message indicating a user with the given id does not exist (404 NOT FOUND).
      */
     @POST
-    @Path("/{eventId}")
+    @Path("{eventId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editEvent(CreateEventResource resource, @PathParam("eventId") long eventId) {
         try {
@@ -123,7 +125,7 @@ public class EventController {
      * (400 BAD REQUEST) or a message indicating a user with the given id does not exist (404 NOT FOUND).
      */
     @POST
-    @Path("/{eventId}/add")
+    @Path("{eventId}/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addAttendees(Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
@@ -139,11 +141,10 @@ public class EventController {
      * Removes attendees to an event in the database given the event id and the attendees.
      * @param resources A Collection of GetUserResources.
      * @param eventId The event id.
-     * @return A GetEventResource with the edited user, an error message if another user with the same username already exists
-     * (400 BAD REQUEST) or a message indicating a user with the given id does not exist (404 NOT FOUND).
+     * @return A GetEventResource with the edited event or a message indicating an event/user with the given id does not exist (404 NOT FOUND).
      */
     @POST
-    @Path("/{eventId}/add")
+    @Path("{eventId}/remove")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response removeAttendees(Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
