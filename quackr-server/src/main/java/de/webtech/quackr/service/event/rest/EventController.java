@@ -1,7 +1,5 @@
 package de.webtech.quackr.service.event.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.event.EventService;
 import de.webtech.quackr.service.event.domain.CreateEventResource;
@@ -21,8 +19,6 @@ public class EventController {
 
     private final EventService eventService;
 
-    private Gson gson = new Gson();
-
     @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
@@ -30,14 +26,14 @@ public class EventController {
 
     /**
      * Handles a GET request to /users/{id}/events
-     * @return All events for the selected user in the database in a JSON format. (200 OK)
+     * @return All events for the selected user in the database in JSON or XML format. (200 OK)
      */
     @GET
     @Path("user/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getEvents(@PathParam("userId") long id) {
         try {
-            return Response.ok(gson.toJson(eventService.getEvents(id)), MediaType.APPLICATION_JSON).build();
+            return Response.ok(eventService.getEvents(id)).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
@@ -45,34 +41,32 @@ public class EventController {
 
     /**
      * Handles a GET request to /users/{id}/events
-     * @return The created event as JSON (200 OK), (404 NOT FOUND) If the user
-     * with the given id is not found or (400 BAD REQUEST) if the JSON body is missing
+     * @return The created event as JSON/XML (200 OK), (404 NOT FOUND) If the user
+     * with the given id is not found or (400 BAD REQUEST) if the JSON/XML body is missing
      * required fields.
      */
     @POST
     @Path("user/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response addEvent(CreateEventResource resource, @PathParam("userId") long id) {
         try {
-            return Response.status(Response.Status.CREATED).entity(gson.toJson(eventService.createEvent(resource, id))).type(
-                    MediaType.APPLICATION_JSON).build();
+            return Response.status(Response.Status.CREATED).entity(eventService.createEvent(resource, id)).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (JsonSyntaxException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 
     /**
      * Handles a GET request to /events/{eventId}
-     * @return The event with the given id for the selected user in the database in a JSON format. (200 OK)
+     * @return The event with the given id for the selected user in the database in JSON or XML format. (200 OK)
      */
     @GET
     @Path("{eventId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getEvent(@PathParam("eventId") long eventId) {
         try {
-            return Response.ok(gson.toJson(eventService.getEvent(eventId)), MediaType.APPLICATION_JSON).build();
+            return Response.ok(eventService.getEvent(eventId)).build();
         } catch (EventNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
@@ -106,11 +100,11 @@ public class EventController {
      */
     @POST
     @Path("{eventId}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response editEvent(CreateEventResource resource, @PathParam("eventId") long eventId) {
         try {
-            return Response.status(Response.Status.OK).entity(gson.toJson(eventService.editEvent(resource, eventId)))
-                    .type(MediaType.APPLICATION_JSON).build();
+            return Response.ok(eventService.editEvent(resource, eventId)).build();
         } catch (EventNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(e.getMessage()).build();
@@ -126,11 +120,11 @@ public class EventController {
      */
     @POST
     @Path("{eventId}/add")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response addAttendees(Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
-            return Response.status(Response.Status.OK).entity(gson.toJson(eventService.addEventAttendees(eventId, resources)))
-                    .type(MediaType.APPLICATION_JSON).build();
+            return Response.ok(eventService.addEventAttendees(eventId, resources)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(e.getMessage()).build();
@@ -145,11 +139,11 @@ public class EventController {
      */
     @POST
     @Path("{eventId}/remove")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response removeAttendees(Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
-            return Response.status(Response.Status.OK).entity(gson.toJson(eventService.removeEventAttendees(eventId, resources)))
-                    .type(MediaType.APPLICATION_JSON).build();
+            return Response.ok(eventService.removeEventAttendees(eventId, resources)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(e.getMessage()).build();

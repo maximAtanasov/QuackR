@@ -2,6 +2,7 @@ package de.webtech.quackr.service.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Resource used to provide information
@@ -9,6 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor // Needed for XML
 public class CreateUserResource {
     private String username;
     private String password;

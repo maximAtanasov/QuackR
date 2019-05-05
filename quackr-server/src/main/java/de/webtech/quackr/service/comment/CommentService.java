@@ -4,7 +4,7 @@ import de.webtech.quackr.persistance.comment.CommentEntity;
 import de.webtech.quackr.persistance.comment.CommentRepository;
 import de.webtech.quackr.persistance.event.EventEntity;
 import de.webtech.quackr.persistance.event.EventRepository;
-import de.webtech.quackr.persistance.user.UserEntity;
+import de.webtech.quackr.persistance.user.UserRepository;
 import de.webtech.quackr.service.comment.domain.CreateCommentResource;
 import de.webtech.quackr.service.comment.domain.GetCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
@@ -25,12 +25,15 @@ public class CommentService {
 
     private final EventRepository eventRepository;
 
+    private final UserRepository userRepository;
+
     private final CommentMapper commentMapper = new CommentMapper();
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, EventRepository eventRepository) {
+    public CommentService(CommentRepository commentRepository, EventRepository eventRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -40,11 +43,25 @@ public class CommentService {
      * @return All comments for the selected event.
      * @throws EventNotFoundException Thrown when the selected event is not found.
      */
-    public Collection<GetCommentResource> getComments(long eventId) throws EventNotFoundException {
+    public Collection<GetCommentResource> getCommentsForEvent(long eventId) throws EventNotFoundException {
         if(eventRepository.existsById(eventId)){
             return commentMapper.map(commentRepository.findByEventId(eventId));
         } else {
             throw new EventNotFoundException(eventId);
+        }
+    }
+
+    /**
+     * Return all comments for the selected user.
+     * @param userId the id of the user
+     * @return All comments for the selected user.
+     * @throws UserNotFoundException Thrown when the selected user is not found.
+     */
+    public Collection<GetCommentResource> getCommentsForUser(long userId) throws UserNotFoundException {
+        if(userRepository.existsById(userId)){
+            return commentMapper.map(commentRepository.findByPosterId(userId));
+        } else {
+            throw new UserNotFoundException(userId);
         }
     }
 

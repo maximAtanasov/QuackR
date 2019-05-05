@@ -1,10 +1,7 @@
 package de.webtech.quackr.persistance.comment;
 
-import de.webtech.quackr.persistance.user.UserEntity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.util.Date;

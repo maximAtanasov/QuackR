@@ -4,10 +4,6 @@ import de.webtech.quackr.AbstractMapper;
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.service.user.domain.GetUserResource;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * A mapper to map UserEntity objects to GetUserResource objects.
  */

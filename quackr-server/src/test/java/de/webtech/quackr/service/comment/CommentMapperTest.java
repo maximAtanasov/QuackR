@@ -1,7 +1,6 @@
 package de.webtech.quackr.service.comment;
 
 import de.webtech.quackr.persistance.comment.CommentEntity;
-import de.webtech.quackr.service.comment.CommentMapper;
 import de.webtech.quackr.service.comment.domain.GetCommentResource;
 import org.junit.Assert;
 import org.junit.Before;

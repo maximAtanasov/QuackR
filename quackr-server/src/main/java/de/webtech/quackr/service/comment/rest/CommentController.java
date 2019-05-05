@@ -1,11 +1,10 @@
 package de.webtech.quackr.service.comment.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import de.webtech.quackr.service.comment.CommentNotFoundException;
 import de.webtech.quackr.service.comment.CommentService;
 import de.webtech.quackr.service.comment.domain.CreateCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
+import de.webtech.quackr.service.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,58 +18,69 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    private Gson gson = new Gson();
-
     @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
 
     /**
-     * Handles a GET request to /events/{eventId}/comments
-     * @return All comments for the selected event in the database in a JSON format. (200 OK)
+     * Handles a GET request to /comments/event/{eventId}
+     * @return All comments for the selected event in the database in a JSON or XML format. (200 OK)
      */
     @GET
     @Path("event/{eventId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getComments(@PathParam("eventId") long id) {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getCommentsForEvent(@PathParam("eventId") long id) {
         try {
-            return Response.ok(gson.toJson(commentService.getComments(id)), MediaType.APPLICATION_JSON).build();
+            return Response.ok(commentService.getCommentsForEvent(id)).build();
         } catch (EventNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 
     /**
-     * Handles a GET request to /events/{eventId}/comments
-     * @return The created comment as JSON (200 OK), (404 NOT FOUND) If the event
-     * with the given id is not found or (400 BAD REQUEST) if the JSON body is missing
+     * Handles a GET request to /comments/event/{eventId}
+     * @return The created comment as JSON/XML (200 OK), (404 NOT FOUND) If the event
+     * with the given id is not found or (400 BAD REQUEST) if the JSON/XML body is missing
      * required fields.
      */
     @POST
     @Path("event/{eventId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response addComment(CreateCommentResource resource, @PathParam("eventId") long id) {
         try {
-            return Response.status(Response.Status.CREATED).entity(gson.toJson(commentService.createComment(resource, id))).type(
-                    MediaType.APPLICATION_JSON).build();
+            return Response.status(Response.Status.CREATED).entity(commentService.createComment(resource, id)).build();
         } catch (EventNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (JsonSyntaxException e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    /**
+     * Handles a GET request to /comments/event/{eventId}
+     * @return All comments for the selected event in the database in a JSON or XML format. (200 OK)
+     */
+    @GET
+    @Path("user/{userId}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getCommentsForUser(@PathParam("userId") long id) {
+        try {
+            return Response.ok(commentService.getCommentsForUser(id)).build();
+        } catch (UserNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 
     /**
      * Handles a GET request to /comments/{commentId}
-     * @return The comment with the given id in the database in a JSON format. (200 OK)
+     * @return The comment with the given id in the database in a JSON or XML format. (200 OK)
      */
     @GET
     @Path("{commentId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getComment(@PathParam("commentId") long commentId) {
         try {
-            return Response.ok(gson.toJson(commentService.getComment(commentId)), MediaType.APPLICATION_JSON).build();
+            return Response.ok(commentService.getComment(commentId)).build();
         } catch (CommentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
@@ -85,7 +95,7 @@ public class CommentController {
      */
     @DELETE
     @Path("{commentId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteComment(@PathParam("commentId") long commentId) {
         try {
             commentService.deleteComment(commentId);
@@ -103,11 +113,11 @@ public class CommentController {
      */
     @POST
     @Path("{commentId}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response editComment(CreateCommentResource resource, @PathParam("commentId") long commentId) {
         try {
-            return Response.status(Response.Status.OK).entity(gson.toJson(commentService.editComment(resource, commentId)))
-                    .type(MediaType.APPLICATION_JSON).build();
+            return Response.ok(commentService.editComment(resource, commentId)).build();
         } catch (CommentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(e.getMessage()).build();

@@ -1,12 +1,13 @@
 package de.webtech.quackr.service.comment.domain;
 
-import de.webtech.quackr.service.user.domain.GetUserResource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class GetCommentResource {
     private Long id;

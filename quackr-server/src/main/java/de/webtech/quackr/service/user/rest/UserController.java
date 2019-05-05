@@ -1,6 +1,5 @@
 package de.webtech.quackr.service.user.rest;
 
-import com.google.gson.Gson;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.Response;
 public class UserController {
 
     private final UserService userService;
-    private Gson gson = new Gson();
 
     @Autowired
     public UserController(UserService userService) {
@@ -26,13 +24,12 @@ public class UserController {
 
     /**
      * Handles a GET request to /users
-     * @return All users in the database in a JSON format. (200 OK)
+     * @return All users in the database in JSON or XML format. (200 OK)
      */
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getUsers() {
-        String json = gson.toJson(userService.getUsers());
-        return Response.ok(json, MediaType.APPLICATION_JSON).build();
+        return Response.ok(userService.getUsers()).build();
     }
 
     /**
@@ -42,10 +39,10 @@ public class UserController {
      */
     @GET
     @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getUser(@PathParam("id") long id) {
         try {
-            return Response.ok(gson.toJson(userService.getUserById(id)), MediaType.APPLICATION_JSON).build();
+            return Response.ok(userService.getUserById(id)).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
@@ -54,14 +51,14 @@ public class UserController {
     /**
      * Creates a new user given a CreateUserResource.
      * @param resource The resource containing the needed data.
-     * @return The new user as JSON (201 CREATED) or an error message if a user with the same username already exists (400 BAD REQUEST).
+     * @return The new user as JSON/XML (201 CREATED) or an error message if a user with the same username already exists (400 BAD REQUEST).
      */
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createUser(CreateUserResource resource) {
         try {
-            return Response.status(Response.Status.CREATED).entity(gson.toJson(userService.createUser(resource)))
-                    .type(MediaType.APPLICATION_JSON).build();
+            return Response.status(Response.Status.CREATED).entity(userService.createUser(resource)).build();
         } catch (UserWithUsernameAlreadyExistsException e){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
                     .entity(e.getMessage()).build();
@@ -77,11 +74,11 @@ public class UserController {
      */
     @POST
     @Path("{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response editUser(CreateUserResource resource, @PathParam("id") long id) {
         try {
-            return Response.status(Response.Status.OK).entity(gson.toJson(userService.editUser(resource, id)))
-                    .type(MediaType.APPLICATION_JSON).build();
+            return Response.ok(userService.editUser(resource, id)).build();
         } catch (UserWithUsernameAlreadyExistsException e){
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
                     .entity(e.getMessage()).build();
@@ -99,11 +96,11 @@ public class UserController {
      */
     @DELETE
     @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteUser(@PathParam("id") long id) {
         try {
             userService.deleteUser(id);
-            return Response.status(Response.Status.OK).build();
+            return Response.ok().build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(e.getMessage()).build();

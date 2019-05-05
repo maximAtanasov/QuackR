@@ -2,6 +2,7 @@ package de.webtech.quackr.service.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Resource class used to handle users without
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor // Needed for XML
 public class GetUserResource {
     private Long id;
     private String username;
