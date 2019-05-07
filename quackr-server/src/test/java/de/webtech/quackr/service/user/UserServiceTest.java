@@ -2,6 +2,7 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.persistance.user.UserRepository;
+import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
@@ -23,9 +25,8 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class UserServiceTest {
+
+public class UserServiceTest extends ServiceTestTemplate {
 
     @MockBean
     UserRepository userRepository;

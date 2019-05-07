@@ -4,6 +4,7 @@ import de.webtech.quackr.persistance.event.EventEntity;
 import de.webtech.quackr.persistance.event.EventRepository;
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.persistance.user.UserRepository;
+import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
@@ -24,9 +25,7 @@ import java.util.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class EventServiceTest {
+public class EventServiceTest extends ServiceTestTemplate {
 
     @MockBean
     UserRepository userRepository;
