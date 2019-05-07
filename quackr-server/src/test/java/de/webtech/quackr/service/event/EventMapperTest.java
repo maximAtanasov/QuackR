@@ -2,7 +2,7 @@ package de.webtech.quackr.service.event;
 
 import de.webtech.quackr.persistance.event.EventEntity;
 import de.webtech.quackr.persistance.user.UserEntity;
-import de.webtech.quackr.service.event.domain.GetEventResource;
+import de.webtech.quackr.service.event.resources.GetEventResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.user.domain;
+package de.webtech.quackr.service.user.resources;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

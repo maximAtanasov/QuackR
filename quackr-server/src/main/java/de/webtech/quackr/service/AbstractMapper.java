@@ -1,4 +1,4 @@
-package de.webtech.quackr;
+package de.webtech.quackr.service;
 
 import java.util.ArrayList;
 import java.util.Collection;

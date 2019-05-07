@@ -2,7 +2,7 @@ package de.webtech.quackr.service.comment.rest;
 
 import de.webtech.quackr.service.comment.CommentNotFoundException;
 import de.webtech.quackr.service.comment.CommentService;
-import de.webtech.quackr.service.comment.domain.CreateCommentResource;
+import de.webtech.quackr.service.comment.resources.CreateCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

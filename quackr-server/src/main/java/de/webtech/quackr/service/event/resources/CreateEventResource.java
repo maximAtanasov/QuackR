@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.event.domain;
+package de.webtech.quackr.service.event.resources;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

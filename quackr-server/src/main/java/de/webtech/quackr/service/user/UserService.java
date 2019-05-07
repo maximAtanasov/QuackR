@@ -2,8 +2,8 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistance.user.UserEntity;
 import de.webtech.quackr.persistance.user.UserRepository;
-import de.webtech.quackr.service.user.domain.CreateUserResource;
-import de.webtech.quackr.service.user.domain.GetUserResource;
+import de.webtech.quackr.service.user.resources.CreateUserResource;
+import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

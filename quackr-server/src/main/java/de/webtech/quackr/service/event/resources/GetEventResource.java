@@ -1,7 +1,7 @@
-package de.webtech.quackr.service.event.domain;
+package de.webtech.quackr.service.event.resources;
 
-import de.webtech.quackr.service.comment.domain.GetCommentResource;
-import de.webtech.quackr.service.user.domain.GetUserResource;
+import de.webtech.quackr.service.comment.resources.GetCommentResource;
+import de.webtech.quackr.service.user.resources.GetUserResource;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

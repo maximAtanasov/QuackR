@@ -1,7 +1,7 @@
 package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistance.user.UserEntity;
-import de.webtech.quackr.service.user.domain.GetUserResource;
+import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

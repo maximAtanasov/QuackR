@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 /**
- * Simple CRUD repository to handle event entities.
+ * Simple CRUD repository to handle comment entities.
  */
 @Repository
 public interface CommentRepository extends CrudRepository<CommentEntity, Long> {

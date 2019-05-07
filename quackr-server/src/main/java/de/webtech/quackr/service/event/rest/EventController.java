@@ -2,9 +2,9 @@ package de.webtech.quackr.service.event.rest;
 
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.event.EventService;
-import de.webtech.quackr.service.event.domain.CreateEventResource;
+import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
-import de.webtech.quackr.service.user.domain.GetUserResource;
+import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 

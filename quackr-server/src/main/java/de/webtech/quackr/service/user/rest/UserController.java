@@ -3,7 +3,7 @@ package de.webtech.quackr.service.user.rest;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
-import de.webtech.quackr.service.user.domain.CreateUserResource;
+import de.webtech.quackr.service.user.resources.CreateUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
