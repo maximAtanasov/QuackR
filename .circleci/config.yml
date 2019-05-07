@@ -11,14 +11,6 @@ jobs:
 
       - checkout
 
-      - restore_cache:
-          key: quackr-server/quackr-{{ checksum "pom.xml" }}
-
       - run: cd quackr-server && mvn dependency:go-offline
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: quackr-server/quackr-{{ checksum "pom.xml" }}
 
       - run: cd quackr-server && mvn install
