@@ -8,7 +8,6 @@ import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
-import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,9 +30,6 @@ public class EventServiceTest extends ServiceTestTemplate {
     EventRepository eventRepository;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
     EventService eventService;
 
     /**
@@ -45,12 +41,18 @@ public class EventServiceTest extends ServiceTestTemplate {
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
 
+        Mockito.when(userRepository.findById(7L))
+                .thenReturn(Optional.empty());
+
         Mockito.when(userRepository.findAll())
                 .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L),
                         new UserEntity("testUser2", "testPassword2", 50L)));
 
-        Mockito.when(userRepository.existsById(any()))
+        Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
+
+        Mockito.when(userRepository.existsById(7L))
+                .thenReturn(false);
 
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
@@ -69,11 +71,15 @@ public class EventServiceTest extends ServiceTestTemplate {
         entity.setId(1L);
 
         Mockito.when(eventRepository.findByOrganizerId(anyLong())).thenReturn(Collections.singletonList(entity));
-        Mockito.when(eventRepository.findById(anyLong())).thenReturn(Optional.of(entity));
+        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.of(entity));
+        Mockito.when(eventRepository.findById(7L)).thenReturn(Optional.empty());
         Mockito.when(eventRepository.findAll()).thenReturn(Collections.singletonList(entity));
 
-        Mockito.when(eventRepository.existsById(any()))
+        Mockito.when(eventRepository.existsById(1L))
                 .thenReturn(true);
+
+        Mockito.when(eventRepository.existsById(7L))
+                .thenReturn(false);
     }
 
     /**
@@ -88,6 +94,15 @@ public class EventServiceTest extends ServiceTestTemplate {
     }
 
     /**
+     * Tests that the getEventById() method of the service throws an exception if the event is not found.
+     * @throws EventNotFoundException Doesn't throw in this test.
+     */
+    @Test(expected = EventNotFoundException.class)
+    public void testGetEventByIdThrowsExceptionIfEventNotFound() throws EventNotFoundException {
+        eventService.getEvent(7L);
+    }
+
+    /**
      * Tests the getEvents() method of the service.
      * @throws UserNotFoundException Not thrown in this test
      */
@@ -98,6 +113,16 @@ public class EventServiceTest extends ServiceTestTemplate {
         Assert.assertEquals(1, result.size());
         Iterator<GetEventResource> it = result.iterator();
         Assert.assertEquals("BBQ", it.next().getTitle());
+    }
+
+    /**
+     * Tests that the getEvents() method of the service throws an Exception
+     * if the user is not found.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testGetEventsThrowsExceptionIfUserNotFound() throws UserNotFoundException {
+        eventService.getEvents(7L);
     }
 
     /**
@@ -122,6 +147,19 @@ public class EventServiceTest extends ServiceTestTemplate {
         Assert.assertEquals(resource.getAttendeeLimit(), result.getAttendeeLimit());
         Assert.assertEquals(resource.getDate(), result.getDate());
         Assert.assertEquals(resource.getLocation(), result.getLocation());
+    }
+
+    /**
+     * Tests that the createEvent() method of the service
+     * throws an exception if the user is not found.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testCreateEventThrowsExceptionIfUserNotFound() throws UserNotFoundException {
+        CreateEventResource resource = new CreateEventResource();
+
+        eventService.createEvent(resource, 7L);
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
     /**
@@ -150,6 +188,18 @@ public class EventServiceTest extends ServiceTestTemplate {
     }
 
     /**
+     * Tests that the editEvent() method of the service throws
+     * an exception in the event is not found.
+     * @throws EventNotFoundException Checked in this test.
+     */
+    @Test(expected = EventNotFoundException.class)
+    public void testEditEventThrowsExceptionIfEventNotFound() throws EventNotFoundException {
+        CreateEventResource resource = new CreateEventResource();
+        eventService.editEvent(resource, 7L);
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
      * Tests the deleteEvent() method of the service.
      * @throws EventNotFoundException Not thrown in this test.
      */
@@ -166,10 +216,22 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test
     public void testAddAttendees() throws EventNotFoundException, UserNotFoundException {
-        eventService.addEventAttendees(1L, Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+        GetEventResource result = eventService.addEventAttendees(1L,
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+        Assert.assertEquals(1L, result.getAttendees().size());
+        Assert.assertEquals("testUser", result.getAttendees().iterator().next().getUsername());
+        Mockito.verify(eventRepository, Mockito.times(1)).save(any());
+    }
 
-        Mockito.verify(eventRepository, Mockito.times(1)).findById(any());
-        Mockito.verify(userRepository, Mockito.times(1)).findById(1L);
+    /**
+     * Tests the removeEventAttendees() method of the service.
+     * @throws EventNotFoundException Not thrown in this test.
+     */
+    @Test
+    public void testRemoveAttendees() throws EventNotFoundException, UserNotFoundException {
+        GetEventResource result = eventService.removeEventAttendees(1L,
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+        Assert.assertTrue(result.getAttendees().isEmpty());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
     }
 }

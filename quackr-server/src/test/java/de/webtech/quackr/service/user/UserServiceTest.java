@@ -38,15 +38,26 @@ public class UserServiceTest extends ServiceTestTemplate {
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
 
+        Mockito.when(userRepository.findById(7L))
+                .thenReturn(Optional.empty());
+
+        Mockito.when(userRepository.existsById(7L))
+                .thenReturn(false);
+
         Mockito.when(userRepository.findAll())
                 .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L),
                         new UserEntity("testUser2", "testPassword2", 50L)));
 
-        Mockito.when(userRepository.existsById(any()))
+        Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
 
+        Mockito.when(userRepository.existsByUsername("testUser4"))
+                .thenReturn(true);
+
+        UserEntity testEntity = new UserEntity("testUser4", "testPassword3", 10L);
+        testEntity.setId(4L);
         Mockito.when(userRepository.findByUsername(any()))
-                .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
+                .thenReturn(testEntity);
 
         Mockito.when(userRepository.save(any())).thenReturn(new UserEntity("testUser", "testPassword", 10L));
     }
@@ -61,6 +72,16 @@ public class UserServiceTest extends ServiceTestTemplate {
         Mockito.verify(userRepository, Mockito.times(1)).findById(anyLong());
         Assert.assertEquals("testUser", result.getUsername());
         Assert.assertEquals(0L, result.getRating().longValue());
+    }
+
+    /**
+     * Tests that the getUserById() method of the service throws the UserNotFoundException if the user
+     * is not found.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testGetUserByIdThrowsExceptionWhenUserNotFound() throws UserNotFoundException {
+        userService.getUserById(7L);
     }
 
     /**
@@ -92,6 +113,17 @@ public class UserServiceTest extends ServiceTestTemplate {
     }
 
     /**
+     * Tests the createUser() method of the service throws an Exception when another user the same username exists.
+     * @throws UserWithUsernameAlreadyExistsException Checked in this test.
+     */
+    @Test(expected = UserWithUsernameAlreadyExistsException.class)
+    public void testCreateUserThrowsExceptionWhenUsernameExists() throws UserWithUsernameAlreadyExistsException {
+        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L);
+        userService.createUser(resource);
+        Mockito.verify(userRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
      * Tests the editUser() method of the service.
      * @throws UserWithUsernameAlreadyExistsException Not thrown in this test.
      * @throws UserNotFoundException Not thrown in this test.
@@ -109,6 +141,30 @@ public class UserServiceTest extends ServiceTestTemplate {
     }
 
     /**
+     * Tests the editUser() method of the service.
+     * @throws UserWithUsernameAlreadyExistsException Not thrown in this test.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testEditUserThrowsExceptionWhenUserNotFound() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
+        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
+        userService.editUser(resource, 7L);
+        Mockito.verify(userRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
+     * Tests the editUser() method of the service when a user with the same username exists.
+     * @throws UserWithUsernameAlreadyExistsException Checked in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     */
+    @Test(expected = UserWithUsernameAlreadyExistsException.class)
+    public void testEditUserWhenUsernameExists() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
+        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L);
+        userService.editUser(resource, 1L);
+        Mockito.verify(userRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
      * Tests the deleteUser() method of the service.
      * @throws UserNotFoundException Not thrown in this test.
      */
@@ -117,5 +173,15 @@ public class UserServiceTest extends ServiceTestTemplate {
         userService.deleteUser(1L);
         Mockito.verify(userRepository, Mockito.times(1)).existsById(any());
         Mockito.verify(userRepository, Mockito.times(1)).deleteById(1L);
+    }
+
+    /**
+     * Tests that the deleteUser() method of the service throws an exception when the
+     * user with the given id is not found.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testDeleteUserThrowsExceptionWhenUserNotFound() throws UserNotFoundException {
+        userService.deleteUser(7L);
     }
 }
