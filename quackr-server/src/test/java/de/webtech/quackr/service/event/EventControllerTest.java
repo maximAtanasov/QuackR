@@ -1,21 +1,16 @@
 package de.webtech.quackr.service.event;
 
+import de.webtech.quackr.service.ControllerTestTemplate;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,23 +21,20 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class EventControllerTest {
+
+public class EventControllerTest extends ControllerTestTemplate {
 
     @MockBean
     private EventService eventService;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     private CreateEventResource testCreateResource;
     private GetEventResource testGetResource;
 
+    /**
+     * Tests set up
+     */
     @Before
     public void setUp() {
-
         testGetResource = new GetEventResource();
         testGetResource.setAttendeeLimit(20L);
         testGetResource.setDate(new Date());
@@ -62,9 +54,12 @@ public class EventControllerTest {
         testGetResource.setAttendees(new ArrayList<>());
     }
 
+    /**
+     * Tests that a POST request to the /events/user/{userId} endpoint returns proper JSON.
+     * @throws UserNotFoundException Not thrown in this test
+     */
     @Test
     public void testCreateEvent() throws UserNotFoundException {
-
         Mockito.when(eventService.createEvent(any(), anyLong()))
                 .thenReturn(testGetResource);
 
@@ -73,9 +68,12 @@ public class EventControllerTest {
         assertEquals(testGetResource , entity.getBody());
     }
 
+    /**
+     * Tests that a GET request to the /events/user/{userId} endpoint return proper JSON.
+     * @throws UserNotFoundException Not thrown in this test.
+     */
     @Test
     public void testGetEventForUser() throws UserNotFoundException {
-
         Mockito.when(eventService.getEvents(anyLong()))
                 .thenReturn(Collections.singletonList(testGetResource));
 
@@ -86,12 +84,12 @@ public class EventControllerTest {
         assertArrayEquals(expected, entity.getBody());
     }
 
-
+    /**
+     * Tests that a GET request to the /events/{eventId} endpoint returns the proper JSON.
+     * @throws EventNotFoundException Not thrown in this test.
+     */
     @Test
     public void testGetEventById() throws EventNotFoundException {
-
-
-
         Mockito.when(eventService.getEvent(anyLong()))
                 .thenReturn(testGetResource);
 
@@ -100,6 +98,10 @@ public class EventControllerTest {
         assertEquals(testGetResource, entity.getBody());
     }
 
+    /**
+     * Tests that a POST request to the /events/{eventId} endpoint returns the proper JSON.
+     * @throws EventNotFoundException Not thrown in this test.
+     */
     @Test
     public void testEditEvent() throws EventNotFoundException {
 
@@ -111,12 +113,21 @@ public class EventControllerTest {
         assertEquals(testGetResource, entity.getBody());
     }
 
+    /**
+     * Tests that a DELETE request to the events/{eventId} endpoint calls the correct service method.
+     * @throws EventNotFoundException Not thrown in this test.
+     */
     @Test
     public void testDeleteEvent() throws EventNotFoundException {
         this.restTemplate.delete("/events/1");
         Mockito.verify(eventService, Mockito.times(1)).deleteEvent(1L);
     }
 
+    /**
+     * Tests that a POST request to /events/{eventId}/add returns the proper JSON.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     */
     @Test
     public void testAddAttendeeToEvent() throws EventNotFoundException, UserNotFoundException {
         testGetResource.getAttendees().add(new GetUserResource(2L, "testUser", 30L));
@@ -133,6 +144,11 @@ public class EventControllerTest {
         assertEquals(testGetResource, entity.getBody());
     }
 
+    /**
+     * Tests that a POST request to /events/{eventId}/remove returns the proper JSON.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     */
     @Test
     public void testRemoveAttendeeFromEvent() throws EventNotFoundException, UserNotFoundException {
         Mockito.when(eventService.removeEventAttendees(anyLong(), any()))

@@ -1,7 +1,7 @@
 package de.webtech.quackr.service.user;
 
-import de.webtech.quackr.service.AbstractMapper;
 import de.webtech.quackr.persistance.user.UserEntity;
+import de.webtech.quackr.service.AbstractMapper;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 
 /**

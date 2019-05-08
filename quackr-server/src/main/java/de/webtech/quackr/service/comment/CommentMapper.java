@@ -1,7 +1,7 @@
 package de.webtech.quackr.service.comment;
 
-import de.webtech.quackr.service.AbstractMapper;
 import de.webtech.quackr.persistance.comment.CommentEntity;
+import de.webtech.quackr.service.AbstractMapper;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.user.UserMapper;
 
