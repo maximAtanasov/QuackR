@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * Resource class used for creating/editing events.
- * Maps directly to JSON.
+ * Maps directly to JSON/XML.
  */
 @Data
 @NoArgsConstructor

@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Resource class used for retrieving comment entities.
+ * Maps directly to JSON/XML.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

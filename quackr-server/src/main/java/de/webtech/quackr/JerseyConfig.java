@@ -5,9 +5,10 @@ import de.webtech.quackr.service.comment.rest.CommentController;
 import de.webtech.quackr.service.event.rest.EventController;
 import de.webtech.quackr.service.user.rest.UserController;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig(){
         register(JacksonXMLProvider.class);

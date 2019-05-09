@@ -1,7 +1,6 @@
 package de.webtech.quackr.service.comment;
 
 import de.webtech.quackr.persistence.comment.CommentEntity;
-import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class CommentMapperTest extends ServiceTestTemplate {
+public class CommentMapperTest {
 
     private CommentMapper commentMapper;
 

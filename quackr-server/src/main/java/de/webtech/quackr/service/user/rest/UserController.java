@@ -89,7 +89,7 @@ public class UserController {
     }
 
     /**
-     * Deletes a user from the database given it's id.
+     * Deletes a user from the database given an id.
      * @param id The id of the user to delete.
      * @return A Response indicating successful deletion (200 OK) or an error if the user is not found
      * (404 NOT FOUND).

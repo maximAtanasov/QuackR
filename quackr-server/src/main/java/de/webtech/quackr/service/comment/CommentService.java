@@ -30,7 +30,7 @@ public class CommentService {
     private final CommentMapper commentMapper = new CommentMapper();
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, EventRepository eventRepository, UserRepository userRepository) {
+    CommentService(CommentRepository commentRepository, EventRepository eventRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;

@@ -4,7 +4,6 @@ import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
-import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
@@ -13,24 +12,20 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 
-public class EventServiceTest extends ServiceTestTemplate {
+public class EventServiceTest {
 
-    @MockBean
-    UserRepository userRepository;
+    private UserRepository userRepository = mock(UserRepository.class);
 
-    @MockBean
-    EventRepository eventRepository;
+    private EventRepository eventRepository = mock(EventRepository.class);
 
-    @Autowired
-    EventService eventService;
+    private EventService eventService;
 
     /**
      * Mocks all methods from the userRepository and eventRepository that need mocking.
@@ -38,6 +33,7 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Before
     public void setUp() {
+        eventService = new EventService(eventRepository, userRepository);
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
 
@@ -68,14 +64,14 @@ public class EventServiceTest extends ServiceTestTemplate {
         entity.setDate(new Date());
         entity.setPublic(true);
         entity.setAttendees(new ArrayList<>());
-        entity.setId(1L);
+        entity.setId(2L);
 
         Mockito.when(eventRepository.findByOrganizerId(anyLong())).thenReturn(Collections.singletonList(entity));
-        Mockito.when(eventRepository.findById(1L)).thenReturn(Optional.of(entity));
+        Mockito.when(eventRepository.findById(2L)).thenReturn(Optional.of(entity));
         Mockito.when(eventRepository.findById(7L)).thenReturn(Optional.empty());
         Mockito.when(eventRepository.findAll()).thenReturn(Collections.singletonList(entity));
 
-        Mockito.when(eventRepository.existsById(1L))
+        Mockito.when(eventRepository.existsById(2L))
                 .thenReturn(true);
 
         Mockito.when(eventRepository.existsById(7L))
@@ -88,7 +84,7 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test
     public void testGetEventById() throws EventNotFoundException {
-        GetEventResource result = eventService.getEvent(1L);
+        GetEventResource result = eventService.getEvent(2L);
         Mockito.verify(eventRepository, Mockito.times(1)).findById(anyLong());
         Assert.assertEquals("BBQ", result.getTitle());
     }
@@ -140,7 +136,6 @@ public class EventServiceTest extends ServiceTestTemplate {
         resource.setAttendeeLimit(20L);
 
         GetEventResource result = eventService.createEvent(resource, 1L);
-        Mockito.verify(userRepository, Mockito.times(1)).findById(anyLong());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
         Assert.assertEquals(resource.getTitle(), result.getTitle());
         Assert.assertEquals(resource.getDescription(), result.getDescription());
@@ -176,8 +171,7 @@ public class EventServiceTest extends ServiceTestTemplate {
         resource.setPublic(false);
         resource.setAttendeeLimit(20L);
 
-        GetEventResource result = eventService.editEvent(resource, 1L);
-        Mockito.verify(eventRepository, Mockito.times(1)).findById(any());
+        GetEventResource result = eventService.editEvent(resource, 2L);
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
 
         Assert.assertEquals(resource.getTitle(), result.getTitle());
@@ -205,9 +199,8 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test
     public void testDeleteEvent() throws EventNotFoundException {
-        eventService.deleteEvent(1L);
-        Mockito.verify(eventRepository, Mockito.times(1)).existsById(any());
-        Mockito.verify(eventRepository, Mockito.times(1)).deleteById(1L);
+        eventService.deleteEvent(2L);
+        Mockito.verify(eventRepository, Mockito.times(1)).deleteById(2L);
     }
 
     /**
@@ -228,7 +221,7 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test
     public void testAddAttendees() throws EventNotFoundException, UserNotFoundException {
-        GetEventResource result = eventService.addEventAttendees(1L,
+        GetEventResource result = eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Assert.assertEquals(1L, result.getAttendees().size());
         Assert.assertEquals("testUser", result.getAttendees().iterator().next().getUsername());
@@ -256,7 +249,7 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test(expected = UserNotFoundException.class)
     public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
-        eventService.addEventAttendees(1L,
+        eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
@@ -267,7 +260,7 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test
     public void testRemoveAttendees() throws EventNotFoundException, UserNotFoundException {
-        GetEventResource result = eventService.removeEventAttendees(1L,
+        GetEventResource result = eventService.removeEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Assert.assertTrue(result.getAttendees().isEmpty());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
@@ -294,7 +287,7 @@ public class EventServiceTest extends ServiceTestTemplate {
      */
     @Test(expected = UserNotFoundException.class)
     public void testRemoveAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
-        eventService.removeEventAttendees(1L,
+        eventService.removeEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }

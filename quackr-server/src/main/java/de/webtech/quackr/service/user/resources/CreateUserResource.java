@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Resource used to provide information
- * on user creation/editing.
+ * Resource class used for creating/editing users.
+ * Maps directly to JSON/XML.
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor // Needed for XML
+@NoArgsConstructor // Needed for XML deserialization
 public class CreateUserResource {
     private String username;
     private String password;

@@ -7,8 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.util.Collections;
 
@@ -39,13 +38,35 @@ public class UserControllerTest extends ControllerTestTemplate {
      * @throws UserWithUsernameAlreadyExistsException Not thrown in this test
      */
     @Test
-    public void testCreateUser() throws UserWithUsernameAlreadyExistsException {
+    public void testCreateUser_AcceptJSON() throws UserWithUsernameAlreadyExistsException {
         Mockito.when(userService.createUser(any()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetUserResource> entity = this.restTemplate.postForEntity("/users", testCreateResource, GetUserResource.class);
-        assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-        assertEquals(testGetResource , entity.getBody());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<CreateUserResource> entity = new HttpEntity<>(testCreateResource, headers);
+
+        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users", HttpMethod.POST, entity, GetUserResource.class);
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals(testGetResource , result.getBody());
+    }
+
+    /**
+     * Tests that a POST request to the /users endpoint returns proper XML.
+     * @throws UserWithUsernameAlreadyExistsException Not thrown in this test
+     */
+    @Test
+    public void testCreateUser_AcceptXML() throws UserWithUsernameAlreadyExistsException {
+        Mockito.when(userService.createUser(any()))
+                .thenReturn(testGetResource);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
+        HttpEntity<CreateUserResource> entity = new HttpEntity<>(testCreateResource, headers);
+
+        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users", HttpMethod.POST, entity, GetUserResource.class);
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertEquals(testGetResource , result.getBody());
     }
 
     /**
@@ -53,13 +74,35 @@ public class UserControllerTest extends ControllerTestTemplate {
      * @throws UserNotFoundException Not thrown in this test
      */
     @Test
-    public void testGetUserById() throws UserNotFoundException {
+    public void testGetUserById_AcceptJSON() throws UserNotFoundException {
         Mockito.when(userService.getUserById(anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetUserResource> entity = this.restTemplate.getForEntity("/users/1", GetUserResource.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource , entity.getBody());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity, GetUserResource.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(testGetResource , result.getBody());
+    }
+
+    /**
+     * Tests that a GET request to the /users/{userId} endpoint returns proper XML.
+     * @throws UserNotFoundException Not thrown in this test
+     */
+    @Test
+    public void testGetUserById_AcceptXML() throws UserNotFoundException {
+        Mockito.when(userService.getUserById(anyLong()))
+                .thenReturn(testGetResource);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity, GetUserResource.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(testGetResource , result.getBody());
     }
 
     /**
@@ -79,10 +122,9 @@ public class UserControllerTest extends ControllerTestTemplate {
 
     /**
      * Tests that a GET request to the /users endpoint returns proper JSON.
-     * @throws UserNotFoundException Not thrown in this test
      */
     @Test
-    public void testGetAllUsers() throws UserNotFoundException {
+    public void testGetAllUsers() {
         Mockito.when(userService.getUsers())
                 .thenReturn(Collections.singletonList(testGetResource));
 

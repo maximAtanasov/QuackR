@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Resource class used to handle users without
- * revealing hashed passwords.
+ * Resource class used for retrieving user entities.
+ * Maps directly to JSON/XML.
  */
 @Data
 @AllArgsConstructor

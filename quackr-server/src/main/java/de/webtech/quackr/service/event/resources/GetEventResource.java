@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * Resource class used for retrieving event entities.
- * Maps directly to JSON.
+ * Maps directly to JSON/XML.
  */
 @Data
 @NoArgsConstructor

@@ -2,15 +2,12 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
-import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,15 +16,13 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 
+public class UserServiceTest {
 
-public class UserServiceTest extends ServiceTestTemplate {
+    private UserRepository userRepository = mock(UserRepository.class);
 
-    @MockBean
-    UserRepository userRepository;
-
-    @Autowired
-    UserService userService;
+    private UserService userService;
 
     /**
      * Mocks all methods from the userRepository that need mocking.
@@ -35,6 +30,7 @@ public class UserServiceTest extends ServiceTestTemplate {
      */
     @Before
     public void setUp() {
+        userService = new UserService(userRepository);
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
 
@@ -106,7 +102,6 @@ public class UserServiceTest extends ServiceTestTemplate {
         CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
         GetUserResource result = userService.createUser(resource);
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
-        Mockito.verify(userRepository, Mockito.times(1)).existsByUsername(any());
 
         Assert.assertEquals(resource.getUsername(), result.getUsername());
         Assert.assertEquals(resource.getRating(), result.getRating());
@@ -132,7 +127,6 @@ public class UserServiceTest extends ServiceTestTemplate {
     public void testEditUser() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
         CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
         GetUserResource result = userService.editUser(resource, 1L);
-        Mockito.verify(userRepository, Mockito.times(1)).existsByUsername(any());
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
 
 
@@ -171,7 +165,6 @@ public class UserServiceTest extends ServiceTestTemplate {
     @Test
     public void testDeleteUser() throws UserNotFoundException {
         userService.deleteUser(1L);
-        Mockito.verify(userRepository, Mockito.times(1)).existsById(any());
         Mockito.verify(userRepository, Mockito.times(1)).deleteById(1L);
     }
 
