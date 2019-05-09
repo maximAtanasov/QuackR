@@ -1,6 +1,6 @@
 package de.webtech.quackr.service.event;
 
-import de.webtech.quackr.persistance.event.EventEntity;
+import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.service.AbstractMapper;
 import de.webtech.quackr.service.comment.CommentMapper;
 import de.webtech.quackr.service.event.resources.GetEventResource;

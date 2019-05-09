@@ -1,4 +1,4 @@
-package de.webtech.quackr.persistance.user;
+package de.webtech.quackr.persistence.user;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

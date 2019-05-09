@@ -1,4 +1,4 @@
-package de.webtech.quackr.persistance.comment;
+package de.webtech.quackr.persistence.comment;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;

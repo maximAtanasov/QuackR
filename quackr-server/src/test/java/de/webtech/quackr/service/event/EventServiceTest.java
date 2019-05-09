@@ -1,9 +1,9 @@
 package de.webtech.quackr.service.event;
 
-import de.webtech.quackr.persistance.event.EventEntity;
-import de.webtech.quackr.persistance.event.EventRepository;
-import de.webtech.quackr.persistance.user.UserEntity;
-import de.webtech.quackr.persistance.user.UserRepository;
+import de.webtech.quackr.persistence.event.EventEntity;
+import de.webtech.quackr.persistence.event.EventRepository;
+import de.webtech.quackr.persistence.user.UserEntity;
+import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.service.ServiceTestTemplate;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
@@ -211,8 +211,20 @@ public class EventServiceTest extends ServiceTestTemplate {
     }
 
     /**
+     * Tests that the deleteEvent() method of the service throws an
+     * exception if the event is not found.
+     * @throws EventNotFoundException Checked in this test.
+     */
+    @Test(expected = EventNotFoundException.class)
+    public void testDeleteEventThrowsExceptionIfEventNotFound() throws EventNotFoundException {
+        eventService.deleteEvent(7L);
+        Mockito.verify(eventRepository, Mockito.times(0)).deleteById(7L);
+    }
+
+    /**
      * Tests the addEventAttendees() method of the service.
      * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Not thrown in this test.
      */
     @Test
     public void testAddAttendees() throws EventNotFoundException, UserNotFoundException {
@@ -221,6 +233,32 @@ public class EventServiceTest extends ServiceTestTemplate {
         Assert.assertEquals(1L, result.getAttendees().size());
         Assert.assertEquals("testUser", result.getAttendees().iterator().next().getUsername());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
+    }
+
+    /**
+     * Tests that the addEventAttendees() method of the service
+     * throws an exception if the event is not found.
+     * @throws EventNotFoundException Checked in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     */
+    @Test(expected = EventNotFoundException.class)
+    public void testAddAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException {
+        eventService.addEventAttendees(7L,
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
+     * Tests that the addEventAttendees() method of the service
+     * throws an exception if the user is not found.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
+        eventService.addEventAttendees(1L,
+                Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
     /**
@@ -233,5 +271,31 @@ public class EventServiceTest extends ServiceTestTemplate {
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Assert.assertTrue(result.getAttendees().isEmpty());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
+    }
+
+    /**
+     * Tests that the removeEventAttendees() method of the service
+     * throws an exception if the event is not found.
+     * @throws EventNotFoundException Checked in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     */
+    @Test(expected = EventNotFoundException.class)
+    public void testRemoveAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException {
+        eventService.removeEventAttendees(7L,
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
+     * Tests that the removeEventAttendees() method of the service
+     * throws an exception if the user is not found.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testRemoveAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
+        eventService.removeEventAttendees(1L,
+                Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 }

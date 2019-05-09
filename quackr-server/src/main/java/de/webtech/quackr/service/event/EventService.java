@@ -1,9 +1,9 @@
 package de.webtech.quackr.service.event;
 
-import de.webtech.quackr.persistance.event.EventEntity;
-import de.webtech.quackr.persistance.event.EventRepository;
-import de.webtech.quackr.persistance.user.UserEntity;
-import de.webtech.quackr.persistance.user.UserRepository;
+import de.webtech.quackr.persistence.event.EventEntity;
+import de.webtech.quackr.persistence.event.EventRepository;
+import de.webtech.quackr.persistence.user.UserEntity;
+import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;

@@ -1,4 +1,4 @@
-package de.webtech.quackr.persistance.event;
+package de.webtech.quackr.persistence.event;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

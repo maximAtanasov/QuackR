@@ -1,4 +1,4 @@
-package de.webtech.quackr.persistance.comment;
+package de.webtech.quackr.persistence.comment;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

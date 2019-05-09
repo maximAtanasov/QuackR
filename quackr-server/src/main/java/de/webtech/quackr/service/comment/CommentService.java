@@ -1,10 +1,10 @@
 package de.webtech.quackr.service.comment;
 
-import de.webtech.quackr.persistance.comment.CommentEntity;
-import de.webtech.quackr.persistance.comment.CommentRepository;
-import de.webtech.quackr.persistance.event.EventEntity;
-import de.webtech.quackr.persistance.event.EventRepository;
-import de.webtech.quackr.persistance.user.UserRepository;
+import de.webtech.quackr.persistence.comment.CommentEntity;
+import de.webtech.quackr.persistence.comment.CommentRepository;
+import de.webtech.quackr.persistence.event.EventEntity;
+import de.webtech.quackr.persistence.event.EventRepository;
+import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.service.comment.resources.CreateCommentResource;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;

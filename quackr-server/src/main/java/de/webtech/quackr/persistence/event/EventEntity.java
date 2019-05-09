@@ -1,11 +1,12 @@
-package de.webtech.quackr.persistance.event;
+package de.webtech.quackr.persistence.event;
 
-import de.webtech.quackr.persistance.comment.CommentEntity;
-import de.webtech.quackr.persistance.user.UserEntity;
+import de.webtech.quackr.persistence.comment.CommentEntity;
+import de.webtech.quackr.persistence.user.UserEntity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -41,5 +42,5 @@ public class EventEntity {
     private Collection<UserEntity> attendees;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private Collection<CommentEntity> comments;
+    private Collection<CommentEntity> comments = new ArrayList<>();
 }

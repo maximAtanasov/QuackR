@@ -1,4 +1,4 @@
-package de.webtech.quackr.persistance.user;
+package de.webtech.quackr.persistence.user;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
