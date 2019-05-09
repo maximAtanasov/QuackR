@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -63,9 +65,19 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.createEvent(any(), anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetEventResource> entity = this.restTemplate.postForEntity("/events/user/1", testCreateResource, GetEventResource.class);
-        assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-        assertEquals(testGetResource , entity.getBody());
+        // Test JSON
+        HttpEntity<CreateEventResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
+
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/user/1", HttpMethod.POST, entity1, GetEventResource.class);
+        assertEquals(HttpStatus.CREATED, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateEventResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/user/1", HttpMethod.POST, entity2, GetEventResource.class);
+        assertEquals(HttpStatus.CREATED, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
@@ -77,11 +89,21 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.getEvents(anyLong()))
                 .thenReturn(Collections.singletonList(testGetResource));
 
-        ResponseEntity<GetEventResource[]> entity = this.restTemplate.getForEntity("/events/user/1", GetEventResource[].class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-
         GetEventResource[] expected = {testGetResource};
-        assertArrayEquals(expected, entity.getBody());
+
+        // Test JSON
+        HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
+
+        ResponseEntity<GetEventResource[]> result1 = this.restTemplate.exchange("/events/user/1", HttpMethod.GET, entity1, GetEventResource[].class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertArrayEquals(expected, result1.getBody());
+
+        // Test XML
+        HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
+
+        ResponseEntity<GetEventResource[]> result2 = this.restTemplate.exchange("/events/user/1", HttpMethod.GET, entity2, GetEventResource[].class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertArrayEquals(expected, result2.getBody());
     }
 
     /**
@@ -93,9 +115,19 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.getEvent(anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetEventResource> entity = this.restTemplate.getForEntity("/events/1", GetEventResource.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource, entity.getBody());
+        // Test JSON
+        HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
+
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1", HttpMethod.GET, entity1, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
+
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1", HttpMethod.GET, entity2, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
@@ -108,9 +140,19 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.editEvent(any(), anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetEventResource> entity = this.restTemplate.postForEntity("/events/1", testCreateResource, GetEventResource.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource, entity.getBody());
+        // Test JSON
+        HttpEntity<CreateEventResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
+
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1", HttpMethod.POST, entity1, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateEventResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1", HttpMethod.POST, entity2, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
@@ -136,12 +178,21 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.addEventAttendees(anyLong(), any()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetEventResource> entity =
-                this.restTemplate.postForEntity("/events/1/add",
-                        Collections.singletonList(new GetUserResource(2L, "testUser", 30L)), GetEventResource.class);
+        GetUserResource[] requestBody = {new GetUserResource(2L, "testUser", 30L)};
 
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource, entity.getBody());
+        // Test JSON
+        HttpEntity<GetUserResource[]> entity1 = new HttpEntity<>(requestBody, headersJSON);
+
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1/add", HttpMethod.POST, entity1, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<GetUserResource[]> entity2 = new HttpEntity<>(requestBody, headersXML);
+
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1/add", HttpMethod.POST, entity2, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
@@ -154,11 +205,20 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.removeEventAttendees(anyLong(), any()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetEventResource> entity =
-                this.restTemplate.postForEntity("/events/1/remove",
-                        Collections.singletonList(new GetUserResource(2L, "testUser", 30L)), GetEventResource.class);
+        GetUserResource[] requestBody = {new GetUserResource(2L, "testUser", 30L)};
 
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource, entity.getBody());
+        // Test JSON
+        HttpEntity<GetUserResource[]> entity1 = new HttpEntity<>(requestBody, headersJSON);
+
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1/remove", HttpMethod.POST, entity1, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<GetUserResource[]> entity2 = new HttpEntity<>(requestBody, headersXML);
+
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1/remove", HttpMethod.POST, entity2, GetEventResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 }

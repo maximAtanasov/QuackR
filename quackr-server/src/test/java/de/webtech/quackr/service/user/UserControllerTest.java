@@ -34,79 +34,55 @@ public class UserControllerTest extends ControllerTestTemplate {
     }
 
     /**
-     * Tests that a POST request to the /users endpoint returns proper JSON.
+     * Tests that a POST request to the /users endpoint returns proper JSON/XML.
      * @throws UserWithUsernameAlreadyExistsException Not thrown in this test
      */
     @Test
-    public void testCreateUser_AcceptJSON() throws UserWithUsernameAlreadyExistsException {
+    public void testCreateUser() throws UserWithUsernameAlreadyExistsException {
         Mockito.when(userService.createUser(any()))
                 .thenReturn(testGetResource);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<CreateUserResource> entity = new HttpEntity<>(testCreateResource, headers);
+        // Test JSON
+        HttpEntity<CreateUserResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users", HttpMethod.POST, entity, GetUserResource.class);
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals(testGetResource , result.getBody());
+        ResponseEntity<GetUserResource> result1 = this.restTemplate.exchange("/users", HttpMethod.POST, entity1, GetUserResource.class);
+        assertEquals(HttpStatus.CREATED, result1.getStatusCode());
+        assertEquals(testGetResource , result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateUserResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetUserResource> result2 = this.restTemplate.exchange("/users", HttpMethod.POST, entity2, GetUserResource.class);
+        assertEquals(HttpStatus.CREATED, result2.getStatusCode());
+        assertEquals(testGetResource , result2.getBody());
     }
 
     /**
-     * Tests that a POST request to the /users endpoint returns proper XML.
-     * @throws UserWithUsernameAlreadyExistsException Not thrown in this test
-     */
-    @Test
-    public void testCreateUser_AcceptXML() throws UserWithUsernameAlreadyExistsException {
-        Mockito.when(userService.createUser(any()))
-                .thenReturn(testGetResource);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
-        HttpEntity<CreateUserResource> entity = new HttpEntity<>(testCreateResource, headers);
-
-        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users", HttpMethod.POST, entity, GetUserResource.class);
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals(testGetResource , result.getBody());
-    }
-
-    /**
-     * Tests that a GET request to the /users/{userId} endpoint returns proper JSON.
+     * Tests that a GET request to the /users/{userId} endpoint returns proper JSON/XML.
      * @throws UserNotFoundException Not thrown in this test
      */
     @Test
-    public void testGetUserById_AcceptJSON() throws UserNotFoundException {
+    public void testGetUserById() throws UserNotFoundException {
         Mockito.when(userService.getUserById(anyLong()))
                 .thenReturn(testGetResource);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        // Test JSON
+        HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity, GetUserResource.class);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(testGetResource , result.getBody());
+        ResponseEntity<GetUserResource> result1 = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity1, GetUserResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource , result1.getBody());
+
+        // Test XML
+        HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
+
+        ResponseEntity<GetUserResource> result2 = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity2, GetUserResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource , result2.getBody());
     }
 
     /**
-     * Tests that a GET request to the /users/{userId} endpoint returns proper XML.
-     * @throws UserNotFoundException Not thrown in this test
-     */
-    @Test
-    public void testGetUserById_AcceptXML() throws UserNotFoundException {
-        Mockito.when(userService.getUserById(anyLong()))
-                .thenReturn(testGetResource);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<GetUserResource> result = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity, GetUserResource.class);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(testGetResource , result.getBody());
-    }
-
-    /**
-     * Tests that a POST request to the /users/{userId} endpoint returns proper JSON.
+     * Tests that a POST request to the /users/{userId} endpoint returns proper JSON/XML.
      * @throws UserNotFoundException Not thrown in this test
      * @throws UserWithUsernameAlreadyExistsException Not thrown in this test
      */
@@ -115,23 +91,44 @@ public class UserControllerTest extends ControllerTestTemplate {
         Mockito.when(userService.editUser(any(), anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetUserResource> entity = this.restTemplate.postForEntity("/users/1", testCreateResource, GetUserResource.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource , entity.getBody());
+        // Test JSON
+        HttpEntity<CreateUserResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
+
+        ResponseEntity<GetUserResource> result1 = this.restTemplate.postForEntity("/users/1", entity1, GetUserResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateUserResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetUserResource> result2 = this.restTemplate.postForEntity("/users/1", entity2, GetUserResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
-     * Tests that a GET request to the /users endpoint returns proper JSON.
+     * Tests that a GET request to the /users endpoint returns proper JSON/XML.
      */
     @Test
     public void testGetAllUsers() {
         Mockito.when(userService.getUsers())
                 .thenReturn(Collections.singletonList(testGetResource));
 
-        ResponseEntity<GetUserResource[]> entity = this.restTemplate.getForEntity("/users", GetUserResource[].class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
         GetUserResource[] expected = {testGetResource};
-        assertArrayEquals(expected , entity.getBody());
+
+        // Test JSON
+        HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
+
+        ResponseEntity<GetUserResource[]> result1 = this.restTemplate.exchange("/users", HttpMethod.GET, entity1, GetUserResource[].class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertArrayEquals(expected, result1.getBody());
+
+        // Test XML
+        HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
+
+        ResponseEntity<GetUserResource[]> result2 = this.restTemplate.exchange("/users", HttpMethod.GET, entity2, GetUserResource[].class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertArrayEquals(expected, result2.getBody());
     }
 
     /**

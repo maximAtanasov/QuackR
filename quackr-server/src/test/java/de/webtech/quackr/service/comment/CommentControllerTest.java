@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -19,7 +21,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-
 
 public class CommentControllerTest extends ControllerTestTemplate {
 
@@ -43,14 +44,23 @@ public class CommentControllerTest extends ControllerTestTemplate {
      * @throws EventNotFoundException Not thrown in this test
      */
     @Test
-    public void testCreateEvent() throws EventNotFoundException {
+    public void testCreateComment() throws EventNotFoundException {
         Mockito.when(commentService.createComment(any(), anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetCommentResource> entity =
-                this.restTemplate.postForEntity("/comments/event/1", testCreateResource, GetCommentResource.class);
-        assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-        assertEquals(testGetResource , entity.getBody());
+        // Test JSON
+        HttpEntity<CreateCommentResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
+
+        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/comments/event/1", HttpMethod.POST, entity1, GetCommentResource.class);
+        assertEquals(HttpStatus.CREATED, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/comments/event/1", HttpMethod.POST, entity2, GetCommentResource.class);
+        assertEquals(HttpStatus.CREATED, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
@@ -62,11 +72,21 @@ public class CommentControllerTest extends ControllerTestTemplate {
         Mockito.when(commentService.getCommentsForEvent(anyLong()))
                 .thenReturn(Collections.singletonList(testGetResource));
 
-        ResponseEntity<GetCommentResource[]> entity = this.restTemplate.getForEntity("/comments/event/1", GetCommentResource[].class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-
         GetCommentResource[] expected = {testGetResource};
-        assertArrayEquals(expected, entity.getBody());
+
+        // Test JSON
+        HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
+
+        ResponseEntity<GetCommentResource[]> result1 = this.restTemplate.exchange("/comments/event/1", HttpMethod.GET, entity1, GetCommentResource[].class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertArrayEquals(expected, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetCommentResource[]> result2 = this.restTemplate.exchange("/comments/event/1", HttpMethod.GET, entity2, GetCommentResource[].class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertArrayEquals(expected, result2.getBody());
     }
 
     /**
@@ -78,11 +98,21 @@ public class CommentControllerTest extends ControllerTestTemplate {
         Mockito.when(commentService.getCommentsForUser(anyLong()))
                 .thenReturn(Collections.singletonList(testGetResource));
 
-        ResponseEntity<GetCommentResource[]> entity = this.restTemplate.getForEntity("/comments/user/1", GetCommentResource[].class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-
         GetCommentResource[] expected = {testGetResource};
-        assertArrayEquals(expected, entity.getBody());
+
+        // Test JSON
+        HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
+
+        ResponseEntity<GetCommentResource[]> result1 = this.restTemplate.exchange("/comments/user/1", HttpMethod.GET, entity1, GetCommentResource[].class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertArrayEquals(expected, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetCommentResource[]> result2 = this.restTemplate.exchange("/comments/user/1", HttpMethod.GET, entity2, GetCommentResource[].class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertArrayEquals(expected, result2.getBody());
     }
 
     /**
@@ -94,9 +124,19 @@ public class CommentControllerTest extends ControllerTestTemplate {
         Mockito.when(commentService.getComment(anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetCommentResource> entity = this.restTemplate.getForEntity("/comments/1", GetCommentResource.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource, entity.getBody());
+        // Test JSON
+        HttpEntity<CreateCommentResource> entity1 = new HttpEntity<>(headersJSON);
+
+        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/comments/1", HttpMethod.GET, entity1, GetCommentResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(headersXML);
+
+        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/comments/1", HttpMethod.GET, entity2, GetCommentResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
@@ -109,10 +149,19 @@ public class CommentControllerTest extends ControllerTestTemplate {
         Mockito.when(commentService.editComment(any(), anyLong()))
                 .thenReturn(testGetResource);
 
-        ResponseEntity<GetCommentResource> entity = this.restTemplate.postForEntity("/comments/1",
-                testCreateResource, GetCommentResource.class);
-        assertEquals(HttpStatus.OK, entity.getStatusCode());
-        assertEquals(testGetResource, entity.getBody());
+        // Test JSON
+        HttpEntity<CreateCommentResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
+
+        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/comments/1", HttpMethod.POST, entity1, GetCommentResource.class);
+        assertEquals(HttpStatus.OK, result1.getStatusCode());
+        assertEquals(testGetResource, result1.getBody());
+
+        // Test XML
+        HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+
+        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/comments/1", HttpMethod.POST, entity2, GetCommentResource.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
+        assertEquals(testGetResource, result2.getBody());
     }
 
     /**
