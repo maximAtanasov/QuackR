@@ -30,10 +30,14 @@ public class CommentController {
      */
     @GET
     @Path("event/{eventId}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getCommentsForEvent(@PathParam("eventId") long id) {
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getCommentsForEvent(@PathParam("eventId") long id, @HeaderParam(value = "accept") String accept) {
         try {
-            return Response.ok(commentService.getCommentsForEvent(id)).build();
+            if(accept.equals(MediaType.APPLICATION_JSON)){
+                return Response.ok(commentService.getCommentsForEvent(id)).build();
+            } else {
+                return Response.ok(new CommentCollectionXmlWrapper(commentService.getCommentsForEvent(id))).build();
+            }
         } catch (EventNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
@@ -64,9 +68,13 @@ public class CommentController {
     @GET
     @Path("user/{userId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getCommentsForUser(@PathParam("userId") long id) {
+    public Response getCommentsForUser(@PathParam("userId") long id, @HeaderParam(value = "accept") String accept) {
         try {
-            return Response.ok(commentService.getCommentsForUser(id)).build();
+            if(accept.equals(MediaType.APPLICATION_JSON)){
+                return Response.ok(commentService.getCommentsForUser(id)).build();
+            } else {
+                return Response.ok(new CommentCollectionXmlWrapper(commentService.getCommentsForUser(id))).build();
+            }
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }

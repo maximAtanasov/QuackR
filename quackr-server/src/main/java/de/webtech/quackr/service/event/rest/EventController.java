@@ -6,11 +6,9 @@ import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,9 +32,13 @@ public class EventController {
     @GET
     @Path("user/{userId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getEvents(@PathParam("userId") long id) {
+    public Response getEvents(@PathParam("userId") long id, @HeaderParam("accept") String accept) {
         try {
-            return Response.ok(eventService.getEvents(id)).build();
+            if(accept.equals(MediaType.APPLICATION_JSON)){
+                return Response.ok(eventService.getEvents(id)).build();
+            } else {
+                return Response.ok(new EventCollectionXmlWrapper(eventService.getEvents(id))).build();
+            }
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
@@ -57,9 +59,6 @@ public class EventController {
             return Response.status(Response.Status.CREATED).entity(eventService.createEvent(resource, id)).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        } catch (ValidationException e){
-            System.out.println("aqweqwfsf");
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 

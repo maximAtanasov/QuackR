@@ -1,5 +1,9 @@
 package de.webtech.quackr.service.event.resources;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import lombok.Data;
@@ -14,6 +18,8 @@ import java.util.Date;
  * Maps directly to JSON/XML.
  */
 @Data
+@JsonRootName(value = "event")
+@JacksonXmlRootElement(localName = "event")
 public class GetEventResource {
 
     @NotNull private Long id;
@@ -30,8 +36,12 @@ public class GetEventResource {
 
     @NotNull private boolean isPublic;
 
+    @JacksonXmlElementWrapper(localName = "attendees")
+    @JacksonXmlProperty(localName = "user")
     @NotNull Collection<GetUserResource> attendees;
 
+    @JacksonXmlElementWrapper(localName = "comments")
+    @JacksonXmlProperty(localName = "comment")
     @NotNull Collection<GetCommentResource> comments;
 
     /**

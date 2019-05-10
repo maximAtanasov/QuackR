@@ -1,5 +1,6 @@
 package de.webtech.quackr.service.comment.resources;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonRootName(value = "comment")
 public class GetCommentResource {
     @NotNull private Long id;
 

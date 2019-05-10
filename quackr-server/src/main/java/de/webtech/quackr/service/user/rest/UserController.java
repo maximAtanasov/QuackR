@@ -29,8 +29,12 @@ public class UserController {
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getUsers() {
-        return Response.ok(userService.getUsers()).build();
+    public Response getUsers(@HeaderParam("accept") String accept) {
+        if(accept.equals(MediaType.APPLICATION_JSON)){
+            return Response.ok(userService.getUsers()).build();
+        } else {
+            return Response.ok(new UserCollectionXmlWrapper(userService.getUsers())).build();
+        }
     }
 
     /**
