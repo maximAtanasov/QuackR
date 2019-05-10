@@ -20,10 +20,13 @@ public class UserEntity {
     @GeneratedValue(generator = "QUACK_USER_SEQUENCE", strategy=GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private Long rating;
 
     public UserEntity(String username, String password, Long rating){

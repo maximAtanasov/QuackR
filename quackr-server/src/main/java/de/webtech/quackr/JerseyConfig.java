@@ -5,11 +5,19 @@ import de.webtech.quackr.service.comment.rest.CommentController;
 import de.webtech.quackr.service.event.rest.EventController;
 import de.webtech.quackr.service.user.rest.UserController;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.validation.internal.ValidationExceptionMapper;
 import org.springframework.context.annotation.Configuration;
+
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.Validation;
+import javax.xml.bind.ValidationEventHandler;
 
 @Configuration
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig(){
+        property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+
         register(JacksonXMLProvider.class);
         register(UserController.class);
         register(EventController.class);

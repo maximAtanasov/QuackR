@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -14,13 +15,13 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetCommentResource {
-    private Long id;
+    @NotNull private Long id;
 
-    private String text;
+    @NotNull private String text;
 
-    private Date datePosted;
+    @NotNull private Date datePosted;
 
-    private Long posterId;
+    @NotNull private Long posterId;
 
-    private Long eventId;
+    @NotNull private Long eventId;
 }

@@ -19,11 +19,15 @@ public class CommentEntity {
     @GeneratedValue(generator = "COMMENT_SEQUENCE", strategy= GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(nullable = false)
     private String text;
 
+    @Column(nullable = false)
     private Date datePosted;
 
+    @Column(nullable = false)
     private Long posterId;
 
+    @Column(nullable = false)
     private Long eventId;
 }

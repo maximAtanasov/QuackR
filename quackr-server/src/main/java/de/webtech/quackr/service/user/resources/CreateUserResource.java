@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Resource class used for creating/editing users.
  * Maps directly to JSON/XML.
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor // Needed for XML deserialization
 public class CreateUserResource {
-    private String username;
-    private String password;
-    private Long rating;
+    @NotNull private String username;
+    @NotNull private String password;
+    @NotNull private Long rating;
 }

@@ -8,6 +8,7 @@ import de.webtech.quackr.service.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,7 +49,7 @@ public class CommentController {
     @Path("event/{eventId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response addComment(CreateCommentResource resource, @PathParam("eventId") long id) {
+    public Response addComment(@Valid CreateCommentResource resource, @PathParam("eventId") long id) {
         try {
             return Response.status(Response.Status.CREATED).entity(commentService.createComment(resource, id)).build();
         } catch (EventNotFoundException e) {
@@ -115,7 +116,7 @@ public class CommentController {
     @Path("{commentId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response editComment(CreateCommentResource resource, @PathParam("commentId") long commentId) {
+    public Response editComment(@Valid CreateCommentResource resource, @PathParam("commentId") long commentId) {
         try {
             return Response.ok(commentService.editComment(resource, commentId)).build();
         } catch (CommentNotFoundException e) {

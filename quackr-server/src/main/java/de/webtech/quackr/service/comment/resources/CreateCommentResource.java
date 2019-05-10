@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Resource class used for creating/editing comments.
  * Maps directly to JSON/XML.
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor // Needed for XML deserialization
 @AllArgsConstructor
 public class CreateCommentResource {
-    private String text;
+    @NotNull private String text;
 
-    private Long posterId;
+    @NotNull private Long posterId;
 }

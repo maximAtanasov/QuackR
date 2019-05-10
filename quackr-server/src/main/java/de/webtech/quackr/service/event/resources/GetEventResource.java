@@ -4,6 +4,7 @@ import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -15,23 +16,23 @@ import java.util.Date;
 @Data
 public class GetEventResource {
 
-    private Long id;
+    @NotNull private Long id;
 
-    private String title;
+    @NotNull private String title;
 
-    private String location;
+    @NotNull private String location;
 
-    private Date date;
+    @NotNull private Date date;
 
-    private String description;
+    @NotNull private String description;
 
-    private Long attendeeLimit;
+    @NotNull private Long attendeeLimit;
 
-    private boolean isPublic;
+    @NotNull private boolean isPublic;
 
-    Collection<GetUserResource> attendees;
+    @NotNull Collection<GetUserResource> attendees;
 
-    Collection<GetCommentResource> comments;
+    @NotNull Collection<GetCommentResource> comments;
 
     /**
      * Default constructor needed for the

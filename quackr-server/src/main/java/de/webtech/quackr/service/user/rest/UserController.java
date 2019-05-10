@@ -7,6 +7,7 @@ import de.webtech.quackr.service.user.resources.CreateUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -56,7 +57,7 @@ public class UserController {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createUser(CreateUserResource resource) {
+    public Response createUser(@Valid CreateUserResource resource) {
         try {
             return Response.status(Response.Status.CREATED).entity(userService.createUser(resource)).build();
         } catch (UserWithUsernameAlreadyExistsException e){
@@ -76,7 +77,7 @@ public class UserController {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response editUser(CreateUserResource resource, @PathParam("id") long id) {
+    public Response editUser(@Valid CreateUserResource resource, @PathParam("id") long id) {
         try {
             return Response.ok(userService.editUser(resource, id)).build();
         } catch (UserWithUsernameAlreadyExistsException e){

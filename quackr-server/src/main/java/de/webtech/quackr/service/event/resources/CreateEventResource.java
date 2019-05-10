@@ -3,6 +3,7 @@ package de.webtech.quackr.service.event.resources;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -13,15 +14,15 @@ import java.util.Date;
 @NoArgsConstructor
 public class CreateEventResource {
 
-    private String title;
+    @NotNull private String title;
 
-    private String location;
+    @NotNull private String location;
 
-    private Date date;
+    @NotNull private Date date;
 
-    private String description;
+    @NotNull private String description;
 
-    private Long attendeeLimit;
+    @NotNull private Long attendeeLimit;
 
-    private boolean isPublic;
+    @NotNull private boolean isPublic;
 }

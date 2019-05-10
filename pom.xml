@@ -6,6 +6,7 @@
 	<artifactId>quackr</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>quackr</name>
+	<packaging>pom</packaging>
 	<description>Quackr backend</description>
     <modules>
         <module>quackr-server</module>
