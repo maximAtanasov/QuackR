@@ -68,7 +68,7 @@ public class CommentService {
     /**
      * Creates a comment.
      * @param resource A CreateCommentResource object.
-     * @param eventId The eventId of the event we're commenting.
+     * @param eventId The id of the event we're commenting.
      * @return A GetCommentResource object.
      * @throws EventNotFoundException Thrown if the event with eventId is not found.
      */

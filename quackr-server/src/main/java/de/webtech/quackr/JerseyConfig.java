@@ -6,7 +6,6 @@ import de.webtech.quackr.service.event.rest.EventController;
 import de.webtech.quackr.service.user.rest.UserController;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 @Configuration
 public class JerseyConfig extends ResourceConfig {

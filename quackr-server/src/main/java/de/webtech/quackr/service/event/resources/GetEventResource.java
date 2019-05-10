@@ -3,7 +3,6 @@ package de.webtech.quackr.service.event.resources;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collection;

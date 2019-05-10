@@ -1,7 +1,6 @@
 package de.webtech.quackr.service;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +19,8 @@ public abstract class ControllerTestTemplate {
     @Autowired
     protected TestRestTemplate restTemplate;
 
-    protected HttpHeaders headersJSON = new HttpHeaders();
-    protected HttpHeaders headersXML = new HttpHeaders();
+    protected final HttpHeaders headersJSON = new HttpHeaders();
+    protected final HttpHeaders headersXML = new HttpHeaders();
 
     @Before
     public void setUpHeaders(){

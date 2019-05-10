@@ -85,7 +85,6 @@ public class EventServiceTest {
     @Test
     public void testGetEventById() throws EventNotFoundException {
         GetEventResource result = eventService.getEvent(2L);
-        Mockito.verify(eventRepository, Mockito.times(1)).findById(anyLong());
         Assert.assertEquals("BBQ", result.getTitle());
     }
 

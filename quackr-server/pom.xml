@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>de.webtech</groupId>
-	<artifactId>quackr</artifactId>
+	<artifactId>quackr-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>quackr</name>
+	<name>quackr-server</name>
 	<description>WebTech2 project.</description>
 
 	<properties>

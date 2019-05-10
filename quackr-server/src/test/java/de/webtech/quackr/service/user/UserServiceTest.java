@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 
 public class UserServiceTest {
@@ -65,7 +64,6 @@ public class UserServiceTest {
     @Test
     public void testGetUserById() throws UserNotFoundException {
         GetUserResource result = userService.getUserById(1L);
-        Mockito.verify(userRepository, Mockito.times(1)).findById(anyLong());
         Assert.assertEquals("testUser", result.getUsername());
         Assert.assertEquals(0L, result.getRating().longValue());
     }

@@ -27,6 +27,7 @@ class EventMapper extends AbstractMapper<GetEventResource, EventEntity> {
         resource.setId(entity.getId());
         resource.setDate(entity.getDate());
         resource.setAttendeeLimit(entity.getAttendeeLimit());
+
         if(entity.getAttendees() != null){
             resource.setAttendees(userMapper.map(entity.getAttendees()));
         }else{
