@@ -2,6 +2,7 @@ package de.webtech.quackr.service.event.rest;
 
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.event.EventService;
+import de.webtech.quackr.service.event.UsernameAndIdMatchException;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.resources.GetUserResource;
@@ -130,8 +131,8 @@ public class EventController {
     public Response addAttendees(@Valid Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
             return Response.ok(eventService.addEventAttendees(eventId, resources)).build();
-        } catch (EventNotFoundException | UserNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+        } catch (EventNotFoundException | UserNotFoundException | UsernameAndIdMatchException e) {
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
                     .entity(e.getMessage()).build();
         }
     }
@@ -149,8 +150,8 @@ public class EventController {
     public Response removeAttendees(@Valid Collection<GetUserResource> resources, @PathParam("eventId") long eventId) {
         try {
             return Response.ok(eventService.removeEventAttendees(eventId, resources)).build();
-        } catch (EventNotFoundException | UserNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+        } catch (EventNotFoundException | UserNotFoundException | UsernameAndIdMatchException e) {
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
                     .entity(e.getMessage()).build();
         }
     }

@@ -93,19 +93,13 @@ public class EventService {
      * @return A GetEventResource object.
      * @throws EventNotFoundException Thrown if the event is not found.
      * @throws UserNotFoundException Thrown if any user in users is not found.
+     * @throws UsernameAndIdMatchException Thrown if a username does not match with an id.
      */
-    public GetEventResource addEventAttendees(long eventId, Collection<GetUserResource> users) throws EventNotFoundException, UserNotFoundException {
+    public GetEventResource addEventAttendees(long eventId, Collection<GetUserResource> users)
+            throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
-            List<UserEntity> userEntities = new ArrayList<>();
-            for(GetUserResource user : users){
-                Optional<UserEntity> userEntity = userRepository.findById(user.getId());
-                if(userEntity.isPresent()){
-                    userEntities.add(userEntity.get());
-                }else{
-                    throw new UserNotFoundException(user.getId());
-                }
-            }
+            Collection<UserEntity> userEntities = getEntitiesForResources(users);
             event.get().getAttendees().addAll(userEntities);
             eventRepository.save(event.get());
             return eventMapper.map(event.get());
@@ -121,25 +115,43 @@ public class EventService {
      * @return A GetEventResource object.
      * @throws EventNotFoundException Thrown if the event is not found.
      * @throws UserNotFoundException Thrown if any user in users is not found.
+     * @throws UsernameAndIdMatchException Thrown if a username does not match with an id.
      */
-    public GetEventResource removeEventAttendees(long eventId, Collection<GetUserResource> users) throws EventNotFoundException, UserNotFoundException {
+    public GetEventResource removeEventAttendees(long eventId, Collection<GetUserResource> users)
+            throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
-            List<UserEntity> userEntities = new ArrayList<>();
-            for(GetUserResource user : users){
-                Optional<UserEntity> userEntity = userRepository.findById(user.getId());
-                if(userEntity.isPresent()){
-                    userEntities.add(userEntity.get());
-                }else{
-                    throw new UserNotFoundException(user.getId());
-                }
-            }
+            Collection<UserEntity> userEntities = getEntitiesForResources(users);
             event.get().getAttendees().removeAll(userEntities);
             eventRepository.save(event.get());
             return eventMapper.map(event.get());
         }else{
             throw new EventNotFoundException(eventId);
         }
+    }
+
+    /**
+     * Returns a collection of user entities corresponding to the given resources
+     * @param resources A Collection of GetUserResource objects.
+     * @return A collection of user entities corresponding to the given resources
+     * @throws UserNotFoundException Thrown if any of the users within resources is not found.
+     * @throws UsernameAndIdMatchException Thrown if a username does not match with an id.
+     */
+    private Collection<UserEntity> getEntitiesForResources(Collection<GetUserResource> resources) throws UserNotFoundException, UsernameAndIdMatchException {
+        Collection<UserEntity> userEntities = new ArrayList<>();
+        for(GetUserResource user : resources){
+            Optional<UserEntity> userEntity = userRepository.findById(user.getId());
+            if(userEntity.isPresent()){
+                if(userEntity.get().getUsername().equals(user.getUsername())) {
+                    userEntities.add(userEntity.get());
+                } else {
+                    throw new UsernameAndIdMatchException(user.getId(), user.getUsername());
+                }
+            }else{
+                throw new UserNotFoundException(user.getId());
+            }
+        }
+        return userEntities;
     }
 
     /**

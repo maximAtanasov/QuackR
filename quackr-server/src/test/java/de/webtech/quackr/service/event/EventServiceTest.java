@@ -37,6 +37,9 @@ public class EventServiceTest {
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
 
+        Mockito.when(userRepository.findById(8L))
+                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
+
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
 
@@ -217,9 +220,10 @@ public class EventServiceTest {
      * Tests the addEventAttendees() method of the service.
      * @throws EventNotFoundException Not thrown in this test.
      * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test
-    public void testAddAttendees() throws EventNotFoundException, UserNotFoundException {
+    public void testAddAttendees() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         GetEventResource result = eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Assert.assertEquals(1L, result.getAttendees().size());
@@ -232,9 +236,10 @@ public class EventServiceTest {
      * throws an exception if the event is not found.
      * @throws EventNotFoundException Checked in this test.
      * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test(expected = EventNotFoundException.class)
-    public void testAddAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException {
+    public void testAddAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.addEventAttendees(7L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
@@ -245,20 +250,37 @@ public class EventServiceTest {
      * throws an exception if the user is not found.
      * @throws EventNotFoundException Not thrown in this test.
      * @throws UserNotFoundException Checked in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test(expected = UserNotFoundException.class)
-    public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
+    public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
     /**
+     * Tests that the addEventAttendees() method of the service
+     * throws an exception if the username and id do not match.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Checked in this test.
+     */
+    @Test(expected = UsernameAndIdMatchException.class)
+    public void testAddAttendeesThrowsExceptionIfUsernameAndIdDoNotMatch() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+        eventService.addEventAttendees(2L,
+                Collections.singletonList(new GetUserResource(8L, "testUser3", 3L)));
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
      * Tests the removeEventAttendees() method of the service.
      * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test
-    public void testRemoveAttendees() throws EventNotFoundException, UserNotFoundException {
+    public void testRemoveAttendees() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         GetEventResource result = eventService.removeEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Assert.assertTrue(result.getAttendees().isEmpty());
@@ -270,9 +292,10 @@ public class EventServiceTest {
      * throws an exception if the event is not found.
      * @throws EventNotFoundException Checked in this test.
      * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test(expected = EventNotFoundException.class)
-    public void testRemoveAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException {
+    public void testRemoveAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.removeEventAttendees(7L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
@@ -283,11 +306,26 @@ public class EventServiceTest {
      * throws an exception if the user is not found.
      * @throws EventNotFoundException Not thrown in this test.
      * @throws UserNotFoundException Checked in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test(expected = UserNotFoundException.class)
-    public void testRemoveAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
+    public void testRemoveAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.removeEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
+        Mockito.verify(eventRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
+     * Tests that the removeEventAttendees() method of the service
+     * throws an exception if the user is not found.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Checked in this test.
+     */
+    @Test(expected = UsernameAndIdMatchException.class)
+    public void testRemoveAttendeesThrowsExceptionIfUsernameAndIdDoNotMatch() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+        eventService.removeEventAttendees(2L,
+                Collections.singletonList(new GetUserResource(8L, "testUser3", 3L)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 }

@@ -38,6 +38,7 @@ public class EventMapperTest {
         entity.setDate(new Date());
         entity.setPublic(true);
         entity.setAttendees(new ArrayList<>());
+        entity.setComments(new ArrayList<>());
         entity.setId(1L);
 
         GetEventResource result = eventMapper.map(entity);
@@ -47,6 +48,36 @@ public class EventMapperTest {
         Assert.assertEquals(entity.getAttendeeLimit().longValue(), result.getAttendeeLimit().longValue());
         Assert.assertEquals(entity.getLocation(), result.getLocation());
         Assert.assertEquals(entity.getDate(), result.getDate());
+        Assert.assertNotNull(entity.getAttendees());
+        Assert.assertNotNull(entity.getComments());
+    }
+
+    /**
+     * Tests the mapping of a single EventEntity to a GetEventResource object.
+     */
+    @Test
+    public void testMapEntityToResourceNullLists(){
+        EventEntity entity = new EventEntity();
+        entity.setTitle("BBQ");
+        entity.setDescription("BBQ at Stan");
+        entity.setAttendeeLimit(20L);
+        entity.setOrganizer(new UserEntity());
+        entity.setLocation("Stan's place");
+        entity.setDate(new Date());
+        entity.setPublic(true);
+        entity.setAttendees(null);
+        entity.setComments(null);
+        entity.setId(1L);
+
+        GetEventResource result = eventMapper.map(entity);
+        Assert.assertEquals(entity.getId().longValue(), result.getId().longValue());
+        Assert.assertEquals(entity.getTitle(), result.getTitle());
+        Assert.assertEquals(entity.getDescription(), result.getDescription());
+        Assert.assertEquals(entity.getAttendeeLimit().longValue(), result.getAttendeeLimit().longValue());
+        Assert.assertEquals(entity.getLocation(), result.getLocation());
+        Assert.assertEquals(entity.getDate(), result.getDate());
+        Assert.assertNotNull(result.getAttendees());
+        Assert.assertNotNull(result.getComments());
     }
 
     /**
@@ -63,6 +94,7 @@ public class EventMapperTest {
         entity1.setDate(new Date());
         entity1.setPublic(true);
         entity1.setAttendees(new ArrayList<>());
+        entity1.setComments(new ArrayList<>());
         entity1.setId(1L);
 
         EventEntity entity2 = new EventEntity();
@@ -74,6 +106,7 @@ public class EventMapperTest {
         entity2.setDate(new Date());
         entity2.setPublic(false);
         entity2.setAttendees(new ArrayList<>());
+        entity2.setComments(null);
         entity2.setId(2L);
 
         EventEntity entity3 = new EventEntity();
@@ -84,6 +117,7 @@ public class EventMapperTest {
         entity3.setLocation("Stan's place3");
         entity3.setDate(new Date());
         entity3.setPublic(true);
+        entity3.setComments(null);
         entity3.setAttendees(new ArrayList<>());
         entity3.setId(3L);
 
@@ -98,6 +132,8 @@ public class EventMapperTest {
             Assert.assertEquals(entities.get(i).getAttendeeLimit().longValue(), result.get(i).getAttendeeLimit().longValue());
             Assert.assertEquals(entities.get(i).getLocation(), result.get(i).getLocation());
             Assert.assertEquals(entities.get(i).getDate(), result.get(i).getDate());
+            Assert.assertNotNull(result.get(i).getComments());
+            Assert.assertNotNull(result.get(i).getAttendees());
         }
     }
 }

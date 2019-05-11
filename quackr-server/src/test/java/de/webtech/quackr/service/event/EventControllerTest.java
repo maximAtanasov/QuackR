@@ -169,9 +169,10 @@ public class EventControllerTest extends ControllerTestTemplate {
      * Tests that a POST request to /events/{eventId}/add returns the proper JSON.
      * @throws EventNotFoundException Not thrown in this test.
      * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test
-    public void testAddAttendeeToEvent() throws EventNotFoundException, UserNotFoundException {
+    public void testAddAttendeeToEvent() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         testGetResource.getAttendees().add(new GetUserResource(2L, "testUser", 30L));
 
 
@@ -199,9 +200,10 @@ public class EventControllerTest extends ControllerTestTemplate {
      * Tests that a POST request to /events/{eventId}/remove returns the proper JSON.
      * @throws EventNotFoundException Not thrown in this test.
      * @throws UserNotFoundException Not thrown in this test.
+     * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test
-    public void testRemoveAttendeeFromEvent() throws EventNotFoundException, UserNotFoundException {
+    public void testRemoveAttendeeFromEvent() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         Mockito.when(eventService.removeEventAttendees(anyLong(), any()))
                 .thenReturn(testGetResource);
 
