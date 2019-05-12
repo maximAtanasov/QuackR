@@ -56,8 +56,6 @@ public class EventServiceTest {
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
 
-        Mockito.when(userRepository.save(any())).thenReturn(new UserEntity("testUser", "testPassword", 10L));
-
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
         entity.setDescription("BBQ at Stan");
@@ -202,7 +200,7 @@ public class EventServiceTest {
     @Test
     public void testDeleteEvent() throws EventNotFoundException {
         eventService.deleteEvent(2L);
-        Mockito.verify(eventRepository, Mockito.times(1)).deleteById(2L);
+        Mockito.verify(eventRepository, Mockito.times(1)).delete(any());
     }
 
     /**
@@ -213,7 +211,7 @@ public class EventServiceTest {
     @Test(expected = EventNotFoundException.class)
     public void testDeleteEventThrowsExceptionIfEventNotFound() throws EventNotFoundException {
         eventService.deleteEvent(7L);
-        Mockito.verify(eventRepository, Mockito.times(0)).deleteById(7L);
+        Mockito.verify(eventRepository, Mockito.times(0)).delete(any());
     }
 
     /**

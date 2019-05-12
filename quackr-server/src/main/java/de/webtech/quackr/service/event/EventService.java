@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -66,7 +65,6 @@ public class EventService {
             newEvent.setPublic(resource.isPublic());
             newEvent.setOrganizer(user.get());
             eventRepository.save(newEvent);
-            userRepository.save(user.get());
             return eventMapper.map(newEvent);
         } else {
             throw new UserNotFoundException(userId);
@@ -79,8 +77,9 @@ public class EventService {
      * @throws EventNotFoundException Thrown if the event is not found.
      */
     public void deleteEvent(long eventId) throws EventNotFoundException {
-        if(eventRepository.existsById(eventId)){
-            eventRepository.deleteById(eventId);
+        Optional<EventEntity> event = eventRepository.findById(eventId);
+        if(event.isPresent()){
+            eventRepository.delete(event.get());
         }else{
             throw new EventNotFoundException(eventId);
         }
@@ -100,7 +99,11 @@ public class EventService {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
             Collection<UserEntity> userEntities = getEntitiesForResources(users);
-            event.get().getAttendees().addAll(userEntities);
+            userEntities.forEach(u -> {
+                if(!event.get().getAttendees().contains(u)){
+                    event.get().getAttendees().add(u);
+                }
+            });
             eventRepository.save(event.get());
             return eventMapper.map(event.get());
         }else{

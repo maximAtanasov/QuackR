@@ -53,8 +53,6 @@ public class UserServiceTest {
         testEntity.setId(4L);
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(testEntity);
-
-        Mockito.when(userRepository.save(any())).thenReturn(new UserEntity("testUser", "testPassword", 10L));
     }
 
     /**
@@ -163,7 +161,7 @@ public class UserServiceTest {
     @Test
     public void testDeleteUser() throws UserNotFoundException {
         userService.deleteUser(1L);
-        Mockito.verify(userRepository, Mockito.times(1)).deleteById(1L);
+        Mockito.verify(userRepository, Mockito.times(1)).delete(any());
     }
 
     /**

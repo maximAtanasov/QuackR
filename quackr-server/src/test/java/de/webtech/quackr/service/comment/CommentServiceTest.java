@@ -57,8 +57,6 @@ public class CommentServiceTest {
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
 
-        Mockito.when(userRepository.save(any())).thenReturn(new UserEntity("testUser", "testPassword", 10L));
-
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
         entity.setDescription("BBQ at Stan");
@@ -107,7 +105,7 @@ public class CommentServiceTest {
      * @throws CommentNotFoundException Doesn't throw in this test.
      */
     @Test
-    public void testGetEventById() throws CommentNotFoundException {
+    public void testGetCommentById() throws CommentNotFoundException {
         GetCommentResource result = commentService.getComment(1L);
         Assert.assertEquals("text", result.getText());
     }
@@ -117,7 +115,7 @@ public class CommentServiceTest {
      * @throws CommentNotFoundException Checked in this test.
      */
     @Test(expected = CommentNotFoundException.class)
-    public void testGetEventByIdThrowsExceptionIfEventNotFound() throws CommentNotFoundException {
+    public void testGetCommentByIdThrowsExceptionIfCommentNotFound() throws CommentNotFoundException {
         commentService.getComment(7L);
     }
 
@@ -235,7 +233,7 @@ public class CommentServiceTest {
     @Test
     public void testDeleteComment() throws CommentNotFoundException {
         commentService.deleteComment(1L);
-        Mockito.verify(commentRepository, Mockito.times(1)).deleteById(1L);
+        Mockito.verify(commentRepository, Mockito.times(1)).delete(any());
     }
 
     /**
@@ -246,6 +244,6 @@ public class CommentServiceTest {
     @Test(expected = CommentNotFoundException.class)
     public void testDeleteCommentThrowsExceptionIfCommentNotFound() throws CommentNotFoundException {
         commentService.deleteComment(7L);
-        Mockito.verify(commentRepository, Mockito.times(0)).deleteById(7L);
+        Mockito.verify(commentRepository, Mockito.times(0)).delete(any());
     }
 }

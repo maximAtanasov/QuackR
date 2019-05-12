@@ -30,8 +30,7 @@ public class UserService {
      * @return All users saved in the database.
      */
     public Collection<GetUserResource> getUsers() {
-        List<UserEntity> result = new ArrayList<>();
-        userRepository.findAll().forEach(result::add);
+        List<UserEntity> result = new ArrayList<>(userRepository.findAll());
         return userMapper.map(result);
     }
 
@@ -72,8 +71,9 @@ public class UserService {
      * @throws UserNotFoundException Thrown if a user with the given id is not found.
      */
     public void deleteUser(long userId) throws UserNotFoundException {
-        if(userRepository.existsById(userId)){
-            userRepository.deleteById(userId);
+        Optional<UserEntity> entity = userRepository.findById(userId);
+        if(entity.isPresent()){
+            userRepository.delete(entity.get());
         }else{
             throw new UserNotFoundException(userId);
         }
