@@ -1,34 +1,42 @@
 package de.webtech.quackr.persistence.user;
 
-import de.webtech.quackr.persistence.IRepository;
+import de.webtech.quackr.persistence.CrudRepository;
 import de.webtech.quackr.persistence.event.EventEntity;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * Simple CRUD repository for handling users.
  */
 @Repository
 @Transactional
-public class UserRepository implements IRepository<UserEntity, Long> {
+public class UserRepository extends CrudRepository<UserEntity, Long> {
 
-    @PersistenceContext
-    protected EntityManager entityManager;
+    public UserRepository() {
+        super(UserEntity.class);
+    }
 
+    /**
+     * Tells whether a user exists given a username.
+     * @param username The username to check for.
+     * @return True if the user exists, false otherwise.
+     */
     public boolean existsByUsername(String username){
         return findByUsername(username) != null;
     }
 
+    /**
+     * Finds a user given their username.
+     * @param username The username to look for.
+     * @return The user with the given username, or null.
+     */
     public UserEntity findByUsername(String username){
         try {
             return entityManager.createQuery(
-                    "SELECT u FROM  UserEntity u WHERE u.username = :username", UserEntity.class)
+                    "SELECT u FROM  de.webtech.quackr.persistence.user.UserEntity u WHERE u.username = :username", UserEntity.class)
                     .setParameter("username", username)
                     .getSingleResult();
         }catch (NoResultException e){
@@ -36,28 +44,24 @@ public class UserRepository implements IRepository<UserEntity, Long> {
         }
     }
 
-    @Override
-    public Optional<UserEntity> findById(Long id) {
-        return Optional.ofNullable(entityManager.find(UserEntity.class, id));
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return findById(id).isPresent();
-    }
-
-    @Override
-    public void save(UserEntity obj) {
-        entityManager.persist(obj);
-    }
-
+    /**
+     * Deletes a UserEntity from the DB while keeping integrity constrains.
+     * @param obj The entity to delete.
+     */
     @Override
     public void delete(UserEntity obj) {
-        Collection<EventEntity> eventEntities = entityManager.createQuery("SELECT e FROM  EventEntity e", EventEntity.class).getResultList();
+        Collection<EventEntity> eventEntities =
+                entityManager.createQuery("SELECT e FROM  de.webtech.quackr.persistence.event.EventEntity e", EventEntity.class)
+                .getResultList();
         for(EventEntity e : eventEntities){
             if(e.getOrganizer().equals(obj)){
                 entityManager.remove(e);
             } else {
+                e.getComments().forEach(c -> {
+                    if(c.getPosterId().equals(obj.getId())){
+                        entityManager.remove(c);
+                    }
+                });
                 e.getComments().removeIf(c -> c.getPosterId().equals(obj.getId()));
                 e.getAttendees().removeIf(attendee -> attendee.equals(obj));
                 entityManager.persist(e);
@@ -65,12 +69,5 @@ public class UserRepository implements IRepository<UserEntity, Long> {
         }
         entityManager.persist(obj);
         entityManager.remove(obj);
-    }
-
-    @Override
-    public Collection<UserEntity> findAll() {
-        return entityManager.createQuery(
-                "SELECT u FROM  UserEntity u", UserEntity.class)
-                .getResultList();
     }
 }

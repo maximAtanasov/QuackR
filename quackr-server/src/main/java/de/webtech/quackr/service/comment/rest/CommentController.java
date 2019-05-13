@@ -45,7 +45,7 @@ public class CommentController {
 
     /**
      * Handles a GET request to /comments/event/{eventId}
-     * @return The created comment as JSON/XML (200 OK), (404 NOT FOUND) If the event
+     * @return The created comment as JSON/XML (200 OK), (404 NOT FOUND) If the event or user
      * with the given id is not found or (400 BAD REQUEST) if the JSON/XML body is missing
      * required fields.
      */

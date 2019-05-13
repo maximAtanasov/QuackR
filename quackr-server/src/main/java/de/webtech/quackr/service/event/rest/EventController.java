@@ -78,7 +78,6 @@ public class EventController {
         }
     }
 
-
     /**
      * Deletes an event from the database if it exists.
      * @param eventId The id of the event to delete.
