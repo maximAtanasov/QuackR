@@ -42,9 +42,10 @@ public class CommentControllerTest extends ControllerTestTemplate {
     /**
      * Tests that a POST request to the /comments/event/{eventId} endpoint returns proper JSON.
      * @throws EventNotFoundException Not thrown in this test
+     * @throws UserNotFoundException Not thrown in this test
      */
     @Test
-    public void testCreateComment() throws EventNotFoundException {
+    public void testCreateComment() throws EventNotFoundException, UserNotFoundException {
         Mockito.when(commentService.createComment(any(), anyLong()))
                 .thenReturn(testGetResource);
 

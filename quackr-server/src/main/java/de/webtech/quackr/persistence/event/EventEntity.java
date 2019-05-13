@@ -44,7 +44,7 @@ public class EventEntity {
     @OneToOne
     private UserEntity organizer;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<UserEntity> attendees;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

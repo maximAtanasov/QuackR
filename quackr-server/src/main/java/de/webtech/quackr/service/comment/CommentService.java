@@ -71,10 +71,14 @@ public class CommentService {
      * @param eventId The id of the event we're commenting.
      * @return A GetCommentResource object.
      * @throws EventNotFoundException Thrown if the event with eventId is not found.
+     * @throws UserNotFoundException Thrown if the user with the if specifed in the resource is not found.
      */
-    public GetCommentResource createComment(CreateCommentResource resource, long eventId) throws EventNotFoundException {
+    public GetCommentResource createComment(CreateCommentResource resource, long eventId) throws EventNotFoundException, UserNotFoundException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
+            if(!userRepository.existsById(resource.getPosterId())){
+                throw new UserNotFoundException(resource.getPosterId());
+            }
             CommentEntity newComment = new CommentEntity();
             newComment.setEventId(eventId);
             newComment.setDatePosted(new Date());

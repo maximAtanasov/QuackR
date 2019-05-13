@@ -168,12 +168,13 @@ public class CommentServiceTest {
     /**
      * Tests the createComment() method of the service.
      * @throws EventNotFoundException Doesn't throw in this test.
+     * @throws UserNotFoundException Not thrown in this test.
      */
     @Test
-    public void testCreateComment() throws EventNotFoundException {
+    public void testCreateComment() throws EventNotFoundException, UserNotFoundException {
         CreateCommentResource resource = new CreateCommentResource();
         resource.setText("BBQ1");
-        resource.setPosterId(1L);
+        resource.setPosterId(3L);
 
         GetCommentResource result = commentService.createComment(resource, 2L);
         Mockito.verify(commentRepository, Mockito.times(1)).save(any());
@@ -187,12 +188,29 @@ public class CommentServiceTest {
      * Tests that the createComment() method of the service
      * throws an exception if the event is not found.
      * @throws EventNotFoundException Checked in this test.
+     * @throws UserNotFoundException Not thrown in this test.
      */
     @Test(expected = EventNotFoundException.class)
-    public void testCreateEventThrowsExceptionIfUserNotFound() throws EventNotFoundException {
+    public void testCreateCommentThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException {
         CreateCommentResource resource = new CreateCommentResource();
 
         commentService.createComment(resource, 7L);
+        Mockito.verify(commentRepository, Mockito.times(0)).save(any());
+    }
+
+
+
+    /**
+     * Tests that the createComment() method of the service
+     * throws an exception if the event is not found.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testCreateCommentThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
+        CreateCommentResource resource = new CreateCommentResource();
+        resource.setPosterId(7L);
+        commentService.createComment(resource, 2L);
         Mockito.verify(commentRepository, Mockito.times(0)).save(any());
     }
 

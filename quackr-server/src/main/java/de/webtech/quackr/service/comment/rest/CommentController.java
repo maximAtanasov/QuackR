@@ -56,7 +56,7 @@ public class CommentController {
     public Response addComment(@Valid CreateCommentResource resource, @PathParam("eventId") long id) {
         try {
             return Response.status(Response.Status.CREATED).entity(commentService.createComment(resource, id)).build();
-        } catch (EventNotFoundException e) {
+        } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
