@@ -1,9 +1,14 @@
 package de.webtech.quackr.service.user.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import de.webtech.quackr.persistence.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -14,7 +19,15 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor // Needed for XML deserialization
 public class CreateUserResource {
-    @NotNull private String username;
-    @NotNull private String password;
-    @NotNull private Long rating;
+    @NotNull(message = "The username may not be null")
+    private String username;
+
+    @NotNull(message = "The password may not be null")
+    private String password;
+
+    @NotNull(message = "The rating may not be null")
+    private Long rating;
+
+    @NotNull(message = "The user role may not be null")
+    private UserRole userRole;
 }

@@ -26,7 +26,7 @@ public class CrudRepositoryTest extends RepositoryTestTemplate {
     }
 
     @Autowired
-    private TestRepository testRepository;
+    private CrudTestRepository crudTestRepository;
 
     /**
      * Tests the save method of the crud repository.
@@ -34,7 +34,7 @@ public class CrudRepositoryTest extends RepositoryTestTemplate {
     @Test
     public void testSaveEntity(){
         TestEntity testEntity = new TestEntity();
-        testRepository.save(testEntity);
+        crudTestRepository.save(testEntity);
         Assert.assertNotNull(entityManager.find(TestEntity.class, testEntity.getId()));
     }
 
@@ -45,7 +45,7 @@ public class CrudRepositoryTest extends RepositoryTestTemplate {
     public void testFindEntityById(){
         TestEntity testEntity = new TestEntity();
         entityManager.persist(testEntity);
-        Assert.assertEquals(testEntity, testRepository.findById(testEntity.getId()).get());
+        Assert.assertEquals(testEntity, crudTestRepository.findById(testEntity.getId()).get());
     }
 
     /**
@@ -57,7 +57,7 @@ public class CrudRepositoryTest extends RepositoryTestTemplate {
         entityManager.persist(new TestEntity());
         entityManager.persist(new TestEntity());
 
-        Assert.assertEquals(testRepository.findAll().size(), 3);
+        Assert.assertEquals(crudTestRepository.findAll().size(), 3);
     }
 
 
@@ -68,7 +68,7 @@ public class CrudRepositoryTest extends RepositoryTestTemplate {
     public void testDeleteEntity(){
         TestEntity testEntity = new TestEntity();
         entityManager.persist(testEntity);
-        testRepository.delete(testEntity);
+        crudTestRepository.delete(testEntity);
         Assert.assertNull(entityManager.find(TestEntity.class, testEntity.getId()));
     }
 }

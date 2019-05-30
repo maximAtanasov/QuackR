@@ -3,6 +3,7 @@ package de.webtech.quackr.persistence.event;
 import de.webtech.quackr.persistence.RepositoryTestTemplate;
 import de.webtech.quackr.persistence.comment.CommentEntity;
 import de.webtech.quackr.persistence.user.UserEntity;
+import de.webtech.quackr.persistence.user.UserRole;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,10 @@ public class EventRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testFindEventsByOrganizerId(){
-        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity1);
 
-        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
@@ -54,10 +55,10 @@ public class EventRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testDeleteEvent(){
-        UserEntity userEntity = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity);
 
-        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();

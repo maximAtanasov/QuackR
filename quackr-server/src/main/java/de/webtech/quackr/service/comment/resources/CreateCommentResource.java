@@ -14,7 +14,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor // Needed for XML deserialization
 @AllArgsConstructor
 public class CreateCommentResource {
-    @NotNull private String text;
 
-    @NotNull private Long posterId;
+    @NotNull(message = "The text must not be null")
+    private String text;
+
+    @NotNull(message = "The posterId must not be null")
+    private Long posterId;
 }

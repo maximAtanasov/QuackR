@@ -1,5 +1,6 @@
 package de.webtech.quackr.service.user;
 
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ControllerTestTemplate;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
@@ -32,8 +33,8 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Before
     public void setUp() {
-        testGetResource = new GetUserResource(1L, "testUser", 50L);
-        testCreateResource = new CreateUserResource("testUser", "testPassword", 50L);
+        testGetResource = new GetUserResource(1L, "testUser", 50L, UserRole.USER);
+        testCreateResource = new CreateUserResource("testUser", "testPassword", 50L, UserRole.USER);
     }
 
     /**

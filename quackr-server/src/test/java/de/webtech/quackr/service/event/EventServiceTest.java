@@ -4,6 +4,7 @@ import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
@@ -35,17 +36,17 @@ public class EventServiceTest {
     public void setUp() {
         eventService = new EventService(eventRepository, userRepository);
         Mockito.when(userRepository.findById(1L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
+                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L, UserRole.USER)));
 
         Mockito.when(userRepository.findById(8L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
+                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L, UserRole.USER)));
 
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
 
         Mockito.when(userRepository.findAll())
-                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L),
-                        new UserEntity("testUser2", "testPassword2", 50L)));
+                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L, UserRole.USER),
+                        new UserEntity("testUser2", "testPassword2", 50L, UserRole.USER)));
 
         Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
@@ -54,7 +55,7 @@ public class EventServiceTest {
                 .thenReturn(false);
 
         Mockito.when(userRepository.findByUsername(any()))
-                .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
+                .thenReturn(new UserEntity("testUser", "testPassword3", 10L, UserRole.USER));
 
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
@@ -223,7 +224,7 @@ public class EventServiceTest {
     @Test
     public void testAddAttendees() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         GetEventResource result = eventService.addEventAttendees(2L,
-                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L, UserRole.USER)));
         Assert.assertEquals(1L, result.getAttendees().size());
         Assert.assertEquals("testUser", result.getAttendees().iterator().next().getUsername());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
@@ -239,7 +240,7 @@ public class EventServiceTest {
     @Test(expected = EventNotFoundException.class)
     public void testAddAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.addEventAttendees(7L,
-                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
@@ -253,7 +254,7 @@ public class EventServiceTest {
     @Test(expected = UserNotFoundException.class)
     public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.addEventAttendees(2L,
-                Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
+                Collections.singletonList(new GetUserResource(7L, "testUser", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
@@ -267,7 +268,7 @@ public class EventServiceTest {
     @Test(expected = UsernameAndIdMatchException.class)
     public void testAddAttendeesThrowsExceptionIfUsernameAndIdDoNotMatch() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.addEventAttendees(2L,
-                Collections.singletonList(new GetUserResource(8L, "testUser3", 3L)));
+                Collections.singletonList(new GetUserResource(8L, "testUser3", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
@@ -280,7 +281,7 @@ public class EventServiceTest {
     @Test
     public void testRemoveAttendees() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         GetEventResource result = eventService.removeEventAttendees(2L,
-                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L, UserRole.USER)));
         Assert.assertTrue(result.getAttendees().isEmpty());
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
     }
@@ -295,7 +296,7 @@ public class EventServiceTest {
     @Test(expected = EventNotFoundException.class)
     public void testRemoveAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.removeEventAttendees(7L,
-                Collections.singletonList(new GetUserResource(1L, "testUser", 3L)));
+                Collections.singletonList(new GetUserResource(1L, "testUser", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
@@ -309,7 +310,7 @@ public class EventServiceTest {
     @Test(expected = UserNotFoundException.class)
     public void testRemoveAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.removeEventAttendees(2L,
-                Collections.singletonList(new GetUserResource(7L, "testUser", 3L)));
+                Collections.singletonList(new GetUserResource(7L, "testUser", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 
@@ -323,7 +324,7 @@ public class EventServiceTest {
     @Test(expected = UsernameAndIdMatchException.class)
     public void testRemoveAttendeesThrowsExceptionIfUsernameAndIdDoNotMatch() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
         eventService.removeEventAttendees(2L,
-                Collections.singletonList(new GetUserResource(8L, "testUser3", 3L)));
+                Collections.singletonList(new GetUserResource(8L, "testUser3", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
     }
 }

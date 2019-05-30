@@ -2,9 +2,16 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
+import de.webtech.quackr.service.user.resources.LoginUserResource;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +22,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -57,7 +65,7 @@ public class UserService {
      */
     public GetUserResource createUser(CreateUserResource resource) throws UserWithUsernameAlreadyExistsException {
         if(!userRepository.existsByUsername(resource.getUsername())){
-            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
+            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating(), UserRole.USER);
             userRepository.save(userEntity);
             return userMapper.map(userEntity);
         }else{
@@ -88,18 +96,28 @@ public class UserService {
      * already exists in the database.
      * @return A GetUserResource object.
      */
+    //TODO: NO ADMINS EXCEPTION
     public GetUserResource editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
-        if(userRepository.existsById(userId)){
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        if(userEntity.isPresent()){
             if(userRepository.existsByUsername(resource.getUsername()) &&
                     userRepository.findByUsername(resource.getUsername()).getId() != userId){
                 throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
             }
-            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
-            userEntity.setId(userId);
-            userRepository.save(userEntity);
-            return userMapper.map(userEntity);
+            userEntity.get().setUsername(resource.getUsername());
+            userEntity.get().setPassword(resource.getPassword());
+            userEntity.get().setRating(resource.getRating());
+            userEntity.get().setUserRole(resource.getUserRole());
+            userRepository.save(userEntity.get());
+            return userMapper.map(userEntity.get());
         } else {
             throw new UserNotFoundException(userId);
         }
+    }
+
+    public void loginUser(LoginUserResource resource) {
+        UsernamePasswordToken token = new UsernamePasswordToken(resource.getUsername(), resource.getPassword());
+        Subject currentUser = SecurityUtils.getSubject();
+        currentUser.login(token);
     }
 }

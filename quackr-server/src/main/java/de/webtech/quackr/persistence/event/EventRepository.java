@@ -1,10 +1,11 @@
 package de.webtech.quackr.persistence.event;
 
 import de.webtech.quackr.persistence.CrudRepository;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +13,7 @@ import java.util.Collection;
  * Simple CRUD repository to handle event entities.
  */
 @Repository
-@Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class EventRepository extends CrudRepository<EventEntity, Long> {
 
     public EventRepository() {

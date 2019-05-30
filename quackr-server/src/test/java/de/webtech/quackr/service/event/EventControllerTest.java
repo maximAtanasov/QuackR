@@ -1,5 +1,6 @@
 package de.webtech.quackr.service.event;
 
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ControllerTestTemplate;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.event.resources.GetEventResource;
@@ -173,13 +174,13 @@ public class EventControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testAddAttendeeToEvent() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
-        testGetResource.getAttendees().add(new GetUserResource(2L, "testUser", 30L));
+        testGetResource.getAttendees().add(new GetUserResource(2L, "testUser", 30L, UserRole.USER));
 
 
         Mockito.when(eventService.addEventAttendees(anyLong(), any()))
                 .thenReturn(testGetResource);
 
-        GetUserResource[] requestBody = {new GetUserResource(2L, "testUser", 30L)};
+        GetUserResource[] requestBody = {new GetUserResource(2L, "testUser", 30L, UserRole.USER)};
 
         // Test JSON
         HttpEntity<GetUserResource[]> entity1 = new HttpEntity<>(requestBody, headersJSON);
@@ -207,7 +208,7 @@ public class EventControllerTest extends ControllerTestTemplate {
         Mockito.when(eventService.removeEventAttendees(anyLong(), any()))
                 .thenReturn(testGetResource);
 
-        GetUserResource[] requestBody = {new GetUserResource(2L, "testUser", 30L)};
+        GetUserResource[] requestBody = {new GetUserResource(2L, "testUser", 30L, UserRole.USER)};
 
         // Test JSON
         HttpEntity<GetUserResource[]> entity1 = new HttpEntity<>(requestBody, headersJSON);

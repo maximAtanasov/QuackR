@@ -3,6 +3,7 @@ package de.webtech.quackr.persistence.comment;
 import de.webtech.quackr.persistence.RepositoryTestTemplate;
 import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.user.UserEntity;
+import de.webtech.quackr.persistence.user.UserRole;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ public class CommentRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testFindCommentsByUserId(){
-        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity1);
 
-        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
@@ -59,10 +60,10 @@ public class CommentRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testFindCommentsByEventId(){
-        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity1);
 
-        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
@@ -98,7 +99,7 @@ public class CommentRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testDeleteComment(){
-        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity1 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity1);
 
         EventEntity eventEntity1 = new EventEntity();

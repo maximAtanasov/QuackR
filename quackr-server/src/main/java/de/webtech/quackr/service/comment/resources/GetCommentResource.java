@@ -17,13 +17,13 @@ import java.util.Date;
 @AllArgsConstructor
 @JsonRootName(value = "comment")
 public class GetCommentResource {
-    @NotNull private Long id;
+    private Long id;
 
-    @NotNull private String text;
+    private String text;
 
-    @NotNull private Date datePosted;
+    private Date datePosted;
 
-    @NotNull private Long posterId;
+    private Long posterId;
 
-    @NotNull private Long eventId;
+    private Long eventId;
 }

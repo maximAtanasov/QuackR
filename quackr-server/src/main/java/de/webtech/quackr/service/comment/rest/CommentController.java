@@ -1,5 +1,7 @@
 package de.webtech.quackr.service.comment.rest;
 
+import de.webtech.quackr.service.ErrorResponse;
+import de.webtech.quackr.service.comment.CannotChangePosterIdException;
 import de.webtech.quackr.service.comment.CommentNotFoundException;
 import de.webtech.quackr.service.comment.CommentService;
 import de.webtech.quackr.service.comment.resources.CreateCommentResource;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,7 +42,7 @@ public class CommentController {
                 return Response.ok(new CommentCollectionXmlWrapper(commentService.getCommentsForEvent(id))).build();
             }
         } catch (EventNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -53,11 +56,12 @@ public class CommentController {
     @Path("event/{eventId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response addComment(@Valid CreateCommentResource resource, @PathParam("eventId") long id) {
+    public Response addComment(@Valid @NotNull(message = "Request body may not be null")CreateCommentResource resource,
+                               @PathParam("eventId") long id) {
         try {
             return Response.status(Response.Status.CREATED).entity(commentService.createComment(resource, id)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -76,7 +80,7 @@ public class CommentController {
                 return Response.ok(new CommentCollectionXmlWrapper(commentService.getCommentsForUser(id))).build();
             }
         } catch (UserNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -91,7 +95,7 @@ public class CommentController {
         try {
             return Response.ok(commentService.getComment(commentId)).build();
         } catch (CommentNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -110,7 +114,7 @@ public class CommentController {
             commentService.deleteComment(commentId);
             return Response.ok().build();
         } catch (CommentNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -124,12 +128,16 @@ public class CommentController {
     @Path("{commentId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response editComment(@Valid CreateCommentResource resource, @PathParam("commentId") long commentId) {
+    public Response editComment(@Valid @NotNull(message = "Request body may not be null") CreateCommentResource resource,
+                                @PathParam("commentId") long commentId) {
         try {
             return Response.ok(commentService.editComment(resource, commentId)).build();
         } catch (CommentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity(e.getMessage()).build();
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        } catch (CannotChangePosterIdException e) {
+            return Response.status(Response.Status.UNAUTHORIZED.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 }

@@ -10,6 +10,8 @@ import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -130,10 +133,14 @@ public class CommentService {
      * @return A GetCommentResource object.
      * @throws CommentNotFoundException Thrown if the event is not found.
      */
-    public GetCommentResource editComment(CreateCommentResource resource, long commentId) throws CommentNotFoundException {
+    public GetCommentResource editComment(CreateCommentResource resource, long commentId) throws CommentNotFoundException,
+            CannotChangePosterIdException {
         Optional<CommentEntity> commentEntity = commentRepository.findById(commentId);
         if(commentEntity.isPresent()){
             commentEntity.get().setText(resource.getText());
+            if(!resource.getPosterId().equals(commentEntity.get().getPosterId())){
+                throw new CannotChangePosterIdException();
+            }
             commentRepository.save(commentEntity.get());
             return commentMapper.map(commentEntity.get());
         }else{

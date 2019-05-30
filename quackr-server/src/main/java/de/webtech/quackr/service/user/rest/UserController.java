@@ -1,13 +1,18 @@
 package de.webtech.quackr.service.user.rest;
 
+import de.webtech.quackr.service.ErrorResponse;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,24 +54,25 @@ public class UserController {
         try {
             return Response.ok(userService.getUserById(id)).build();
         } catch (UserNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
     /**
      * Creates a new user given a CreateUserResource.
      * @param resource The resource containing the needed data.
-     * @return The new user as JSON/XML (201 CREATED) or an error message if a user with the same username already exists (400 BAD REQUEST).
+     * @return The new user as JSON/XML (201 CREATED), an error message if a user with the same username already exists (409 CONFLICT) or
+     * 400 BAD REQUEST if the request is missing fields or is malformed.
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createUser(@Valid CreateUserResource resource) {
+    public Response createUser(@Valid @NotNull(message = "Request body may not be null") CreateUserResource resource) {
         try {
             return Response.status(Response.Status.CREATED).entity(userService.createUser(resource)).build();
         } catch (UserWithUsernameAlreadyExistsException e){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
-                    .entity(e.getMessage()).build();
+            return Response.status(Response.Status.CONFLICT.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -81,15 +87,15 @@ public class UserController {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response editUser(@Valid CreateUserResource resource, @PathParam("id") long id) {
+    public Response editUser(@Valid @NotNull(message = "Request body may not be null") CreateUserResource resource, @PathParam("id") long id) {
         try {
             return Response.ok(userService.editUser(resource, id)).build();
         } catch (UserWithUsernameAlreadyExistsException e){
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
-                    .entity(e.getMessage()).build();
+            return Response.status(Response.Status.CONFLICT.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity(e.getMessage()).build();
+                    .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 
@@ -108,7 +114,7 @@ public class UserController {
             return Response.ok().build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity(e.getMessage()).build();
+                    .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
 }

@@ -2,17 +2,18 @@ package de.webtech.quackr.persistence.user;
 
 import de.webtech.quackr.persistence.CrudRepository;
 import de.webtech.quackr.persistence.event.EventEntity;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import java.util.Collection;
 
 /**
  * Simple CRUD repository for handling users.
  */
 @Repository
-@Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserRepository extends CrudRepository<UserEntity, Long> {
 
     public UserRepository() {

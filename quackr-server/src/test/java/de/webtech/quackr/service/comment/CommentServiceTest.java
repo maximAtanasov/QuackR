@@ -6,6 +6,7 @@ import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.comment.resources.CreateCommentResource;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
@@ -39,14 +40,14 @@ public class CommentServiceTest {
     public void setUp() {
         commentService = new CommentService(commentRepository, eventRepository, userRepository);
         Mockito.when(userRepository.findById(3L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
+                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L, UserRole.USER)));
 
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
 
         Mockito.when(userRepository.findAll())
-                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L),
-                        new UserEntity("testUser2", "testPassword2", 50L)));
+                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L, UserRole.USER),
+                        new UserEntity("testUser2", "testPassword2", 50L, UserRole.USER)));
 
         Mockito.when(userRepository.existsById(3L))
                 .thenReturn(true);
@@ -55,7 +56,7 @@ public class CommentServiceTest {
                 .thenReturn(false);
 
         Mockito.when(userRepository.findByUsername(any()))
-                .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
+                .thenReturn(new UserEntity("testUser", "testPassword3", 10L, UserRole.USER));
 
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");

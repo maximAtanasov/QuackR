@@ -1,5 +1,7 @@
 package de.webtech.quackr.persistence;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Collection;
@@ -11,6 +13,7 @@ import java.util.Optional;
  * @param <T> Entity type
  * @param <E> Primary key
  */
+@Transactional
 public abstract class CrudRepository<T, E> {
 
     @PersistenceContext

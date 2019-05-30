@@ -20,7 +20,7 @@ public class UserRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testFindUserByUsername(){
-        entityManager.persist(new UserEntity("testUser", "testPassword", 50L));
+        entityManager.persist(new UserEntity("testUser", "testPassword", 50L, UserRole.USER));
         Assert.assertEquals(userRepository.findByUsername("testUser").getUsername(), "testUser");
     }
 
@@ -29,7 +29,7 @@ public class UserRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testExistsByUsername(){
-        entityManager.persist(new UserEntity("testUser4", "testPassword", 50L));
+        entityManager.persist(new UserEntity("testUser4", "testPassword", 50L, UserRole.USER));
         Assert.assertTrue(userRepository.existsByUsername("testUser4"));
     }
 
@@ -38,10 +38,10 @@ public class UserRepositoryTest extends RepositoryTestTemplate {
      */
     @Test
     public void testDeleteUser(){
-        UserEntity userEntity = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity);
 
-        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L);
+        UserEntity userEntity2 = new UserEntity("testUser1", "testPassword", 50L, UserRole.USER);
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity = new EventEntity();
