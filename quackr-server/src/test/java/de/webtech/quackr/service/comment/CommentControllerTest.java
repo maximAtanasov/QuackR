@@ -143,9 +143,10 @@ public class CommentControllerTest extends ControllerTestTemplate {
     /**
      * Tests that a POST request to the /comments/{commentId} endpoint returns the proper JSON.
      * @throws CommentNotFoundException Not thrown in this test.
+     * @throws CannotChangePosterIdException Not thrown in this test.
      */
     @Test
-    public void testEditComment() throws CommentNotFoundException {
+    public void testEditComment() throws CommentNotFoundException, CannotChangePosterIdException {
 
         Mockito.when(commentService.editComment(any(), anyLong()))
                 .thenReturn(testGetResource);

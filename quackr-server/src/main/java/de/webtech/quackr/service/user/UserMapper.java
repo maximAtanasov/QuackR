@@ -1,7 +1,6 @@
 package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserEntity;
-import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.AbstractMapper;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 
@@ -16,6 +15,6 @@ public class UserMapper extends AbstractMapper<GetUserResource, UserEntity> {
      * @return A GetUserResource created from the entity
      */
     public GetUserResource map(UserEntity entity){
-        return new GetUserResource(entity.getId(), entity.getUsername(), entity.getRating(), entity.getUserRole());
+        return new GetUserResource(entity.getId(), entity.getUsername(), entity.getRating(), entity.getRole());
     }
 }

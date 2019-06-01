@@ -35,7 +35,7 @@ public class UserMapperTest {
         Assert.assertEquals(1L, result.getId().longValue());
         Assert.assertEquals("testUser", result.getUsername());
         Assert.assertEquals(10L, result.getRating().longValue());
-        Assert.assertEquals(UserRole.ADMIN, result.getUserRole());
+        Assert.assertEquals(UserRole.ADMIN, result.getRole());
     }
 
     /**

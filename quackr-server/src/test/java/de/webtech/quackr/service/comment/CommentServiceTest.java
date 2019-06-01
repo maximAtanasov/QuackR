@@ -218,9 +218,10 @@ public class CommentServiceTest {
     /**
      * Tests the editComment() method of the service.
      * @throws CommentNotFoundException Not thrown in this test.
+     * @throws CannotChangePosterIdException Not thrown in this test.
      */
     @Test
-    public void testEditComment() throws CommentNotFoundException {
+    public void testEditComment() throws CommentNotFoundException, CannotChangePosterIdException {
         CreateCommentResource resource = new CreateCommentResource();
         resource.setText("BBQ1");
         resource.setPosterId(3L);
@@ -237,11 +238,33 @@ public class CommentServiceTest {
      * Tests that the editComment() method of the service throws
      * an exception in the comment is not found.
      * @throws CommentNotFoundException Checked in this test.
+     * @throws CannotChangePosterIdException Not thrown in this test.
      */
     @Test(expected = CommentNotFoundException.class)
-    public void testEditEventThrowsExceptionIfEventNotFound() throws CommentNotFoundException {
+    public void testEditEventThrowsExceptionIfEventNotFound() throws CommentNotFoundException, CannotChangePosterIdException {
         CreateCommentResource resource = new CreateCommentResource();
         commentService.editComment(resource, 7L);
+        Mockito.verify(commentRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
+     * Tests that the editComment() method of the service throws
+     * an exception in the posterId is changed.
+     * @throws CommentNotFoundException Not thrown in this test.
+     * @throws CannotChangePosterIdException Checked in this test.
+     */
+    @Test(expected = CannotChangePosterIdException.class)
+    public void testEditEventThrowsExceptionIfPosterIdChanged() throws CommentNotFoundException, CannotChangePosterIdException {
+        CreateCommentResource resource = new CreateCommentResource();
+        resource.setText("BBQ1");
+        resource.setPosterId(4L);
+
+        GetCommentResource result = commentService.editComment(resource, 1L);
+        Mockito.verify(commentRepository, Mockito.times(1)).save(any());
+        Assert.assertEquals(resource.getText(), result.getText());
+        Assert.assertEquals(resource.getPosterId(), result.getPosterId());
+        Assert.assertEquals(2L, result.getEventId().longValue());
+        Assert.assertNotNull(result.getDatePosted());
         Mockito.verify(commentRepository, Mockito.times(0)).save(any());
     }
 

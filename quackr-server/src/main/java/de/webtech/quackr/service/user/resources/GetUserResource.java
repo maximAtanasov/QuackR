@@ -27,5 +27,5 @@ public class GetUserResource {
     private Long rating;
 
     @NotNull(message = "The user role may not be null")
-    private UserRole userRole;
+    private UserRole role;
 }

@@ -7,6 +7,7 @@ import de.webtech.quackr.service.event.UsernameAndIdMatchException;
 import de.webtech.quackr.service.event.resources.CreateEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.resources.GetUserResource;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +36,7 @@ public class EventController {
     @GET
     @Path("user/{userId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getEvents(@PathParam("userId") long id, @HeaderParam("accept") String accept) {
         try {
             if(accept.equals(MediaType.APPLICATION_JSON)){
@@ -57,6 +59,7 @@ public class EventController {
     @Path("user/{userId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response addEvent(@Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
                              @PathParam("userId") long id) {
         try {
@@ -73,6 +76,7 @@ public class EventController {
     @GET
     @Path("{eventId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getEvent(@PathParam("eventId") long eventId) {
         try {
             return Response.ok(eventService.getEvent(eventId)).build();
@@ -90,6 +94,7 @@ public class EventController {
     @DELETE
     @Path("{eventId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RequiresAuthentication
     public Response deleteEvent(@PathParam("eventId") long eventId) {
         try {
             eventService.deleteEvent(eventId);
@@ -110,6 +115,7 @@ public class EventController {
     @Path("{eventId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response editEvent(@Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
                               @PathParam("eventId") long eventId) {
         try {
@@ -131,6 +137,7 @@ public class EventController {
     @Path("{eventId}/add")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response addAttendees(@Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
                                  @PathParam("eventId") long eventId) {
         try {
@@ -151,6 +158,7 @@ public class EventController {
     @Path("{eventId}/remove")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response removeAttendees(@Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
                                     @PathParam("eventId") long eventId) {
         try {
@@ -160,5 +168,4 @@ public class EventController {
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
-
 }

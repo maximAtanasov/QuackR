@@ -1,14 +1,10 @@
 package de.webtech.quackr.service.user.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import de.webtech.quackr.persistence.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -29,5 +25,5 @@ public class CreateUserResource {
     private Long rating;
 
     @NotNull(message = "The user role may not be null")
-    private UserRole userRole;
+    private UserRole role;
 }

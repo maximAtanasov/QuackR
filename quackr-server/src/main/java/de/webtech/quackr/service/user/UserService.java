@@ -3,12 +3,15 @@ package de.webtech.quackr.service.user;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
+import de.webtech.quackr.service.authentication.TokenUtil;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import de.webtech.quackr.service.user.resources.LoginUserResource;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -65,7 +68,10 @@ public class UserService {
      */
     public GetUserResource createUser(CreateUserResource resource) throws UserWithUsernameAlreadyExistsException {
         if(!userRepository.existsByUsername(resource.getUsername())){
-            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating(), UserRole.USER);
+            UserEntity userEntity = new UserEntity(resource.getUsername(),
+                    BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()),
+                    resource.getRating(), UserRole.USER);
+
             userRepository.save(userEntity);
             return userMapper.map(userEntity);
         }else{
@@ -105,9 +111,9 @@ public class UserService {
                 throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
             }
             userEntity.get().setUsername(resource.getUsername());
-            userEntity.get().setPassword(resource.getPassword());
+            userEntity.get().setPassword(BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()));
             userEntity.get().setRating(resource.getRating());
-            userEntity.get().setUserRole(resource.getUserRole());
+            userEntity.get().setRole(resource.getRole());
             userRepository.save(userEntity.get());
             return userMapper.map(userEntity.get());
         } else {
@@ -115,9 +121,27 @@ public class UserService {
         }
     }
 
-    public void loginUser(LoginUserResource resource) {
-        UsernamePasswordToken token = new UsernamePasswordToken(resource.getUsername(), resource.getPassword());
-        Subject currentUser = SecurityUtils.getSubject();
-        currentUser.login(token);
+
+    /**
+     * Checks the user's credentials and returns a JWT.
+     * @param resource A LoginUserResource containing the required credentials.
+     * @return A JSON Web Token corresponding to the credentials.
+     * @throws UserNotFoundException Thrown if a user with the given username is not found.
+     * @throws AuthenticationException Thrown if the supplied password does not match the stored one.
+     */
+    public String loginUser(LoginUserResource resource) throws UserNotFoundException, AuthenticationException {
+        UserEntity userEntity = userRepository.findByUsername(resource.getUsername());
+        if(userEntity != null){
+            if(BCrypt.checkpw(resource.getPassword(), userEntity.getPassword())){
+                //UsernamePasswordToken token = new UsernamePasswordToken(resource.getUsername(), resource.getPassword());
+                //Subject currentUser = SecurityUtils.getSubject();
+                //currentUser.login(token);
+                return TokenUtil.generate(userEntity.getUsername(), userEntity.getPassword());
+            } else {
+                throw new AuthenticationException("Wrong password.");
+            }
+        } else {
+            throw new UserNotFoundException(resource.getUsername());
+        }
     }
 }

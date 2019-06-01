@@ -4,6 +4,7 @@ import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ControllerTestTemplate;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
+import org.apache.shiro.realm.Realm;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -19,11 +20,15 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 public class UserControllerTest extends ControllerTestTemplate {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private Realm realm;
 
     private CreateUserResource testCreateResource;
     private GetUserResource testGetResource;
@@ -43,7 +48,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testCreateUser() throws UserWithUsernameAlreadyExistsException {
-        Mockito.when(userService.createUser(any()))
+        when(userService.createUser(any()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -67,7 +72,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetUserById() throws UserNotFoundException {
-        Mockito.when(userService.getUserById(anyLong()))
+        when(userService.getUserById(anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -92,7 +97,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testUpdateUser() throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
-        Mockito.when(userService.editUser(any(), anyLong()))
+        when(userService.editUser(any(), anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -115,7 +120,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetAllUsers() {
-        Mockito.when(userService.getUsers())
+        when(userService.getUsers())
                 .thenReturn(Collections.singletonList(testGetResource));
 
         GetUserResource[] expected = {testGetResource};

@@ -4,10 +4,11 @@ import de.webtech.quackr.service.ErrorResponse;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
+import de.webtech.quackr.service.user.resources.AccessTokenResource;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
+import de.webtech.quackr.service.user.resources.LoginUserResource;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,7 @@ public class UserController {
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getUsers(@HeaderParam("accept") String accept) {
         if(accept.equals(MediaType.APPLICATION_JSON)){
             return Response.ok(userService.getUsers()).build();
@@ -50,6 +52,7 @@ public class UserController {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getUser(@PathParam("id") long id) {
         try {
             return Response.ok(userService.getUserById(id)).build();
@@ -87,6 +90,7 @@ public class UserController {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response editUser(@Valid @NotNull(message = "Request body may not be null") CreateUserResource resource, @PathParam("id") long id) {
         try {
             return Response.ok(userService.editUser(resource, id)).build();
@@ -108,12 +112,29 @@ public class UserController {
     @DELETE
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response deleteUser(@PathParam("id") long id) {
         try {
             userService.deleteUser(id);
             return Response.ok().build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        }
+    }
+
+
+    @POST
+    @Path("login")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response loginUser(@Valid @NotNull(message = "Request body may not be null") LoginUserResource resource) {
+        try {
+            return Response.ok(new AccessTokenResource(userService.loginUser(resource))).build();
+        } catch (UserNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        } catch (AuthenticationException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }

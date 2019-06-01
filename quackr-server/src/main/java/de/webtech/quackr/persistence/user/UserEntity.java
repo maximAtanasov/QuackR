@@ -30,12 +30,12 @@ public class UserEntity {
     private Long rating;
 
     @Column(nullable = false)
-    private UserRole userRole;
+    private UserRole role;
 
-    public UserEntity(String username, String password, Long rating, UserRole userRole){
+    public UserEntity(String username, String password, Long rating, UserRole role){
         this.username = username;
         this.password = password;
         this.rating = rating;
-        this.userRole = userRole;
+        this.role = role;
     }
 }

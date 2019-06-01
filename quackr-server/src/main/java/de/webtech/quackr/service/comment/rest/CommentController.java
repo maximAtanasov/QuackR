@@ -7,6 +7,7 @@ import de.webtech.quackr.service.comment.CommentService;
 import de.webtech.quackr.service.comment.resources.CreateCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.user.UserNotFoundException;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,7 @@ public class CommentController {
     @GET
     @Path("event/{eventId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getCommentsForEvent(@PathParam("eventId") long id, @HeaderParam(value = "accept") String accept) {
         try {
             if(accept.equals(MediaType.APPLICATION_JSON)){
@@ -56,6 +58,7 @@ public class CommentController {
     @Path("event/{eventId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response addComment(@Valid @NotNull(message = "Request body may not be null")CreateCommentResource resource,
                                @PathParam("eventId") long id) {
         try {
@@ -72,6 +75,7 @@ public class CommentController {
     @GET
     @Path("user/{userId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getCommentsForUser(@PathParam("userId") long id, @HeaderParam(value = "accept") String accept) {
         try {
             if(accept.equals(MediaType.APPLICATION_JSON)){
@@ -91,6 +95,7 @@ public class CommentController {
     @GET
     @Path("{commentId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response getComment(@PathParam("commentId") long commentId) {
         try {
             return Response.ok(commentService.getComment(commentId)).build();
@@ -109,6 +114,7 @@ public class CommentController {
     @DELETE
     @Path("{commentId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response deleteComment(@PathParam("commentId") long commentId) {
         try {
             commentService.deleteComment(commentId);
@@ -128,6 +134,7 @@ public class CommentController {
     @Path("{commentId}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @RequiresAuthentication
     public Response editComment(@Valid @NotNull(message = "Request body may not be null") CreateCommentResource resource,
                                 @PathParam("commentId") long commentId) {
         try {

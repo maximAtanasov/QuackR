@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUserResource {
+
     @NotNull(message = "The username may not be null")
     private String username;
 
