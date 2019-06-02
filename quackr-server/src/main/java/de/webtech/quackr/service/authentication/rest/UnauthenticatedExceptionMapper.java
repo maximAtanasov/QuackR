@@ -7,8 +7,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * Catches the UnauthenticatedException thrown by Shiro and returns a 401 JSON response.
+ */
 @Provider
-public class AuthMapper implements ExceptionMapper<UnauthenticatedException> {
+public class UnauthenticatedExceptionMapper implements ExceptionMapper<UnauthenticatedException> {
 
     @Override
     public Response toResponse(UnauthenticatedException e) {

@@ -93,7 +93,7 @@ public class EventController {
      */
     @DELETE
     @Path("{eventId}")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
     public Response deleteEvent(@PathParam("eventId") long eventId) {
         try {

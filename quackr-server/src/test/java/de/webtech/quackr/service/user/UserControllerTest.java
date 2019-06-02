@@ -146,7 +146,9 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testDeleteUser() throws UserNotFoundException {
-        this.restTemplate.delete("/users/1");
+        HttpEntity entity = new HttpEntity<>(headersXML);
+        ResponseEntity result2 = this.restTemplate.exchange("/users/1", HttpMethod.DELETE, entity, String.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(userService, Mockito.times(1)).deleteUser(1L);
     }
 }

@@ -49,10 +49,10 @@ public class ShiroRealm extends AuthorizingRealm {
     }
 
     /**
-     * Check if username and password is corrent otherwise throw error
+     * Checks if the token is valid and throws an exception if it is not.
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
+    public AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getCredentials();
         String username = TokenUtil.getUsername(token);
         if (username == null) {

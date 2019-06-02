@@ -162,7 +162,9 @@ public class EventControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testDeleteEvent() throws EventNotFoundException {
-        this.restTemplate.delete("/events/1");
+        HttpEntity entity = new HttpEntity<>(headersXML);
+        ResponseEntity result2 = this.restTemplate.exchange("/events/1", HttpMethod.DELETE, entity, String.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(eventService, Mockito.times(1)).deleteEvent(1L);
     }
 

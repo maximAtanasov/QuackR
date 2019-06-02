@@ -3,13 +3,13 @@ package de.webtech.quackr.service.user;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
+import de.webtech.quackr.service.authentication.JWTToken;
 import de.webtech.quackr.service.authentication.TokenUtil;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import de.webtech.quackr.service.user.resources.LoginUserResource;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,12 +133,12 @@ public class UserService {
         UserEntity userEntity = userRepository.findByUsername(resource.getUsername());
         if(userEntity != null){
             if(BCrypt.checkpw(resource.getPassword(), userEntity.getPassword())){
-                //UsernamePasswordToken token = new UsernamePasswordToken(resource.getUsername(), resource.getPassword());
-                //Subject currentUser = SecurityUtils.getSubject();
-                //currentUser.login(token);
-                return TokenUtil.generate(userEntity.getUsername(), userEntity.getPassword());
+                JWTToken token = new JWTToken(TokenUtil.generate(userEntity.getUsername(), userEntity.getPassword()));
+                Subject currentUser = SecurityUtils.getSubject();
+                currentUser.login(token);
+                return token.getCredentials().toString();
             } else {
-                throw new AuthenticationException("Wrong password.");
+                throw new AuthenticationException("Wrong password");
             }
         } else {
             throw new UserNotFoundException(resource.getUsername());

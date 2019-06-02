@@ -124,6 +124,12 @@ public class UserController {
     }
 
 
+    /**
+     * Logs a user in and returns a response containing the access token.
+     * @param resource A LoginUserResource Object.
+     * @return The access token (200 OK), 404 NOT FOUND if the user with the given username is not found
+     * and 401 UNAUTHORIZED if is the password is wrong.
+     */
     @POST
     @Path("login")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

@@ -2,6 +2,9 @@ package de.webtech.quackr.service.authentication;
 
 import org.apache.shiro.authc.AuthenticationToken;
 
+/**
+ * A class representing a JSON Web Token
+ */
 public class JWTToken implements AuthenticationToken {
 
     private String token;
