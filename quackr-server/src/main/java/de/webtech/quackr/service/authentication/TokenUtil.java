@@ -12,13 +12,13 @@ import java.util.Date;
 
 public class TokenUtil {
 
-    private static final long TOKEN_EXPIRATION_DURATION = 15*60*1000;
+    private static final long TOKEN_EXPIRATION_DURATION = 60*24*7*60*1000;
 
     /**
-     * Checke TOKEN is OK or NOT
-     * @param token
-     * @param secret User password
-     * @return
+     * Check if the token is valid
+     * @param token The token to check
+     * @param secret The password to check against.
+     * @return True if the token is valid, false otherwise.
      */
     public static boolean verify(String token, String username, String secret) {
         try {

@@ -2,7 +2,7 @@ package de.webtech.quackr.service.user.resources;
 
 import de.webtech.quackr.persistence.user.UserRole;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * Resource class used for creating/editing users.
  * Maps directly to JSON/XML.
  */
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor // Needed for XML deserialization
 public class CreateUserResource {

@@ -1,6 +1,7 @@
 package de.webtech.quackr.service.comment.rest;
 
 import de.webtech.quackr.service.ErrorResponse;
+import de.webtech.quackr.service.authentication.AuthorizationService;
 import de.webtech.quackr.service.comment.CannotChangePosterIdException;
 import de.webtech.quackr.service.comment.CommentNotFoundException;
 import de.webtech.quackr.service.comment.CommentService;
@@ -22,10 +23,12 @@ import javax.ws.rs.core.Response;
 public class CommentController {
 
     private final CommentService commentService;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, AuthorizationService authorizationService) {
         this.commentService = commentService;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -59,9 +62,11 @@ public class CommentController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response addComment(@Valid @NotNull(message = "Request body may not be null")CreateCommentResource resource,
+    public Response addComment(@HeaderParam("Authorization") String authorization,
+                               @Valid @NotNull(message = "Request body may not be null")CreateCommentResource resource,
                                @PathParam("eventId") long id) {
         try {
+            authorizationService.checkTokenWithUserId(authorization, resource.getPosterId());
             return Response.status(Response.Status.CREATED).entity(commentService.createComment(resource, id)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
@@ -115,11 +120,13 @@ public class CommentController {
     @Path("{commentId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response deleteComment(@PathParam("commentId") long commentId) {
+    public Response deleteComment(@HeaderParam("Authorization") String authorization,
+                                  @PathParam("commentId") long commentId) {
         try {
+            authorizationService.checkTokenWithCommentId(authorization, commentId);
             commentService.deleteComment(commentId);
             return Response.ok().build();
-        } catch (CommentNotFoundException e) {
+        } catch (CommentNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
@@ -135,11 +142,13 @@ public class CommentController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response editComment(@Valid @NotNull(message = "Request body may not be null") CreateCommentResource resource,
+    public Response editComment(@HeaderParam("Authorization") String authorization,
+                                @Valid @NotNull(message = "Request body may not be null") CreateCommentResource resource,
                                 @PathParam("commentId") long commentId) {
         try {
+            authorizationService.checkTokenWithCommentId(authorization, commentId);
             return Response.ok(commentService.editComment(resource, commentId)).build();
-        } catch (CommentNotFoundException e) {
+        } catch (CommentNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
         } catch (CannotChangePosterIdException e) {

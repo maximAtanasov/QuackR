@@ -1,6 +1,8 @@
 package de.webtech.quackr.service.user.rest;
 
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ErrorResponse;
+import de.webtech.quackr.service.authentication.AuthorizationService;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
@@ -23,10 +25,12 @@ import javax.ws.rs.core.Response;
 public class UserController {
 
     private final UserService userService;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthorizationService authorizationService) {
         this.userService = userService;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -91,8 +95,16 @@ public class UserController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response editUser(@Valid @NotNull(message = "Request body may not be null") CreateUserResource resource, @PathParam("id") long id) {
+    public Response editUser(@HeaderParam("Authorization") String authorization,
+                             @Valid @NotNull(message = "Request body may not be null") CreateUserResource resource,
+                             @PathParam("id") long id) {
         try {
+
+            //Do not allow regular users to elevate their own privileges
+            if(authorizationService.checkTokenWithUserId(authorization, id).getRole() != UserRole.ADMIN){
+                resource.setRole(UserRole.USER);
+            }
+
             return Response.ok(userService.editUser(resource, id)).build();
         } catch (UserWithUsernameAlreadyExistsException e){
             return Response.status(Response.Status.CONFLICT.getStatusCode())
@@ -113,8 +125,10 @@ public class UserController {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response deleteUser(@PathParam("id") long id) {
+    public Response deleteUser(@HeaderParam("Authorization") String authorization,
+                               @PathParam("id") long id) {
         try {
+            authorizationService.checkTokenWithUserId(authorization, id);
             userService.deleteUser(id);
             return Response.ok().build();
         } catch (UserNotFoundException e) {

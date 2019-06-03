@@ -8,6 +8,7 @@ import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
@@ -24,6 +25,8 @@ public class UserServiceTest {
 
     private UserService userService;
 
+    private String testPassword = BCrypt.hashpw("testPassword3", BCrypt.gensalt());
+
     /**
      * Mocks all methods from the userRepository that need mocking.
      * Returns example/dummy data where required.
@@ -32,7 +35,7 @@ public class UserServiceTest {
     public void setUp() {
         userService = new UserService(userRepository);
         Mockito.when(userRepository.findById(1L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L, UserRole.USER)));
+                .thenReturn(Optional.of(new UserEntity("testUser", testPassword, 0L, UserRole.USER)));
 
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
@@ -41,8 +44,8 @@ public class UserServiceTest {
                 .thenReturn(false);
 
         Mockito.when(userRepository.findAll())
-                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L, UserRole.USER),
-                        new UserEntity("testUser2", "testPassword2", 50L, UserRole.USER)));
+                .thenReturn(Arrays.asList(new UserEntity("testUser", testPassword, 0L, UserRole.USER),
+                        new UserEntity("testUser2", testPassword, 50L, UserRole.USER)));
 
         Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
@@ -50,7 +53,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.existsByUsername("testUser4"))
                 .thenReturn(true);
 
-        UserEntity testEntity = new UserEntity("testUser4", "testPassword3", 10L, UserRole.USER);
+        UserEntity testEntity = new UserEntity("testUser4", testPassword, 10L, UserRole.USER);
         testEntity.setId(4L);
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(testEntity);

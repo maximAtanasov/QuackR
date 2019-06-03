@@ -1,6 +1,7 @@
 package de.webtech.quackr.service.event.rest;
 
 import de.webtech.quackr.service.ErrorResponse;
+import de.webtech.quackr.service.authentication.AuthorizationService;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.event.EventService;
 import de.webtech.quackr.service.event.UsernameAndIdMatchException;
@@ -23,10 +24,12 @@ import java.util.Collection;
 public class EventController {
 
     private final EventService eventService;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, AuthorizationService authorizationService) {
         this.eventService = eventService;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -60,9 +63,11 @@ public class EventController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response addEvent(@Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
+    public Response addEvent(@HeaderParam("Authorization") String authorization,
+                             @Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
                              @PathParam("userId") long id) {
         try {
+            authorizationService.checkTokenWithUserId(authorization, id);
             return Response.status(Response.Status.CREATED).entity(eventService.createEvent(resource, id)).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
@@ -95,11 +100,13 @@ public class EventController {
     @Path("{eventId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response deleteEvent(@PathParam("eventId") long eventId) {
+    public Response deleteEvent(@HeaderParam("Authorization") String authorization,
+                                @PathParam("eventId") long eventId) {
         try {
+            authorizationService.checkTokenWithEventId(authorization, eventId);
             eventService.deleteEvent(eventId);
             return Response.ok().build();
-        } catch (EventNotFoundException e) {
+        } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
         }
     }
@@ -116,11 +123,13 @@ public class EventController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response editEvent(@Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
+    public Response editEvent(@HeaderParam("Authorization") String authorization,
+                              @Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
                               @PathParam("eventId") long eventId) {
         try {
+            authorizationService.checkTokenWithEventId(authorization, eventId);
             return Response.ok(eventService.editEvent(resource, eventId)).build();
-        } catch (EventNotFoundException e) {
+        } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
@@ -138,9 +147,11 @@ public class EventController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response addAttendees(@Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
+    public Response addAttendees(@HeaderParam("Authorization") String authorization,
+                                 @Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
                                  @PathParam("eventId") long eventId) {
         try {
+            authorizationService.checkTokenWithEventId(authorization, eventId);
             return Response.ok(eventService.addEventAttendees(eventId, resources)).build();
         } catch (EventNotFoundException | UserNotFoundException | UsernameAndIdMatchException e) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
@@ -159,9 +170,11 @@ public class EventController {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
-    public Response removeAttendees(@Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
+    public Response removeAttendees(@HeaderParam("Authorization") String authorization,
+                                    @Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
                                     @PathParam("eventId") long eventId) {
         try {
+            authorizationService.checkTokenWithEventId(authorization, eventId);
             return Response.ok(eventService.removeEventAttendees(eventId, resources)).build();
         } catch (EventNotFoundException | UserNotFoundException | UsernameAndIdMatchException e) {
             return Response.status(Response.Status.BAD_REQUEST.getStatusCode())

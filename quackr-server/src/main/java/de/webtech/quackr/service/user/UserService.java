@@ -62,15 +62,22 @@ public class UserService {
 
     /**
      * Creates a new user and saves them in the database.
+     * If no other admins are registered, the one being registered is made an admin.
      * @param resource A CreateUserResource object containing the data needed to create a user.
      * @throws UserWithUsernameAlreadyExistsException Thrown if a user with the same username already exists in the database.
      * @return A GetUserResource object.
      */
     public GetUserResource createUser(CreateUserResource resource) throws UserWithUsernameAlreadyExistsException {
         if(!userRepository.existsByUsername(resource.getUsername())){
+
+            //If there are no other admins registered, make this user one
+            UserRole role = UserRole.USER;
+            if(userRepository.findByRole(UserRole.ADMIN).isEmpty()){
+                role = UserRole.ADMIN;
+            }
             UserEntity userEntity = new UserEntity(resource.getUsername(),
                     BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()),
-                    resource.getRating(), UserRole.USER);
+                    resource.getRating(), role);
 
             userRepository.save(userEntity);
             return userMapper.map(userEntity);
@@ -102,7 +109,6 @@ public class UserService {
      * already exists in the database.
      * @return A GetUserResource object.
      */
-    //TODO: NO ADMINS EXCEPTION
     public GetUserResource editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if(userEntity.isPresent()){
@@ -111,10 +117,14 @@ public class UserService {
                 throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
             }
             userEntity.get().setUsername(resource.getUsername());
-            userEntity.get().setPassword(BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()));
             userEntity.get().setRating(resource.getRating());
             userEntity.get().setRole(resource.getRole());
             userRepository.save(userEntity.get());
+
+            //Do not rehash the password if it has not changed
+            if(!BCrypt.checkpw(resource.getPassword(), userEntity.get().getPassword())){
+                userEntity.get().setPassword(BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()));
+            }
             return userMapper.map(userEntity.get());
         } else {
             throw new UserNotFoundException(userId);

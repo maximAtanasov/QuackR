@@ -30,9 +30,6 @@ public class ShiroRealm extends AuthorizingRealm {
         return token instanceof JWTToken;
     }
 
-    /**
-     * Only when need to check user permission，for instance checkRole,checkPermission etc.
-     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = TokenUtil.getUsername(principals.toString());
@@ -40,17 +37,12 @@ public class ShiroRealm extends AuthorizingRealm {
         if(user != null) {
             SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
             simpleAuthorizationInfo.addRole(user.getRole().toString());
-            //Set<String> permission = new HashSet<>(Arrays.asList(user.getPermission().split(",")));
-            //simpleAuthorizationInfo.addStringPermissions(permission);
             return simpleAuthorizationInfo;
         } else {
             return null;
         }
     }
 
-    /**
-     * Checks if the token is valid and throws an exception if it is not.
-     */
     @Override
     public AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getCredentials();

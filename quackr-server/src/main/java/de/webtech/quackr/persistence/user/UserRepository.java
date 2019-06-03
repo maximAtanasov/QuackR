@@ -46,6 +46,18 @@ public class UserRepository extends CrudRepository<UserEntity, Long> {
     }
 
     /**
+     * Finds all users with the given tole.
+     * @param role The role to look for.
+     * @return All users with the given role.
+     */
+    public Collection<UserEntity> findByRole(UserRole role){
+        return entityManager.createQuery(
+                "SELECT u FROM  de.webtech.quackr.persistence.user.UserEntity u WHERE u.role = :role", UserEntity.class)
+                .setParameter("role", role)
+                .getResultList();
+    }
+
+    /**
      * Deletes a UserEntity from the DB while keeping integrity constrains.
      * @param obj The entity to delete.
      */

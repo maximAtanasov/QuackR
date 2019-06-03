@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collection;
 import java.util.Date;
 
 public class UserRepositoryTest extends RepositoryTestTemplate {
@@ -31,6 +32,19 @@ public class UserRepositoryTest extends RepositoryTestTemplate {
     public void testExistsByUsername(){
         entityManager.persist(new UserEntity("testUser4", "testPassword", 50L, UserRole.USER));
         Assert.assertTrue(userRepository.existsByUsername("testUser4"));
+    }
+
+    /**
+     * Tests the findByRole() method of the repository
+     */
+    @Test
+    public void testFindByRole(){
+        entityManager.persist(new UserEntity("testUser4", "testPassword", 50L, UserRole.USER));
+        entityManager.persist(new UserEntity("testUser5", "testPassword", 50L, UserRole.ADMIN));
+
+        Collection<UserEntity> userEntities = userRepository.findByRole(UserRole.ADMIN);
+        Assert.assertEquals(1, userEntities.size());
+        Assert.assertEquals("testUser5", userEntities.iterator().next().getUsername());
     }
 
     /**
