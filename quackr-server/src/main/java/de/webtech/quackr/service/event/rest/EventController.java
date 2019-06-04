@@ -157,7 +157,7 @@ public class EventController {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
         } catch (UsernameAndIdMatchException e) {
-            return Response.status(Response.Status.fromStatusCode(422).getStatusCode())
+            return Response.status(422)
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
@@ -183,7 +183,7 @@ public class EventController {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
         } catch (UsernameAndIdMatchException e) {
-            return Response.status(Response.Status.fromStatusCode(422).getStatusCode())
+            return Response.status(422)
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
