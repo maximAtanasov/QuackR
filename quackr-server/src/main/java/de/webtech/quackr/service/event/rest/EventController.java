@@ -153,8 +153,11 @@ public class EventController {
         try {
             authorizationService.checkTokenWithEventId(authorization, eventId);
             return Response.ok(eventService.addEventAttendees(eventId, resources)).build();
-        } catch (EventNotFoundException | UserNotFoundException | UsernameAndIdMatchException e) {
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
+        } catch (EventNotFoundException | UserNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        } catch (UsernameAndIdMatchException e) {
+            return Response.status(Response.Status.fromStatusCode(422).getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
@@ -176,8 +179,11 @@ public class EventController {
         try {
             authorizationService.checkTokenWithEventId(authorization, eventId);
             return Response.ok(eventService.removeEventAttendees(eventId, resources)).build();
-        } catch (EventNotFoundException | UserNotFoundException | UsernameAndIdMatchException e) {
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
+        } catch (EventNotFoundException | UserNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+                    .entity(new ErrorResponse(e.getMessage())).build();
+        } catch (UsernameAndIdMatchException e) {
+            return Response.status(Response.Status.fromStatusCode(422).getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
         }
     }
