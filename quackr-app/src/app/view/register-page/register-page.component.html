@@ -5,14 +5,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
-<!--<li class="nav-item"
-        <a class="nav-link" href="#">About</a>
-      </li>-->
+      <!--<li class="nav-item"
+              <a class="nav-link" href="#">About</a>
+            </li>-->
     </ul>
     <form class="form-inline">
       <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-danger" [routerLink]="'/login'">Log in</button>
-        <button type="button" class="btn btn-light" [routerLink]="'/register'">Sign up</button>
+        <button type="button" class="btn btn-light" [routerLink]="'/login'">Log in</button>
+        <button type="button" class="btn btn-danger" [routerLink]="'/register'">Sign up</button>
       </div>
     </form>
   </div>
@@ -23,7 +23,7 @@
 
 <form class="form">
 
-  <h2 style="margin-bottom: 30px">Log in to quackR</h2>
+  <h2 style="margin-bottom: 30px">Sign up for quackR</h2>
 
   <div class="form-group">
     <label for="inputUsername">Username </label>
@@ -33,7 +33,11 @@
     <label for="inputPassword">Password</label>
     <input type="password" class="form-control" id="inputPassword" placeholder="Password">
   </div>
-  <button type="submit" class="btn btn-primary">Login</button>
+  <div class="form-group">
+    <label for="inputConfirmPassword">Confirm password</label>
+    <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Confirm password">
+  </div>
+  <button type="submit" class="btn btn-primary">Sign up</button>
 </form>
 
 <app-footer></app-footer>
