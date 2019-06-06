@@ -1,0 +1,13 @@
+/* .row{
+height: 100px;
+width: 100%;
+position: fixed;
+} */
+
+body{
+height: 10000px;
+}
+body:not(.row){
+    background: #D0ECE7 !important;
+}
+
