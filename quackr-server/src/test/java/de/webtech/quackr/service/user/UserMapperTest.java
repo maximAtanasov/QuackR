@@ -1,6 +1,7 @@
 package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserEntity;
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,13 +28,14 @@ public class UserMapperTest {
      */
     @Test
     public void testMapEntityToResource(){
-        UserEntity entity = new UserEntity("testUser", "testPassword", 10L);
+        UserEntity entity = new UserEntity("testUser", "testPassword", 10L, UserRole.ADMIN);
         entity.setId(1L);
 
         GetUserResource result = userMapper.map(entity);
         Assert.assertEquals(1L, result.getId().longValue());
         Assert.assertEquals("testUser", result.getUsername());
         Assert.assertEquals(10L, result.getRating().longValue());
+        Assert.assertEquals(UserRole.ADMIN, result.getRole());
     }
 
     /**
@@ -41,13 +43,13 @@ public class UserMapperTest {
      */
     @Test
     public void testMapEntitiesToResources(){
-        UserEntity entity1 = new UserEntity("testUser1", "testPassword", 10L);
+        UserEntity entity1 = new UserEntity("testUser1", "testPassword", 10L, UserRole.USER);
         entity1.setId(1L);
 
-        UserEntity entity2 = new UserEntity("testUser2", "testPassword", 20L);
+        UserEntity entity2 = new UserEntity("testUser2", "testPassword", 20L, UserRole.USER);
         entity2.setId(2L);
 
-        UserEntity entity3 = new UserEntity("testUser3", "testPassword", 30L);
+        UserEntity entity3 = new UserEntity("testUser3", "testPassword", 30L, UserRole.USER);
         entity3.setId(3L);
 
         List<GetUserResource> result = new ArrayList<>(userMapper.map(Arrays.asList(entity1, entity2, entity3)));

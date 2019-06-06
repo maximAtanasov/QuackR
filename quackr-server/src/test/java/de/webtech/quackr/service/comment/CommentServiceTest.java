@@ -6,6 +6,7 @@ import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.comment.resources.CreateCommentResource;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
@@ -39,14 +40,14 @@ public class CommentServiceTest {
     public void setUp() {
         commentService = new CommentService(commentRepository, eventRepository, userRepository);
         Mockito.when(userRepository.findById(3L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
+                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L, UserRole.USER)));
 
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
 
         Mockito.when(userRepository.findAll())
-                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L),
-                        new UserEntity("testUser2", "testPassword2", 50L)));
+                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L, UserRole.USER),
+                        new UserEntity("testUser2", "testPassword2", 50L, UserRole.USER)));
 
         Mockito.when(userRepository.existsById(3L))
                 .thenReturn(true);
@@ -55,9 +56,7 @@ public class CommentServiceTest {
                 .thenReturn(false);
 
         Mockito.when(userRepository.findByUsername(any()))
-                .thenReturn(new UserEntity("testUser", "testPassword3", 10L));
-
-        Mockito.when(userRepository.save(any())).thenReturn(new UserEntity("testUser", "testPassword", 10L));
+                .thenReturn(new UserEntity("testUser", "testPassword3", 10L, UserRole.USER));
 
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
@@ -107,7 +106,7 @@ public class CommentServiceTest {
      * @throws CommentNotFoundException Doesn't throw in this test.
      */
     @Test
-    public void testGetEventById() throws CommentNotFoundException {
+    public void testGetCommentById() throws CommentNotFoundException {
         GetCommentResource result = commentService.getComment(1L);
         Assert.assertEquals("text", result.getText());
     }
@@ -117,7 +116,7 @@ public class CommentServiceTest {
      * @throws CommentNotFoundException Checked in this test.
      */
     @Test(expected = CommentNotFoundException.class)
-    public void testGetEventByIdThrowsExceptionIfEventNotFound() throws CommentNotFoundException {
+    public void testGetCommentByIdThrowsExceptionIfCommentNotFound() throws CommentNotFoundException {
         commentService.getComment(7L);
     }
 
@@ -170,12 +169,13 @@ public class CommentServiceTest {
     /**
      * Tests the createComment() method of the service.
      * @throws EventNotFoundException Doesn't throw in this test.
+     * @throws UserNotFoundException Not thrown in this test.
      */
     @Test
-    public void testCreateComment() throws EventNotFoundException {
+    public void testCreateComment() throws EventNotFoundException, UserNotFoundException {
         CreateCommentResource resource = new CreateCommentResource();
         resource.setText("BBQ1");
-        resource.setPosterId(1L);
+        resource.setPosterId(3L);
 
         GetCommentResource result = commentService.createComment(resource, 2L);
         Mockito.verify(commentRepository, Mockito.times(1)).save(any());
@@ -189,21 +189,39 @@ public class CommentServiceTest {
      * Tests that the createComment() method of the service
      * throws an exception if the event is not found.
      * @throws EventNotFoundException Checked in this test.
+     * @throws UserNotFoundException Not thrown in this test.
      */
     @Test(expected = EventNotFoundException.class)
-    public void testCreateEventThrowsExceptionIfUserNotFound() throws EventNotFoundException {
+    public void testCreateCommentThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException {
         CreateCommentResource resource = new CreateCommentResource();
 
         commentService.createComment(resource, 7L);
         Mockito.verify(commentRepository, Mockito.times(0)).save(any());
     }
 
+
+
+    /**
+     * Tests that the createComment() method of the service
+     * throws an exception if the event is not found.
+     * @throws EventNotFoundException Not thrown in this test.
+     * @throws UserNotFoundException Checked in this test.
+     */
+    @Test(expected = UserNotFoundException.class)
+    public void testCreateCommentThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException {
+        CreateCommentResource resource = new CreateCommentResource();
+        resource.setPosterId(7L);
+        commentService.createComment(resource, 2L);
+        Mockito.verify(commentRepository, Mockito.times(0)).save(any());
+    }
+
     /**
      * Tests the editComment() method of the service.
      * @throws CommentNotFoundException Not thrown in this test.
+     * @throws CannotChangePosterIdException Not thrown in this test.
      */
     @Test
-    public void testEditComment() throws CommentNotFoundException {
+    public void testEditComment() throws CommentNotFoundException, CannotChangePosterIdException {
         CreateCommentResource resource = new CreateCommentResource();
         resource.setText("BBQ1");
         resource.setPosterId(3L);
@@ -220,11 +238,33 @@ public class CommentServiceTest {
      * Tests that the editComment() method of the service throws
      * an exception in the comment is not found.
      * @throws CommentNotFoundException Checked in this test.
+     * @throws CannotChangePosterIdException Not thrown in this test.
      */
     @Test(expected = CommentNotFoundException.class)
-    public void testEditEventThrowsExceptionIfEventNotFound() throws CommentNotFoundException {
+    public void testEditEventThrowsExceptionIfEventNotFound() throws CommentNotFoundException, CannotChangePosterIdException {
         CreateCommentResource resource = new CreateCommentResource();
         commentService.editComment(resource, 7L);
+        Mockito.verify(commentRepository, Mockito.times(0)).save(any());
+    }
+
+    /**
+     * Tests that the editComment() method of the service throws
+     * an exception in the posterId is changed.
+     * @throws CommentNotFoundException Not thrown in this test.
+     * @throws CannotChangePosterIdException Checked in this test.
+     */
+    @Test(expected = CannotChangePosterIdException.class)
+    public void testEditEventThrowsExceptionIfPosterIdChanged() throws CommentNotFoundException, CannotChangePosterIdException {
+        CreateCommentResource resource = new CreateCommentResource();
+        resource.setText("BBQ1");
+        resource.setPosterId(4L);
+
+        GetCommentResource result = commentService.editComment(resource, 1L);
+        Mockito.verify(commentRepository, Mockito.times(1)).save(any());
+        Assert.assertEquals(resource.getText(), result.getText());
+        Assert.assertEquals(resource.getPosterId(), result.getPosterId());
+        Assert.assertEquals(2L, result.getEventId().longValue());
+        Assert.assertNotNull(result.getDatePosted());
         Mockito.verify(commentRepository, Mockito.times(0)).save(any());
     }
 
@@ -235,7 +275,7 @@ public class CommentServiceTest {
     @Test
     public void testDeleteComment() throws CommentNotFoundException {
         commentService.deleteComment(1L);
-        Mockito.verify(commentRepository, Mockito.times(1)).deleteById(1L);
+        Mockito.verify(commentRepository, Mockito.times(1)).delete(any());
     }
 
     /**
@@ -246,6 +286,6 @@ public class CommentServiceTest {
     @Test(expected = CommentNotFoundException.class)
     public void testDeleteCommentThrowsExceptionIfCommentNotFound() throws CommentNotFoundException {
         commentService.deleteComment(7L);
-        Mockito.verify(commentRepository, Mockito.times(0)).deleteById(7L);
+        Mockito.verify(commentRepository, Mockito.times(0)).delete(any());
     }
 }

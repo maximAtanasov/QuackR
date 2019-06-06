@@ -45,8 +45,8 @@ public class EventEntity {
     private UserEntity organizer;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private Collection<UserEntity> attendees;
+    private Collection<UserEntity> attendees = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Collection<CommentEntity> comments = new ArrayList<>();
 }

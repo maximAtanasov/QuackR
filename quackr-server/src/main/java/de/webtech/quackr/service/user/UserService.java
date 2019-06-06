@@ -2,9 +2,19 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
+import de.webtech.quackr.persistence.user.UserRole;
+import de.webtech.quackr.service.authentication.JWTToken;
+import de.webtech.quackr.service.authentication.TokenUtil;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
+import de.webtech.quackr.service.user.resources.LoginUserResource;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.subject.Subject;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +25,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -30,8 +41,7 @@ public class UserService {
      * @return All users saved in the database.
      */
     public Collection<GetUserResource> getUsers() {
-        List<UserEntity> result = new ArrayList<>();
-        userRepository.findAll().forEach(result::add);
+        List<UserEntity> result = new ArrayList<>(userRepository.findAll());
         return userMapper.map(result);
     }
 
@@ -52,13 +62,23 @@ public class UserService {
 
     /**
      * Creates a new user and saves them in the database.
+     * If no other admins are registered, the one being registered is made an admin.
      * @param resource A CreateUserResource object containing the data needed to create a user.
      * @throws UserWithUsernameAlreadyExistsException Thrown if a user with the same username already exists in the database.
      * @return A GetUserResource object.
      */
     public GetUserResource createUser(CreateUserResource resource) throws UserWithUsernameAlreadyExistsException {
         if(!userRepository.existsByUsername(resource.getUsername())){
-            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
+
+            //If there are no other admins registered, make this user one
+            UserRole role = UserRole.USER;
+            if(userRepository.findByRole(UserRole.ADMIN).isEmpty()){
+                role = UserRole.ADMIN;
+            }
+            UserEntity userEntity = new UserEntity(resource.getUsername(),
+                    BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()),
+                    resource.getRating(), role);
+
             userRepository.save(userEntity);
             return userMapper.map(userEntity);
         }else{
@@ -72,8 +92,9 @@ public class UserService {
      * @throws UserNotFoundException Thrown if a user with the given id is not found.
      */
     public void deleteUser(long userId) throws UserNotFoundException {
-        if(userRepository.existsById(userId)){
-            userRepository.deleteById(userId);
+        Optional<UserEntity> entity = userRepository.findById(userId);
+        if(entity.isPresent()){
+            userRepository.delete(entity.get());
         }else{
             throw new UserNotFoundException(userId);
         }
@@ -89,17 +110,48 @@ public class UserService {
      * @return A GetUserResource object.
      */
     public GetUserResource editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
-        if(userRepository.existsById(userId)){
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        if(userEntity.isPresent()){
             if(userRepository.existsByUsername(resource.getUsername()) &&
                     userRepository.findByUsername(resource.getUsername()).getId() != userId){
                 throw new UserWithUsernameAlreadyExistsException(resource.getUsername());
             }
-            UserEntity userEntity = new UserEntity(resource.getUsername(), resource.getPassword(), resource.getRating());
-            userEntity.setId(userId);
-            userRepository.save(userEntity);
-            return userMapper.map(userEntity);
+            userEntity.get().setUsername(resource.getUsername());
+            userEntity.get().setRating(resource.getRating());
+            userEntity.get().setRole(resource.getRole());
+            userRepository.save(userEntity.get());
+
+            //Do not rehash the password if it has not changed
+            if(!BCrypt.checkpw(resource.getPassword(), userEntity.get().getPassword())){
+                userEntity.get().setPassword(BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()));
+            }
+            return userMapper.map(userEntity.get());
         } else {
             throw new UserNotFoundException(userId);
+        }
+    }
+
+
+    /**
+     * Checks the user's credentials and returns a JWT.
+     * @param resource A LoginUserResource containing the required credentials.
+     * @return A JSON Web Token corresponding to the credentials.
+     * @throws UserNotFoundException Thrown if a user with the given username is not found.
+     * @throws AuthenticationException Thrown if the supplied password does not match the stored one.
+     */
+    public String loginUser(LoginUserResource resource) throws UserNotFoundException, AuthenticationException {
+        UserEntity userEntity = userRepository.findByUsername(resource.getUsername());
+        if(userEntity != null){
+            if(BCrypt.checkpw(resource.getPassword(), userEntity.getPassword())){
+                JWTToken token = new JWTToken(TokenUtil.generate(userEntity.getUsername(), userEntity.getPassword()));
+                Subject currentUser = SecurityUtils.getSubject();
+                currentUser.login(token);
+                return token.getCredentials().toString();
+            } else {
+                throw new AuthenticationException("Wrong password");
+            }
+        } else {
+            throw new UserNotFoundException(resource.getUsername());
         }
     }
 }

@@ -22,19 +22,19 @@ import java.util.Date;
 @JacksonXmlRootElement(localName = "event")
 public class GetEventResource {
 
-    @NotNull private Long id;
+    private Long id;
 
-    @NotNull private String title;
+    private String title;
 
-    @NotNull private String location;
+    private String location;
 
-    @NotNull private Date date;
+    private Date date;
 
-    @NotNull private String description;
+    private String description;
 
-    @NotNull private Long attendeeLimit;
+    private Long attendeeLimit;
 
-    @NotNull private boolean isPublic;
+    private boolean isPublic;
 
     @JacksonXmlElementWrapper(localName = "attendees")
     @JacksonXmlProperty(localName = "user")
@@ -55,7 +55,7 @@ public class GetEventResource {
 
     /**
      * Explicit setter needed so that Jackson never sets the collection to null
-     * @param attendees A colleciton of GetUserResource objects.
+     * @param attendees A collection of GetUserResource objects.
      */
     public void setAttendees(Collection<GetUserResource> attendees) {
         if (attendees != null) {

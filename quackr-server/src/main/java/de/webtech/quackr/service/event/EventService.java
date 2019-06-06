@@ -9,16 +9,18 @@ import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class EventService {
 
     private final UserRepository userRepository;
@@ -66,7 +68,6 @@ public class EventService {
             newEvent.setPublic(resource.isPublic());
             newEvent.setOrganizer(user.get());
             eventRepository.save(newEvent);
-            userRepository.save(user.get());
             return eventMapper.map(newEvent);
         } else {
             throw new UserNotFoundException(userId);
@@ -79,8 +80,9 @@ public class EventService {
      * @throws EventNotFoundException Thrown if the event is not found.
      */
     public void deleteEvent(long eventId) throws EventNotFoundException {
-        if(eventRepository.existsById(eventId)){
-            eventRepository.deleteById(eventId);
+        Optional<EventEntity> event = eventRepository.findById(eventId);
+        if(event.isPresent()){
+            eventRepository.delete(event.get());
         }else{
             throw new EventNotFoundException(eventId);
         }
@@ -100,7 +102,11 @@ public class EventService {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
             Collection<UserEntity> userEntities = getEntitiesForResources(users);
-            event.get().getAttendees().addAll(userEntities);
+            userEntities.forEach(u -> {
+                if(!event.get().getAttendees().contains(u)){
+                    event.get().getAttendees().add(u);
+                }
+            });
             eventRepository.save(event.get());
             return eventMapper.map(event.get());
         }else{
@@ -185,6 +191,7 @@ public class EventService {
             eventEntity.get().setDate(resource.getDate());
             eventEntity.get().setAttendeeLimit(resource.getAttendeeLimit());
             eventEntity.get().setDescription(resource.getDescription());
+            eventEntity.get().setPublic(resource.isPublic());
             eventRepository.save(eventEntity.get());
             return eventMapper.map(eventEntity.get());
         }else{

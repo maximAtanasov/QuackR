@@ -29,9 +29,13 @@ public class UserEntity {
     @Column(nullable = false)
     private Long rating;
 
-    public UserEntity(String username, String password, Long rating){
+    @Column(nullable = false)
+    private UserRole role;
+
+    public UserEntity(String username, String password, Long rating, UserRole role){
         this.username = username;
         this.password = password;
         this.rating = rating;
+        this.role = role;
     }
 }

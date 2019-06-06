@@ -15,6 +15,6 @@ public class UserMapper extends AbstractMapper<GetUserResource, UserEntity> {
      * @return A GetUserResource created from the entity
      */
     public GetUserResource map(UserEntity entity){
-        return new GetUserResource(entity.getId(), entity.getUsername(), entity.getRating());
+        return new GetUserResource(entity.getId(), entity.getUsername(), entity.getRating(), entity.getRole());
     }
 }

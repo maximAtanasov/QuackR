@@ -2,11 +2,13 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mockito;
 
 import java.util.Arrays;
@@ -23,6 +25,8 @@ public class UserServiceTest {
 
     private UserService userService;
 
+    private String testPassword = BCrypt.hashpw("testPassword3", BCrypt.gensalt());
+
     /**
      * Mocks all methods from the userRepository that need mocking.
      * Returns example/dummy data where required.
@@ -31,7 +35,7 @@ public class UserServiceTest {
     public void setUp() {
         userService = new UserService(userRepository);
         Mockito.when(userRepository.findById(1L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L)));
+                .thenReturn(Optional.of(new UserEntity("testUser", testPassword, 0L, UserRole.USER)));
 
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
@@ -40,8 +44,8 @@ public class UserServiceTest {
                 .thenReturn(false);
 
         Mockito.when(userRepository.findAll())
-                .thenReturn(Arrays.asList(new UserEntity("testUser", "testPassword", 0L),
-                        new UserEntity("testUser2", "testPassword2", 50L)));
+                .thenReturn(Arrays.asList(new UserEntity("testUser", testPassword, 0L, UserRole.USER),
+                        new UserEntity("testUser2", testPassword, 50L, UserRole.USER)));
 
         Mockito.when(userRepository.existsById(1L))
                 .thenReturn(true);
@@ -49,12 +53,10 @@ public class UserServiceTest {
         Mockito.when(userRepository.existsByUsername("testUser4"))
                 .thenReturn(true);
 
-        UserEntity testEntity = new UserEntity("testUser4", "testPassword3", 10L);
+        UserEntity testEntity = new UserEntity("testUser4", testPassword, 10L, UserRole.USER);
         testEntity.setId(4L);
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(testEntity);
-
-        Mockito.when(userRepository.save(any())).thenReturn(new UserEntity("testUser", "testPassword", 10L));
     }
 
     /**
@@ -97,7 +99,7 @@ public class UserServiceTest {
      */
     @Test
     public void testCreateUser() throws UserWithUsernameAlreadyExistsException {
-        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
+        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
         GetUserResource result = userService.createUser(resource);
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
 
@@ -111,7 +113,7 @@ public class UserServiceTest {
      */
     @Test(expected = UserWithUsernameAlreadyExistsException.class)
     public void testCreateUserThrowsExceptionWhenUsernameExists() throws UserWithUsernameAlreadyExistsException {
-        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L);
+        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L, UserRole.USER);
         userService.createUser(resource);
         Mockito.verify(userRepository, Mockito.times(0)).save(any());
     }
@@ -123,7 +125,7 @@ public class UserServiceTest {
      */
     @Test
     public void testEditUser() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
-        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
+        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
         GetUserResource result = userService.editUser(resource, 1L);
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
 
@@ -139,7 +141,7 @@ public class UserServiceTest {
      */
     @Test(expected = UserNotFoundException.class)
     public void testEditUserThrowsExceptionWhenUserNotFound() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
-        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L);
+        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
         userService.editUser(resource, 7L);
         Mockito.verify(userRepository, Mockito.times(0)).save(any());
     }
@@ -151,7 +153,7 @@ public class UserServiceTest {
      */
     @Test(expected = UserWithUsernameAlreadyExistsException.class)
     public void testEditUserWhenUsernameExists() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
-        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L);
+        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L, UserRole.USER);
         userService.editUser(resource, 1L);
         Mockito.verify(userRepository, Mockito.times(0)).save(any());
     }
@@ -163,7 +165,7 @@ public class UserServiceTest {
     @Test
     public void testDeleteUser() throws UserNotFoundException {
         userService.deleteUser(1L);
-        Mockito.verify(userRepository, Mockito.times(1)).deleteById(1L);
+        Mockito.verify(userRepository, Mockito.times(1)).delete(any());
     }
 
     /**

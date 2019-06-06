@@ -21,6 +21,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 public class CommentControllerTest extends ControllerTestTemplate {
 
@@ -42,10 +43,11 @@ public class CommentControllerTest extends ControllerTestTemplate {
     /**
      * Tests that a POST request to the /comments/event/{eventId} endpoint returns proper JSON.
      * @throws EventNotFoundException Not thrown in this test
+     * @throws UserNotFoundException Not thrown in this test
      */
     @Test
-    public void testCreateComment() throws EventNotFoundException {
-        Mockito.when(commentService.createComment(any(), anyLong()))
+    public void testCreateComment() throws EventNotFoundException, UserNotFoundException {
+        when(commentService.createComment(any(), anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -69,7 +71,7 @@ public class CommentControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetCommentsForEvent() throws EventNotFoundException {
-        Mockito.when(commentService.getCommentsForEvent(anyLong()))
+        when(commentService.getCommentsForEvent(anyLong()))
                 .thenReturn(Collections.singletonList(testGetResource));
 
         GetCommentResource[] expected = {testGetResource};
@@ -95,7 +97,7 @@ public class CommentControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetCommentsForUser() throws UserNotFoundException {
-        Mockito.when(commentService.getCommentsForUser(anyLong()))
+        when(commentService.getCommentsForUser(anyLong()))
                 .thenReturn(Collections.singletonList(testGetResource));
 
         GetCommentResource[] expected = {testGetResource};
@@ -121,7 +123,7 @@ public class CommentControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetCommentById() throws CommentNotFoundException {
-        Mockito.when(commentService.getComment(anyLong()))
+        when(commentService.getComment(anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -142,11 +144,12 @@ public class CommentControllerTest extends ControllerTestTemplate {
     /**
      * Tests that a POST request to the /comments/{commentId} endpoint returns the proper JSON.
      * @throws CommentNotFoundException Not thrown in this test.
+     * @throws CannotChangePosterIdException Not thrown in this test.
      */
     @Test
-    public void testEditComment() throws CommentNotFoundException {
+    public void testEditComment() throws CommentNotFoundException, CannotChangePosterIdException {
 
-        Mockito.when(commentService.editComment(any(), anyLong()))
+        when(commentService.editComment(any(), anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -170,7 +173,9 @@ public class CommentControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testDeleteComment() throws CommentNotFoundException {
-        this.restTemplate.delete("/comments/3");
+        HttpEntity entity = new HttpEntity<>(headersXML);
+        ResponseEntity result2 = this.restTemplate.exchange("/comments/3", HttpMethod.DELETE, entity, String.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(commentService, Mockito.times(1)).deleteComment(3L);
     }
 }

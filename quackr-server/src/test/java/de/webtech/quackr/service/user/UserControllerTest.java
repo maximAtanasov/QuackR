@@ -1,8 +1,13 @@
 package de.webtech.quackr.service.user;
 
+import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ControllerTestTemplate;
+import de.webtech.quackr.service.user.resources.AccessTokenResource;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
+import de.webtech.quackr.service.user.resources.LoginUserResource;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.realm.Realm;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -14,15 +19,18 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 public class UserControllerTest extends ControllerTestTemplate {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private Realm realm;
 
     private CreateUserResource testCreateResource;
     private GetUserResource testGetResource;
@@ -32,8 +40,8 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Before
     public void setUp() {
-        testGetResource = new GetUserResource(1L, "testUser", 50L);
-        testCreateResource = new CreateUserResource("testUser", "testPassword", 50L);
+        testGetResource = new GetUserResource(1L, "testUser", 50L, UserRole.USER);
+        testCreateResource = new CreateUserResource("testUser", "testPassword", 50L, UserRole.USER);
     }
 
     /**
@@ -42,7 +50,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testCreateUser() throws UserWithUsernameAlreadyExistsException {
-        Mockito.when(userService.createUser(any()))
+        when(userService.createUser(any()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -66,7 +74,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetUserById() throws UserNotFoundException {
-        Mockito.when(userService.getUserById(anyLong()))
+        when(userService.getUserById(anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -91,7 +99,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testUpdateUser() throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
-        Mockito.when(userService.editUser(any(), anyLong()))
+        when(userService.editUser(any(), anyLong()))
                 .thenReturn(testGetResource);
 
         // Test JSON
@@ -114,7 +122,7 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testGetAllUsers() {
-        Mockito.when(userService.getUsers())
+        when(userService.getUsers())
                 .thenReturn(Collections.singletonList(testGetResource));
 
         GetUserResource[] expected = {testGetResource};
@@ -140,7 +148,50 @@ public class UserControllerTest extends ControllerTestTemplate {
      */
     @Test
     public void testDeleteUser() throws UserNotFoundException {
-        this.restTemplate.delete("/users/1");
+        HttpEntity entity = new HttpEntity<>(headersXML);
+        ResponseEntity result2 = this.restTemplate.exchange("/users/1", HttpMethod.DELETE, entity, String.class);
+        assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(userService, Mockito.times(1)).deleteUser(1L);
+    }
+
+
+    /**
+     * Tests that a POST request to the /users/login returns an access token.
+     */
+    @Test
+    public void testLoginUser() {
+        headersXML.remove("Authorization");
+        HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser", "testPassword"), headersXML);
+        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody());
+    }
+
+    /**
+     * Tests that a POST request to the /users/login returns an error response if the user is not found.
+     */
+    @Test
+    public void testLoginUserReturnsErrorWhenUserNotFound() throws UserNotFoundException {
+        when(userService.loginUser(any())).thenThrow(new UserNotFoundException("testUser123"));
+
+        headersXML.remove("Authorization");
+        HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser123", "testPassword"), headersXML);
+        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
+        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertNotNull(result.getBody());
+    }
+
+    /**
+     * Tests that a POST request to the /users/login returns an error response if the password is wrong.
+     */
+    @Test
+    public void testLoginUserReturnsErrorWhenPasswordIsWrong() throws UserNotFoundException {
+        when(userService.loginUser(any())).thenThrow(new AuthenticationException("Wrong password"));
+
+        headersXML.remove("Authorization");
+        HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser", "testPassword123"), headersXML);
+        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+        assertNotNull(result.getBody());
     }
 }
