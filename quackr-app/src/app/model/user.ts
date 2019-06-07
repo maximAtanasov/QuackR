@@ -1,4 +1,6 @@
 export class User {
-  public username;
-  public rating;
+  public id: number;
+  public username :string;
+  public rating : number;
+  public role: string;
 }

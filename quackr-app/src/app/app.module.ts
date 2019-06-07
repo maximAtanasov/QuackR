@@ -9,6 +9,8 @@ import { HeaderComponent } from './view/header/header.component';
 import { RegisterPageComponent } from './view/register-page/register-page.component';
 import {RouterModule, Routes} from "@angular/router";
 import { FooterComponent } from './view/footer/footer.component';
+import {FormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -28,7 +30,9 @@ const appRoutes: Routes = [
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
