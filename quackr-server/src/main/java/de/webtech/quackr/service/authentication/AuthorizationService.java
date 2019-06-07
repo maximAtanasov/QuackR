@@ -31,9 +31,9 @@ public class AuthorizationService {
     }
 
     public UserEntity checkTokenWithUserId(String token, Long id) throws UserNotFoundException {
-        String username = TokenUtil.getUsername(token);
-        UserEntity userToCheck = userRepository.findByUsername(username);
-        if(userToCheck != null) {
+            String username = TokenUtil.getUsername(token);
+            UserEntity userToCheck = userRepository.findByUsername(username);
+            if(userToCheck != null) {
             if(userToCheck.getRole().equals(UserRole.ADMIN)){
                 return userToCheck;
             } else if(!userToCheck.getId().equals(id)){
@@ -46,15 +46,16 @@ public class AuthorizationService {
         }
     }
 
-    public UserEntity checkTokenWithEventId(String token, Long eventId) throws UserNotFoundException, EventNotFoundException {
+    public UserEntity checkToken(String token) throws UserNotFoundException, EventNotFoundException {
         Long userId;
-        Optional<EventEntity> eventEntity = eventRepository.findById(eventId);
-        if(eventEntity.isPresent()){
-            userId = eventEntity.get().getOrganizer().getId();
+        String username = TokenUtil.getUsername(token);
+        UserEntity userToCheck = userRepository.findByUsername(username);
+        if(userToCheck != null) {
+            userId = userToCheck.getId();
+            return checkTokenWithUserId(token, userId);
         } else {
-            throw new EventNotFoundException(eventId);
+          throw new UserNotFoundException(username);
         }
-        return checkTokenWithUserId(token, userId);
     }
 
     public UserEntity checkTokenWithCommentId(String token, Long commentId) throws UserNotFoundException, CommentNotFoundException {

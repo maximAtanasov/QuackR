@@ -159,7 +159,9 @@ public class UserControllerTest extends ControllerTestTemplate {
      * Tests that a POST request to the /users/login returns an access token.
      */
     @Test
-    public void testLoginUser() {
+    public void testLoginUser() throws UserNotFoundException {
+        when(userService.loginUser(any())).thenReturn(new AccessTokenResource(1L, "asd"));
+
         headersXML.remove("Authorization");
         HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser", "testPassword"), headersXML);
         ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);

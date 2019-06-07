@@ -44,7 +44,7 @@ class EventMapper extends AbstractMapper<GetEventResource, EventEntity> {
         resource.setTitle(entity.getTitle());
         resource.setLocation(entity.getLocation());
         resource.setPublic(entity.isPublic());
-
+        resource.setOrganizerId(entity.getOrganizer().getId());
         return resource;
     }
 }

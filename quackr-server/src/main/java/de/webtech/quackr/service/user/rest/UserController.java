@@ -149,7 +149,7 @@ public class UserController {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response loginUser(@Valid @NotNull(message = "Request body may not be null") LoginUserResource resource) {
         try {
-            return Response.ok(new AccessTokenResource(userService.loginUser(resource))).build();
+            return Response.ok(userService.loginUser(resource)).build();
         } catch (UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();

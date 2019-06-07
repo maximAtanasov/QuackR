@@ -5,6 +5,7 @@ import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.authentication.JWTToken;
 import de.webtech.quackr.service.authentication.TokenUtil;
+import de.webtech.quackr.service.user.resources.AccessTokenResource;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import de.webtech.quackr.service.user.resources.LoginUserResource;
@@ -139,14 +140,14 @@ public class UserService {
      * @throws UserNotFoundException Thrown if a user with the given username is not found.
      * @throws AuthenticationException Thrown if the supplied password does not match the stored one.
      */
-    public String loginUser(LoginUserResource resource) throws UserNotFoundException, AuthenticationException {
+    public AccessTokenResource loginUser(LoginUserResource resource) throws UserNotFoundException, AuthenticationException {
         UserEntity userEntity = userRepository.findByUsername(resource.getUsername());
         if(userEntity != null){
             if(BCrypt.checkpw(resource.getPassword(), userEntity.getPassword())){
                 JWTToken token = new JWTToken(TokenUtil.generate(userEntity.getUsername(), userEntity.getPassword()));
                 Subject currentUser = SecurityUtils.getSubject();
                 currentUser.login(token);
-                return token.getCredentials().toString();
+                return new AccessTokenResource(userEntity.getId(), token.getCredentials().toString());
             } else {
                 throw new AuthenticationException("Wrong password");
             }

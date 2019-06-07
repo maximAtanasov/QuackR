@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
+import {CONFLICT} from "http-status-codes";
 
 @Component({
   selector: 'app-register-page',
@@ -43,11 +44,11 @@ export class RegisterPageComponent implements OnInit {
               () => this.router.navigate(['/home']));
         })
         .catch(e => {
-          if (e.error && e.error.errorMessage === 'A user with the username ' + this.username + ' already exists!') {
+          if (e.error && e.status === CONFLICT &&
+            e.error.errorMessage === 'A user with the username ' + this.username + ' already exists!') {
             this.invalidUser = true;
           }
         });
     }
   }
-
 }

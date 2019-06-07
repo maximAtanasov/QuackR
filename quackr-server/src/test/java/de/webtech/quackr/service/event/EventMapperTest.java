@@ -48,6 +48,7 @@ public class EventMapperTest {
         Assert.assertEquals(entity.getAttendeeLimit().longValue(), result.getAttendeeLimit().longValue());
         Assert.assertEquals(entity.getLocation(), result.getLocation());
         Assert.assertEquals(entity.getDate(), result.getDate());
+        Assert.assertEquals(entity.getOrganizer().getId(), result.getOrganizerId());
         Assert.assertNotNull(entity.getAttendees());
         Assert.assertNotNull(entity.getComments());
     }
@@ -132,6 +133,7 @@ public class EventMapperTest {
             Assert.assertEquals(entities.get(i).getAttendeeLimit().longValue(), result.get(i).getAttendeeLimit().longValue());
             Assert.assertEquals(entities.get(i).getLocation(), result.get(i).getLocation());
             Assert.assertEquals(entities.get(i).getDate(), result.get(i).getDate());
+            Assert.assertEquals(entities.get(i).getOrganizer().getId(), result.get(i).getOrganizerId());
             Assert.assertNotNull(result.get(i).getComments());
             Assert.assertNotNull(result.get(i).getAttendees());
         }

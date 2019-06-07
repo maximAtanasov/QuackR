@@ -10,12 +10,16 @@ import { RegisterPageComponent } from './view/register-page/register-page.compon
 import {RouterModule, Routes} from "@angular/router";
 import { FooterComponent } from './view/footer/footer.component';
 import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthInterceptor} from "./auth.interceptor";
+import { MyEventsComponent } from './view/my-events/my-events.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
-  { path: 'home', component: HomepageComponent }
+  { path: 'home', component: HomepageComponent },
+  {path: 'events/user/:id', component: MyEventsComponent},
+  { path: '', redirectTo: '/home', pathMatch: 'full'}
 ];
 
 @NgModule({
@@ -25,16 +29,23 @@ const appRoutes: Routes = [
     HomepageComponent,
     HeaderComponent,
     RegisterPageComponent,
-    FooterComponent
+    FooterComponent,
+    MyEventsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(appRoutes),
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

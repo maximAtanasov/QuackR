@@ -30,7 +30,7 @@ export class LoginPageComponent implements OnInit {
     this.invalidUser = false;
     this.invalidPassword = false;
     this.userService.login(this.username, this.password)
-      .then(e => {
+      .then(() => {
         this.router.navigate(['/home']);
       })
       .catch(e => {
@@ -42,6 +42,7 @@ export class LoginPageComponent implements OnInit {
       });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 }
 

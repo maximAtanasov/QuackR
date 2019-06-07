@@ -103,7 +103,7 @@ public class EventController {
     public Response deleteEvent(@HeaderParam("Authorization") String authorization,
                                 @PathParam("eventId") long eventId) {
         try {
-            authorizationService.checkTokenWithEventId(authorization, eventId);
+            authorizationService.checkToken(authorization);
             eventService.deleteEvent(eventId);
             return Response.ok().build();
         } catch (EventNotFoundException | UserNotFoundException e) {
@@ -127,7 +127,7 @@ public class EventController {
                               @Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
                               @PathParam("eventId") long eventId) {
         try {
-            authorizationService.checkTokenWithEventId(authorization, eventId);
+            authorizationService.checkToken(authorization);
             return Response.ok(eventService.editEvent(resource, eventId)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
@@ -151,7 +151,7 @@ public class EventController {
                                  @Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
                                  @PathParam("eventId") long eventId) {
         try {
-            authorizationService.checkTokenWithEventId(authorization, eventId);
+            authorizationService.checkToken(authorization);
             return Response.ok(eventService.addEventAttendees(eventId, resources)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
@@ -177,7 +177,7 @@ public class EventController {
                                     @Valid @NotNull(message = "Request body may not be null") Collection<GetUserResource> resources,
                                     @PathParam("eventId") long eventId) {
         try {
-            authorizationService.checkTokenWithEventId(authorization, eventId);
+            authorizationService.checkToken(authorization);
             return Response.ok(eventService.removeEventAttendees(eventId, resources)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())

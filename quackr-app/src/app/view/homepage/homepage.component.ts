@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {UserService} from "../../service/user.service";
+import {Event} from "../../model/event";
+import {EventService} from "../../service/event.service";
+import {UNAUTHORIZED} from "http-status-codes";
+import {User} from "../../model/user";
+import { ModalDirective } from "ngx-bootstrap/modal";
 
 @Component({
   selector: 'app-homepage',
@@ -8,12 +13,92 @@ import {UserService} from "../../service/user.service";
 })
 export class HomepageComponent implements OnInit {
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private eventService: EventService) {}
+
+  @ViewChild('modal')
+  public modal:ElementRef;
+
+  private event: Event = new Event();
+
+  public users: User[] = [];
+  public events: Event[] = [];
+  userId: number;
 
   ngOnInit() {
+    this.events = [];
+    this.users = [];
+    if(UserService.getLoggedInUser() !== null) {
+      this.userId = UserService.getLoggedInUser().id;
+    }
+    this.userService.getAllUsers()
+      .then(result => {
+        this.users = result;
+        this.users.forEach(user => {
+          if(user.id === this.userId){
+            return;
+          }
+          this.eventService.getAllEvents(user.id)
+            .then(result => {
+              console.log(this.events);
+              result.forEach(r => this.events.push(r));
+            })
+            .catch(e => {
+              if(e.status === UNAUTHORIZED) {
+                this.logout();
+              }
+            });
+        })
+      }).catch(e => {
+      if(e.status === UNAUTHORIZED) {
+        this.logout();
+      }
+    });
+
   }
 
   logout() {
     this.userService.logout();
+  }
+
+  createEvent() {
+    this.eventService.createEvent(this.event, UserService.getLoggedInUser().id)
+      .then(() => this.modal.nativeElement.click())
+      .catch(e => {
+        console.log(e);
+        if(e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      })
+  }
+
+  getUserWithId(id: number): User {
+    return this.users.find(value => value.id === id);
+  }
+
+  attendEvent(userId:number, eventId:number){
+    this.eventService.addAttendeeToEvent(eventId, this.getUserWithId(userId))
+      .catch(e => {
+        console.log(e);
+        if(e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      });
+    this.events.find(value => value.id === eventId).attendees.push(this.getUserWithId(userId));
+  }
+
+  unattendEvent(userId: number, eventId: number) {
+    this.eventService.removeAttendeeFromEvent(eventId, this.getUserWithId(userId))
+      .catch(e => {
+        console.log(e);
+        if(e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      });
+    const event = this.events.find(value => value.id === eventId);
+     event.attendees = event.attendees.filter(value => value.id !== userId);
+  }
+
+  checkIsAttending(event: Event, user: User) {
+    return event.attendees.filter(value => value.id === user.id).length > 0;
   }
 }

@@ -24,6 +24,8 @@ public class GetEventResource {
 
     private Long id;
 
+    private Long organizerId;
+
     private String title;
 
     private String location;
