@@ -18,7 +18,7 @@ export class MyEventsComponent implements OnInit {
   @ViewChild('modal')
   public modal:ElementRef;
 
-  private eventToEdit: Event = new Event();
+  eventToEdit: Event = new Event();
 
   public user: User = new User();
   public events: Event[] = [];

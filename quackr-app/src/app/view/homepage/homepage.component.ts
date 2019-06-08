@@ -18,7 +18,7 @@ export class HomepageComponent implements OnInit {
   @ViewChild('modal')
   public modal:ElementRef;
 
-  private event: Event = new Event();
+  event: Event = new Event();
 
   public username = "";
   public users: User[] = [];
