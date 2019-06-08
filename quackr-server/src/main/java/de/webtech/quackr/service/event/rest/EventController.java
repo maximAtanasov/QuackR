@@ -2,6 +2,7 @@ package de.webtech.quackr.service.event.rest;
 
 import de.webtech.quackr.service.ErrorResponse;
 import de.webtech.quackr.service.authentication.AuthorizationService;
+import de.webtech.quackr.service.event.EventAttendeeLimitReachedException;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.event.EventService;
 import de.webtech.quackr.service.event.UsernameAndIdMatchException;
@@ -103,7 +104,7 @@ public class EventController {
     public Response deleteEvent(@HeaderParam("Authorization") String authorization,
                                 @PathParam("eventId") long eventId) {
         try {
-            authorizationService.checkToken(authorization);
+            authorizationService.checkTokenWithEventId(authorization, eventId);
             eventService.deleteEvent(eventId);
             return Response.ok().build();
         } catch (EventNotFoundException | UserNotFoundException e) {
@@ -127,7 +128,7 @@ public class EventController {
                               @Valid @NotNull(message = "Request body may not be null") CreateEventResource resource,
                               @PathParam("eventId") long eventId) {
         try {
-            authorizationService.checkToken(authorization);
+            authorizationService.checkTokenWithEventId(authorization, eventId);
             return Response.ok(eventService.editEvent(resource, eventId)).build();
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
@@ -156,7 +157,7 @@ public class EventController {
         } catch (EventNotFoundException | UserNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity(new ErrorResponse(e.getMessage())).build();
-        } catch (UsernameAndIdMatchException e) {
+        } catch (UsernameAndIdMatchException | EventAttendeeLimitReachedException e) {
             return Response.status(422)
                     .entity(new ErrorResponse(e.getMessage())).build();
         }

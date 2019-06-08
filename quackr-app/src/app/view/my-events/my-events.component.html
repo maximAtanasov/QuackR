@@ -9,14 +9,18 @@
         <a class="nav-link" [routerLink]="'/events/user/'+userId">My events</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Events I'm going to</a>
+        <a class="nav-link" [routerLink]="'/visiting/'+userId">Events I'm going to</a>
       </li>
     </ul>
-    <form class="form-inline">
-      <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-light" (click)="logout()">Logout</button>
+    <div class="dropdown">
+      <button class="btn btn-light dropdown-toggle" style="width: 160px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{user.username}}
+      </button>
+      <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" [routerLink]="'/edit-user/'+userId">Account settings</a>
+        <button class="dropdown-item" (click)="logout()">Logout</button>
       </div>
-    </form>
+    </div>
   </div>
 </nav>
 <div style="height: 100px"></div>
@@ -25,6 +29,9 @@
 </div>
 
 <div class="cards" *ngFor="let event of events">
+  <div style="font-size: 16pt; margin-bottom: 50px">
+    Events you're currently holding:
+  </div>
   <div class="card">
     <div class="card-body">
       <h5 class="card-title"><b>{{event.title}}</b></h5>
@@ -35,10 +42,56 @@
         <p class="card-text">Location: <b>{{event.location}}</b></p>
         <p class="card-text">Date: <b>{{event.date}}</b></p>
         <p class="card-text">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
+        <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-danger">Delete</button>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#modal" (click)="eventToEdit = event" style="width: 80px">Edit</button>
       </div>
     </div>
   </div>
 </div>
+
+
+<!-- Edit Event Modal Form -->
+<div #modal class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit event</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editEventForm" ngNativeValidate (ngSubmit)="editEvent()" class="form">
+          <div class="form-group">
+            <label for="inputTitle">Title</label>
+            <input type="text" class="form-control" [(ngModel)]="eventToEdit.title" name="inputTitle" id="inputTitle" placeholder="Title" required>
+          </div>
+          <div class="form-group">
+            <label for="inputDescription">Description</label>
+            <input type="text" class="form-control" [(ngModel)]="eventToEdit.description" name="inputDescription" id="inputDescription" placeholder="Description" required>
+          </div>
+          <div class="form-group">
+            <label for="inputLocation">Location</label>
+            <input type="text" class="form-control" [(ngModel)]="eventToEdit.location" name="inputLocation" id="inputLocation" placeholder="Location" required>
+          </div>
+          <div class="form-group">
+            <label for="inputDate">Date</label>
+            <input type="date" class="form-control" [(ngModel)]="eventToEdit.date" name="inputDate" id="inputDate" placeholder="Date" required>
+          </div>
+          <div class="form-group">
+            <label for="inputAttendeeLimit">Attendee limit</label>
+            <input type="number" min="4" max="50" class="form-control" [(ngModel)]="eventToEdit.attendeeLimit" name="inputAttendeeLimit" id="inputAttendeeLimit" placeholder="Attendee limit" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" form="editEventForm" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div style="height: 70px;"></div>
 <app-footer></app-footer>

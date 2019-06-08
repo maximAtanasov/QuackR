@@ -42,8 +42,15 @@ export class EventService {
     }).toPromise();
   }
 
-  public editEvent(eventId: number): Promise<Event> {
-    return this.httpClient.get<Event>(this.apiURL + 'events/' + eventId).toPromise();
+  public editEvent(event: Event, eventId: number): Promise<Event> {
+    return this.httpClient.post<Event>(this.apiURL + 'events/'+eventId, {
+      title: event.title,
+      date: event.date,
+      location: event.location,
+      description: event.description,
+      attendeeLimit: event.attendeeLimit,
+      public: true
+    }).toPromise();
   }
 
   public deleteEvent(eventId: number) {

@@ -68,4 +68,16 @@ public class AuthorizationService {
         }
         return checkTokenWithUserId(token, userId);
     }
+
+    public UserEntity checkTokenWithEventId(String token, Long eventId) throws UserNotFoundException, EventNotFoundException {
+        Long userId;
+        Optional<EventEntity> eventEntity = eventRepository.findById(eventId);
+        if(eventEntity.isPresent()){
+            userId = eventEntity.get().getOrganizer().getId();
+        } else {
+            throw new EventNotFoundException(eventId);
+        }
+        return checkTokenWithUserId(token, userId);
+    }
+
 }

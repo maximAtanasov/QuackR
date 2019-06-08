@@ -13,12 +13,14 @@ import {FormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./auth.interceptor";
 import { MyEventsComponent } from './view/my-events/my-events.component';
+import { VisitingEventsComponent } from './view/visiting-events/visiting-events.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'home', component: HomepageComponent },
   {path: 'events/user/:id', component: MyEventsComponent},
+  {path: 'visiting/:id', component: VisitingEventsComponent},
   { path: '', redirectTo: '/home', pathMatch: 'full'}
 ];
 
@@ -30,7 +32,8 @@ const appRoutes: Routes = [
     HeaderComponent,
     RegisterPageComponent,
     FooterComponent,
-    MyEventsComponent
+    MyEventsComponent,
+    VisitingEventsComponent
   ],
   imports: [
     BrowserModule,

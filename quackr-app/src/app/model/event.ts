@@ -5,7 +5,7 @@ export class Event {
   public organizerId: number;
   public title: string;
   public location: string;
-  public date: string;
+  public date: any;
   public description: string;
   public attendeeLimit: number;
   public attendees: User[];

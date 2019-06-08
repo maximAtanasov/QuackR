@@ -9,14 +9,18 @@
               <a class="nav-link" [routerLink]="'/events/user/'+userId">My events</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Events I'm going to</a>
+        <a class="nav-link" [routerLink]="'/visiting/'+userId">Events I'm going to</a>
       </li>
     </ul>
-    <form class="form-inline">
-      <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-light" (click)="logout()">Logout</button>
+    <div class="dropdown">
+      <button class="btn btn-light dropdown-toggle" style="width: 160px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{username}}
+      </button>
+      <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" [routerLink]="'/edit-user/'+userId">Account settings</a>
+        <button class="dropdown-item" (click)="logout()">Logout</button>
       </div>
-    </form>
+    </div>
   </div>
 </nav>
 <div style="height: 100px"></div>
@@ -78,13 +82,18 @@
       <h5 class="card-title"><b>{{event.title}}</b></h5>
       <div class="col-6" style="float: left">
         <p class="card-text">{{event.description}}</p>
+        <p class="card-text"><b>Who's going:</b></p>
+        <div *ngFor="let attendee of event.attendees">
+          <p class="card-text">{{attendee.username}}</p>
+        </div>
       </div>
       <div class="col-6" style="float:right;">
         <p class="card-text">Organizer: <b>{{getUserWithId(event.organizerId).username}}</b></p>
         <p class="card-text">Location: <b>{{event.location}}</b></p>
         <p class="card-text">Date: <b>{{event.date}}</b></p>
         <p class="card-text">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
-        <button *ngIf="!checkIsAttending(event, getUserWithId(userId))" (click)="attendEvent(userId, event.id)" class="btn btn-primary">Attend</button>
+        <button *ngIf="!checkIsAttending(event, getUserWithId(userId))" (click)="attendEvent(userId, event.id)"
+                [disabled]="event.attendees.length === event.attendeeLimit" class="btn btn-primary">Attend</button>
         <button *ngIf="checkIsAttending(event, getUserWithId(userId))" (click)="unattendEvent(userId, event.id)" class="btn btn-danger">Unattend</button>
       </div>
     </div>

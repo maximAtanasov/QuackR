@@ -98,9 +98,12 @@ public class EventService {
      * @throws UsernameAndIdMatchException Thrown if a username does not match with an id.
      */
     public GetEventResource addEventAttendees(long eventId, Collection<GetUserResource> users)
-            throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+            throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException, EventAttendeeLimitReachedException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
+            if(event.get().getAttendees().size() == event.get().getAttendeeLimit()){
+                throw new EventAttendeeLimitReachedException();
+            }
             Collection<UserEntity> userEntities = getEntitiesForResources(users);
             userEntities.forEach(u -> {
                 if(!event.get().getAttendees().contains(u)){

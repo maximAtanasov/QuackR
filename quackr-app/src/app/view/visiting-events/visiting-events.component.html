@@ -1,0 +1,55 @@
+<nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-primary shadow" style="height: 70px">
+  <a class="navbar-brand" href="#" style="font-size: 20pt" [routerLink]="['/home']">quackR</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="'/events/user/'+userId">My events</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="'/visiting/'+userId">Events I'm going to</a>
+      </li>
+    </ul>
+    <div class="dropdown">
+      <button class="btn btn-light dropdown-toggle" style="width: 160px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{username}}
+      </button>
+      <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" [routerLink]="'/edit-user/'+userId">Account settings</a>
+        <button class="dropdown-item" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+<div style="height: 100px"></div>
+
+<div *ngIf="events.length === 0" class="cards" style="font-size: 18pt">
+  Oops, it looks like you aren't visiting any events at the moment.
+  Go find some on the homepage :)
+</div>
+
+<div class="cards" style="font-size: 16pt; margin-bottom: 50px">
+  Events you're going to:
+</div>
+<div class="cards" *ngFor="let event of events">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title"><b>{{event.title}}</b></h5>
+      <div class="col-6" style="float: left">
+        <p class="card-text">{{event.description}}</p>
+      </div>
+      <div class="col-6" style="float:right;">
+        <p class="card-text">Organizer: <b>{{getUserWithId(event.organizerId).username}}</b></p>
+        <p class="card-text">Location: <b>{{event.location}}</b></p>
+        <p class="card-text">Date: <b>{{event.date}}</b></p>
+        <p class="card-text">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
+        <button (click)="unattendEvent(userId, event.id)" class="btn btn-danger">Unattend</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height: 70px;"></div>
+<app-footer></app-footer>

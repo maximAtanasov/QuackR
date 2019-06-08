@@ -20,6 +20,7 @@ export class HomepageComponent implements OnInit {
 
   private event: Event = new Event();
 
+  public username = "";
   public users: User[] = [];
   public events: Event[] = [];
   userId: number;
@@ -29,6 +30,7 @@ export class HomepageComponent implements OnInit {
     this.users = [];
     if(UserService.getLoggedInUser() !== null) {
       this.userId = UserService.getLoggedInUser().id;
+      this.username = UserService.getLoggedInUser().username;
     }
     this.userService.getAllUsers()
       .then(result => {
@@ -39,8 +41,8 @@ export class HomepageComponent implements OnInit {
           }
           this.eventService.getAllEvents(user.id)
             .then(result => {
-              console.log(this.events);
               result.forEach(r => this.events.push(r));
+              this.events.forEach(value => value.date = new Date(value.date).toISOString().split('T')[0]);
             })
             .catch(e => {
               if(e.status === UNAUTHORIZED) {
@@ -64,7 +66,6 @@ export class HomepageComponent implements OnInit {
     this.eventService.createEvent(this.event, UserService.getLoggedInUser().id)
       .then(() => this.modal.nativeElement.click())
       .catch(e => {
-        console.log(e);
         if(e.status === UNAUTHORIZED) {
           this.logout();
         }
@@ -78,7 +79,6 @@ export class HomepageComponent implements OnInit {
   attendEvent(userId:number, eventId:number){
     this.eventService.addAttendeeToEvent(eventId, this.getUserWithId(userId))
       .catch(e => {
-        console.log(e);
         if(e.status === UNAUTHORIZED) {
           this.logout();
         }
@@ -89,7 +89,6 @@ export class HomepageComponent implements OnInit {
   unattendEvent(userId: number, eventId: number) {
     this.eventService.removeAttendeeFromEvent(eventId, this.getUserWithId(userId))
       .catch(e => {
-        console.log(e);
         if(e.status === UNAUTHORIZED) {
           this.logout();
         }
