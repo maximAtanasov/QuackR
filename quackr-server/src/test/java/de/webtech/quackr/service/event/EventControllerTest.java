@@ -175,7 +175,7 @@ public class EventControllerTest extends ControllerTestTemplate {
      * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test
-    public void testAddAttendeeToEvent() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+    public void testAddAttendeeToEvent() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException, EventAttendeeLimitReachedException {
         testGetResource.getAttendees().add(new GetUserResource(2L, "testUser", 30L, UserRole.USER));
 
 

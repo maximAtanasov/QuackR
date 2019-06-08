@@ -222,7 +222,7 @@ public class EventServiceTest {
      * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test
-    public void testAddAttendees() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+    public void testAddAttendees() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException, EventAttendeeLimitReachedException {
         GetEventResource result = eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L, UserRole.USER)));
         Assert.assertEquals(1L, result.getAttendees().size());
@@ -238,7 +238,7 @@ public class EventServiceTest {
      * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test(expected = EventNotFoundException.class)
-    public void testAddAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+    public void testAddAttendeesThrowsExceptionIfEventNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException, EventAttendeeLimitReachedException {
         eventService.addEventAttendees(7L,
                 Collections.singletonList(new GetUserResource(1L, "testUser", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
@@ -252,7 +252,7 @@ public class EventServiceTest {
      * @throws UsernameAndIdMatchException Not thrown in this test.
      */
     @Test(expected = UserNotFoundException.class)
-    public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+    public void testAddAttendeesThrowsExceptionIfUserNotFound() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException, EventAttendeeLimitReachedException {
         eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(7L, "testUser", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
@@ -266,7 +266,7 @@ public class EventServiceTest {
      * @throws UsernameAndIdMatchException Checked in this test.
      */
     @Test(expected = UsernameAndIdMatchException.class)
-    public void testAddAttendeesThrowsExceptionIfUsernameAndIdDoNotMatch() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException {
+    public void testAddAttendeesThrowsExceptionIfUsernameAndIdDoNotMatch() throws EventNotFoundException, UserNotFoundException, UsernameAndIdMatchException, EventAttendeeLimitReachedException {
         eventService.addEventAttendees(2L,
                 Collections.singletonList(new GetUserResource(8L, "testUser3", 3L, UserRole.USER)));
         Mockito.verify(eventRepository, Mockito.times(0)).save(any());
