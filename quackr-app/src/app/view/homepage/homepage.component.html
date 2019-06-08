@@ -1,30 +1,4 @@
-<nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-primary shadow" style="height: 70px">
-  <a class="navbar-brand" href="#" style="font-size: 20pt" [routerLink]="['/home']">quackR</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-              <a class="nav-link" [routerLink]="'/events/user/'+userId">My events</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="'/visiting/'+userId">Events I'm going to</a>
-      </li>
-    </ul>
-    <div class="dropdown">
-      <button class="btn btn-light dropdown-toggle" style="width: 160px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{username}}
-      </button>
-      <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" [routerLink]="'/edit-user/'+userId">Account settings</a>
-        <button class="dropdown-item" (click)="logout()">Logout</button>
-      </div>
-    </div>
-  </div>
-</nav>
-<div style="height: 100px"></div>
-
+<app-header [userId]="userId" [username]="username"></app-header>
 <button type="button" class="cards btn btn-primary" data-toggle="modal" data-target="#modal">
   Post your own event
 </button>
