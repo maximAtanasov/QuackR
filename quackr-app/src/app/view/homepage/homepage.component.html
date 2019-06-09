@@ -22,19 +22,19 @@
         <form id="createEventForm" ngNativeValidate (ngSubmit)="createEvent()" class="form">
           <div class="form-group">
             <label for="inputTitle">Title</label>
-            <input type="text" class="form-control" [(ngModel)]="event.title" name="inputTitle" id="inputTitle" placeholder="Title" required>
+            <input type="text" maxlength="255" class="form-control" [(ngModel)]="event.title" name="inputTitle" id="inputTitle" placeholder="Title" required>
           </div>
           <div class="form-group">
             <label for="inputDescription">Description</label>
-            <input type="text" class="form-control" [(ngModel)]="event.description" name="inputDescription" id="inputDescription" placeholder="Description" required>
+            <input type="text" maxlength="255" class="form-control" [(ngModel)]="event.description" name="inputDescription" id="inputDescription" placeholder="Description" required>
           </div>
           <div class="form-group">
             <label for="inputLocation">Location</label>
-            <input type="text" class="form-control" [(ngModel)]="event.location" name="inputLocation" id="inputLocation" placeholder="Location" required>
+            <input type="text" maxlength="255" class="form-control" [(ngModel)]="event.location" name="inputLocation" id="inputLocation" placeholder="Location" required>
           </div>
           <div class="form-group">
             <label for="inputDate">Date</label>
-            <input type="date" class="form-control" [(ngModel)]="event.date" name="inputDate" id="inputDate" placeholder="Date" required>
+            <input type="date" [min]="now()" class="form-control" [(ngModel)]="event.date" name="inputDate" id="inputDate" placeholder="Date" required>
           </div>
           <div class="form-group">
             <label for="inputAttendeeLimit">Attendee limit</label>

@@ -39,8 +39,8 @@ public class EventControllerTest extends ControllerTestTemplate {
     @Before
     public void setUp() {
         testGetResource = new GetEventResource();
-        testGetResource.setAttendeeLimit(20L);
-        testGetResource.setDate(new Date());
+        testGetResource.setAttendeeLimit(20);
+        testGetResource.setDate(new Date(new Date().getTime()+1000));
         testGetResource.setDescription("something");
         testGetResource.setLocation("Somewhere");
         testGetResource.setPublic(true);
@@ -48,8 +48,8 @@ public class EventControllerTest extends ControllerTestTemplate {
         testGetResource.setId(1L);
 
         testCreateResource = new CreateEventResource();
-        testCreateResource.setAttendeeLimit(20L);
-        testCreateResource.setDate(new Date());
+        testCreateResource.setAttendeeLimit(20);
+        testCreateResource.setDate(new Date(new Date().getTime()+1000));
         testCreateResource.setDescription("something");
         testCreateResource.setLocation("Somewhere");
         testCreateResource.setPublic(true);

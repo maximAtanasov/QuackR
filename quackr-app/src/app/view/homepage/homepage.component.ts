@@ -100,4 +100,10 @@ export class HomepageComponent implements OnInit {
   checkIsAttending(event: Event, user: User) {
     return event.attendees.filter(value => value.id === user.id).length > 0;
   }
+
+  now() {
+    const date = new Date();
+    date.setDate(new Date().getDate()+1);
+    return date.toISOString().split('T')[0];
+  }
 }

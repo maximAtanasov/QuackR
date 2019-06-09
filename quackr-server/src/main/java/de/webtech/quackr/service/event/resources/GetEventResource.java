@@ -34,7 +34,7 @@ public class GetEventResource {
 
     private String description;
 
-    private Long attendeeLimit;
+    private Integer attendeeLimit;
 
     private boolean isPublic;
 

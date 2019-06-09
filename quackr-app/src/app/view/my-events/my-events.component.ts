@@ -68,9 +68,16 @@ export class MyEventsComponent implements OnInit {
     this.eventService.editEvent(this.eventToEdit, this.eventToEdit.id)
       .then(() => this.modal.nativeElement.click())
       .catch(e => {
+        console.log(e);
         if(e.status === UNAUTHORIZED) {
           this.logout();
         }
       })
+  }
+
+  now() {
+    const date = new Date();
+    date.setDate(new Date().getDate()+1);
+    return date.toISOString().split('T')[0];
   }
 }

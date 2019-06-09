@@ -2,8 +2,9 @@ package de.webtech.quackr.service.event.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 /**
@@ -15,19 +16,25 @@ import java.util.Date;
 public class CreateEventResource {
 
     @NotNull(message = "The title may not be null")
+    @Size(max = 255)
     private String title;
 
     @NotNull(message = "The location may not be null")
+    @Size(max = 255)
     private String location;
 
+    @Future
     @NotNull(message = "The date may not be null")
     private Date date;
 
     @NotNull(message = "The description may not be null")
+    @Size(max = 255)
     private String description;
 
     @NotNull(message = "The attendeeLimit may not be null")
-    private Long attendeeLimit;
+    @Max(value = 50)
+    @Min(value = 4)
+    private Integer attendeeLimit;
 
     @NotNull(message = "The attribute 'public' may not be null")
     @JsonProperty(value = "public")

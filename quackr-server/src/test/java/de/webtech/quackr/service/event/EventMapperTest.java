@@ -32,7 +32,7 @@ public class EventMapperTest {
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
         entity.setDescription("BBQ at Stan");
-        entity.setAttendeeLimit(20L);
+        entity.setAttendeeLimit(20);
         entity.setOrganizer(new UserEntity());
         entity.setLocation("Stan's place");
         entity.setDate(new Date());
@@ -61,7 +61,7 @@ public class EventMapperTest {
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
         entity.setDescription("BBQ at Stan");
-        entity.setAttendeeLimit(20L);
+        entity.setAttendeeLimit(20);
         entity.setOrganizer(new UserEntity());
         entity.setLocation("Stan's place");
         entity.setDate(new Date());
@@ -89,7 +89,7 @@ public class EventMapperTest {
         EventEntity entity1 = new EventEntity();
         entity1.setTitle("BBQ1");
         entity1.setDescription("BBQ at Stan1");
-        entity1.setAttendeeLimit(20L);
+        entity1.setAttendeeLimit(20);
         entity1.setOrganizer(new UserEntity());
         entity1.setLocation("Stan's place1");
         entity1.setDate(new Date());
@@ -101,7 +101,7 @@ public class EventMapperTest {
         EventEntity entity2 = new EventEntity();
         entity2.setTitle("BBQ2");
         entity2.setDescription("BBQ at Stan2");
-        entity2.setAttendeeLimit(22L);
+        entity2.setAttendeeLimit(22);
         entity2.setOrganizer(new UserEntity());
         entity2.setLocation("Stan's place2");
         entity2.setDate(new Date());
@@ -113,7 +113,7 @@ public class EventMapperTest {
         EventEntity entity3 = new EventEntity();
         entity3.setTitle("BBQ3");
         entity3.setDescription("BBQ at Stan3");
-        entity3.setAttendeeLimit(23L);
+        entity3.setAttendeeLimit(23);
         entity3.setOrganizer(new UserEntity());
         entity3.setLocation("Stan's place3");
         entity3.setDate(new Date());

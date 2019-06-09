@@ -36,7 +36,7 @@ public class EventEntity {
     private String description;
 
     @Column(nullable = false)
-    private Long attendeeLimit;
+    private Integer attendeeLimit;
 
     @Column(nullable = false)
     private boolean isPublic;

@@ -27,7 +27,7 @@ public class CommentRepositoryTest extends RepositoryTestTemplate {
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
-        eventEntity1.setAttendeeLimit(10L);
+        eventEntity1.setAttendeeLimit(10);
         eventEntity1.setDate(new Date());
         eventEntity1.setDescription("TEST");
         eventEntity1.setTitle("TEST_EVENT");
@@ -67,7 +67,7 @@ public class CommentRepositoryTest extends RepositoryTestTemplate {
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
-        eventEntity1.setAttendeeLimit(10L);
+        eventEntity1.setAttendeeLimit(10);
         eventEntity1.setDate(new Date());
         eventEntity1.setDescription("TEST");
         eventEntity1.setTitle("TEST_EVENT");
@@ -103,7 +103,7 @@ public class CommentRepositoryTest extends RepositoryTestTemplate {
         entityManager.persist(userEntity1);
 
         EventEntity eventEntity1 = new EventEntity();
-        eventEntity1.setAttendeeLimit(10L);
+        eventEntity1.setAttendeeLimit(10);
         eventEntity1.setDate(new Date());
         eventEntity1.setDescription("TEST");
         eventEntity1.setTitle("TEST_EVENT");

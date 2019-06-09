@@ -28,7 +28,7 @@ public class EventRepositoryTest extends RepositoryTestTemplate {
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
-        eventEntity1.setAttendeeLimit(10L);
+        eventEntity1.setAttendeeLimit(10);
         eventEntity1.setDate(new Date());
         eventEntity1.setDescription("TEST");
         eventEntity1.setTitle("TEST_EVENT");
@@ -36,7 +36,7 @@ public class EventRepositoryTest extends RepositoryTestTemplate {
         eventEntity1.setOrganizer(userEntity1);
 
         EventEntity eventEntity2 = new EventEntity();
-        eventEntity2.setAttendeeLimit(10L);
+        eventEntity2.setAttendeeLimit(10);
         eventEntity2.setDate(new Date());
         eventEntity2.setDescription("TEST");
         eventEntity2.setTitle("TEST_EVENT_2");
@@ -62,7 +62,7 @@ public class EventRepositoryTest extends RepositoryTestTemplate {
         entityManager.persist(userEntity2);
 
         EventEntity eventEntity1 = new EventEntity();
-        eventEntity1.setAttendeeLimit(10L);
+        eventEntity1.setAttendeeLimit(10);
         eventEntity1.setDate(new Date());
         eventEntity1.setDescription("TEST");
         eventEntity1.setTitle("TEST");
@@ -71,7 +71,7 @@ public class EventRepositoryTest extends RepositoryTestTemplate {
         eventEntity1.getAttendees().add(userEntity);
 
         EventEntity eventEntity2 = new EventEntity();
-        eventEntity2.setAttendeeLimit(10L);
+        eventEntity2.setAttendeeLimit(10);
         eventEntity2.setDate(new Date());
         eventEntity2.setDescription("TEST");
         eventEntity2.setTitle("TEST");

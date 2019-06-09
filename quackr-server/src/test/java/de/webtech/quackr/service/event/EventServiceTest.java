@@ -60,7 +60,7 @@ public class EventServiceTest {
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
         entity.setDescription("BBQ at Stan");
-        entity.setAttendeeLimit(20L);
+        entity.setAttendeeLimit(20);
         entity.setOrganizer(new UserEntity());
         entity.setLocation("Stan's place");
         entity.setDate(new Date());
@@ -134,7 +134,7 @@ public class EventServiceTest {
         resource.setDate(new Date());
         resource.setLocation("Somewhere");
         resource.setPublic(false);
-        resource.setAttendeeLimit(20L);
+        resource.setAttendeeLimit(20);
 
         GetEventResource result = eventService.createEvent(resource, 1L);
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());
@@ -170,7 +170,7 @@ public class EventServiceTest {
         resource.setDate(new Date());
         resource.setLocation("Somewhere");
         resource.setPublic(false);
-        resource.setAttendeeLimit(20L);
+        resource.setAttendeeLimit(20);
 
         GetEventResource result = eventService.editEvent(resource, 2L);
         Mockito.verify(eventRepository, Mockito.times(1)).save(any());

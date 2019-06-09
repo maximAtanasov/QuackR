@@ -61,7 +61,7 @@ public class CommentServiceTest {
         EventEntity entity = new EventEntity();
         entity.setTitle("BBQ");
         entity.setDescription("BBQ at Stan");
-        entity.setAttendeeLimit(20L);
+        entity.setAttendeeLimit(20);
         entity.setOrganizer(new UserEntity());
         entity.setLocation("Stan's place");
         entity.setDate(new Date());
