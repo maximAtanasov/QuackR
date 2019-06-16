@@ -1,18 +1,17 @@
 <nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-primary shadow" style="height: 70px">
-  <a class="navbar-brand" href="#" style="font-size: 20pt" [routerLink]="['/home']">quackR</a>
+  <a class="navbar-brand" href="#" style="font-size: 20pt" [routerLink]="['/home']">
+    <img width="50px" height="50px" src="assets/img/duck_logo.svg"/>
+    quackR</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav mr-auto">
-      <!--<li class="nav-item"
-              <a class="nav-link" href="#">About</a>
-            </li>-->
     </ul>
     <form class="form-inline">
       <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-light" [routerLink]="'/login'">Log in</button>
-        <button type="button" class="btn btn-danger" [routerLink]="'/register'">Sign up</button>
+        <button type="button" class="btn btn-success text-light" [routerLink]="'/login'">Log in</button>
+        <button type="button" class="btn btn-secondary text-light" [routerLink]="'/register'">Sign up</button>
       </div>
     </form>
   </div>
@@ -23,24 +22,24 @@
 
 <form ngNativeValidate (ngSubmit)="submitForm()" class="form">
 
-  <h2 style="margin-bottom: 30px">Sign up for quackR</h2>
+  <h2 class="text-secondary" style="margin-bottom: 30px">Sign up for quackR</h2>
 
   <div class="form-group">
-    <label for="inputUsername">Username </label>
+    <label class="text-dark" for="inputUsername">Username </label>
     <input type="text" maxlength="100" [(ngModel)]="username" autofocus class="form-control" name="inputUsername" id="inputUsername" placeholder="Enter username" required>
     <div style="color: red" *ngIf="invalidUser">A user with this username already exists!</div>
   </div>
   <div class="form-group">
-    <label for="inputPassword">Password</label>
+    <label class="text-dark" for="inputPassword">Password</label>
     <input type="password" maxlength="100" [(ngModel)]="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required>
     <div style="color: red" *ngIf="invalidPassword">The password must be at least 8 sybmols long and contain a digit!</div>
   </div>
   <div class="form-group">
-    <label for="inputConfirmPassword">Confirm password</label>
+    <label class="text-dark" for="inputConfirmPassword">Confirm password</label>
     <input type="password" maxlength="100" [(ngModel)]="confirmPassword" class="form-control" name="inputConfirmPassword" id="inputConfirmPassword" placeholder="Confirm password" required>
     <div style="color: red" *ngIf="passwordsDoNotMatch">Passwords do not match!</div>
   </div>
-  <button type="submit" class="btn btn-primary">Sign up</button>
+  <button type="submit" class="btn btn-success text-light">Sign up</button>
 </form>
 
 <app-footer></app-footer>

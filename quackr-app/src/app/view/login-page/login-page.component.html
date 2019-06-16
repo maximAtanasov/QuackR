@@ -1,5 +1,7 @@
 <nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-primary shadow" style="height: 70px">
-  <a class="navbar-brand" href="#" style="font-size: 20pt" [routerLink]="['/home']">quackR</a>
+  <a class="navbar-brand" style="font-size: 20pt" [routerLink]="['/home']">
+    <img width="50px" height="50px" src="assets/img/duck_logo.svg"/>
+    quackR</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -8,8 +10,8 @@
     </ul>
     <form class="form-inline">
       <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-danger" [routerLink]="'/login'">Log in</button>
-        <button type="button" class="btn btn-light" [routerLink]="'/register'">Sign up</button>
+        <button type="button" class="btn btn-secondary text-light" [routerLink]="'/login'">Log in</button>
+        <button type="button" class="btn btn-success text-light" [routerLink]="'/register'">Sign up</button>
       </div>
     </form>
   </div>
@@ -20,21 +22,21 @@
 
 <form ngNativeValidate (ngSubmit)="submitForm()" class="form">
 
-  <h2 style="margin-bottom: 30px">Log in to quackR</h2>
+  <h2 class="text-secondary" style="margin-bottom: 30px">Log in to quackR</h2>
 
   <div class="form-group">
-    <label for="inputUsername">Username </label>
+    <label class="text-success" for="inputUsername">Username </label>
     <input type="text" maxlength="100" [(ngModel)]="username" class="form-control" name="inputUsername" id="inputUsername" placeholder="Username"
           autofocus required>
-    <div style="color: red" *ngIf="invalidUser">No user with this username found!</div>
+    <div class="text-danger" *ngIf="invalidUser">No user with this username found!</div>
   </div>
   <div class="form-group">
-    <label for="inputPassword">Password</label>
+    <label class="text-success" for="inputPassword">Password</label>
     <input type="password" maxlength="100" [(ngModel)]="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password"
     required>
-    <div style="color: red" *ngIf="invalidPassword">Wrong password!</div>
+    <div class="text-danger" *ngIf="invalidPassword">Wrong password!</div>
   </div>
-  <button type="submit" class="btn btn-primary">Login</button>
+  <button type="submit" class="btn btn-success">Login</button>
 </form>
 
 <app-footer></app-footer>
