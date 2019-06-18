@@ -1,12 +1,13 @@
 <app-header [userId]="userId" [username]="username"></app-header>
+<title>Visiting Events</title>
 <div *ngIf="events.length === 0" class="cards" style="font-size: 18pt">
   Oops, it looks like you aren't visiting any events at the moment.
   Go find some on the homepage :)
 </div>
 
-<div class="cards" *ngIf="events.length > 0" style="font-size: 16pt; margin-bottom: 50px">
+<h3><div class="cards text-success" *ngIf="events.length > 0" style="font-size: 16pt; margin-bottom: 50px">
   Events you're going to:
-</div>
+</div></h3>
 <div class="cards" *ngFor="let event of events">
   <div class="card">
     <div class="card-body">
