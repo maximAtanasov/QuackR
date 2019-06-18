@@ -15,9 +15,11 @@ import {AuthInterceptor} from "./auth.interceptor";
 import { MyEventsComponent } from './view/my-events/my-events.component';
 import { VisitingEventsComponent } from './view/visiting-events/visiting-events.component';
 import { EditUserComponent } from './view/edit-user/edit-user.component';
+import { AboutComponent } from './view/about/about.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginPageComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'home', component: HomepageComponent },
   {path: 'events/user/:id', component: MyEventsComponent},
@@ -36,7 +38,8 @@ const appRoutes: Routes = [
     FooterComponent,
     MyEventsComponent,
     VisitingEventsComponent,
-    EditUserComponent
+    EditUserComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
