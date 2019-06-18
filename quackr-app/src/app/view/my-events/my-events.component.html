@@ -1,13 +1,15 @@
 <app-header [userId]="userId" [username]="user.username"></app-header>
+
+<h3><div class="text-success cards" style="font-size: 16pt; margin-bottom: 50px">
+  Events you're currently holding:
+</div></h3>
+
 <div *ngIf="events.length === 0" class="cards text-dark" style="font-size: 18pt">
   Oops, it looks like you're not holding any events at the moment.
 </div>
 <!-- Create Event Modal Form shte e gotino i tuk da go ima-->
-
 <div class="cards" *ngFor="let event of events">
-  <h3><div class="text-success" style="font-size: 16pt; margin-bottom: 50px">
-    Events you're currently holding:
-  </div></h3>
+
   <div class="card">
     <div class="card-body">
       <h4 class="card-title text-secondary"><b>{{event.title}}</b></h4>
