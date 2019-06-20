@@ -41,6 +41,15 @@ export class MyEventsComponent implements OnInit {
         .then(result => {
           result.forEach(r => this.events.push(r));
           this.events.forEach(value => value.date = new Date(value.date).toISOString().split('T')[0]);
+          this.events.sort((a, b) => {
+            if (new Date(a.date).getTime() === new Date(b.date).getTime()) {
+              return 0;
+            } else if (new Date(a.date).getTime() > new Date(b.date).getTime()) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
         })
         .catch(e => {
           if(e.status === UNAUTHORIZED) {
