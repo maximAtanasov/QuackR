@@ -12,7 +12,7 @@ import {UserService} from "../../service/user.service";
 export class AboutComponent implements OnInit {
 
   public username = "";
-  userId: number;
+  userId;
 
   constructor(private userService: UserService) { }
 
@@ -21,7 +21,7 @@ export class AboutComponent implements OnInit {
       this.userId = UserService.getLoggedInUser().id;
       this.username = UserService.getLoggedInUser().username;
     } else {
-      this.userService.logout();
+      this.userId = null;
     }
   }
 
