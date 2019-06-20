@@ -43,13 +43,22 @@ export class HomepageComponent implements OnInit {
             .then(result => {
               result.forEach(r => this.events.push(r));
               this.events.forEach(value => value.date = new Date(value.date).toISOString().split('T')[0]);
+              this.events.sort((a, b) => {
+                if (new Date(a.date).getTime() === new Date(b.date).getTime()) {
+                  return 0;
+                } else if (new Date(a.date).getTime() > new Date(b.date).getTime()) {
+                  return -1;
+                } else {
+                  return 1;
+                }
+              });
             })
             .catch(e => {
               if(e.status === UNAUTHORIZED) {
                 this.logout();
               }
             });
-        })
+        });
       }).catch(e => {
       if(e.status === UNAUTHORIZED) {
         this.logout();
@@ -105,5 +114,9 @@ export class HomepageComponent implements OnInit {
     const date = new Date();
     date.setDate(new Date().getDate()+1);
     return date.toISOString().split('T')[0];
+  }
+
+  isPastDate(date: any) {
+    return date < this.now();
   }
 }

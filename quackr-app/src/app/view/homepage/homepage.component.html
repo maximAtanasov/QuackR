@@ -67,7 +67,7 @@
         <p class="card-text text-success">Date: <b>{{event.date}}</b></p>
         <p class="card-text text-success">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
         <button *ngIf="!checkIsAttending(event, getUserWithId(userId))" (click)="attendEvent(userId, event.id)"
-                [disabled]="event.attendees.length === event.attendeeLimit" class="btn btn-success text-light">Attend</button>
+                [disabled]="event.attendees.length === event.attendeeLimit || isPastDate(event.date)" class="btn btn-success text-light">Attend</button>
         <button *ngIf="checkIsAttending(event, getUserWithId(userId))" (click)="unattendEvent(userId, event.id)" class="btn btn-secondary text-light">Unattend</button>
       </div>
     </div>
