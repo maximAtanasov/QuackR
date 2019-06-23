@@ -25,7 +25,7 @@ const appRoutes: Routes = [
   {path: 'events/user/:id', component: MyEventsComponent},
   {path: 'visiting/:id', component: VisitingEventsComponent},
   {path: 'edit-user/:id', component: EditUserComponent},
-  { path: '', redirectTo: '/home', pathMatch: 'full'}
+  { path: '', redirectTo: 'home', pathMatch: 'full'}
 ];
 
 @NgModule({

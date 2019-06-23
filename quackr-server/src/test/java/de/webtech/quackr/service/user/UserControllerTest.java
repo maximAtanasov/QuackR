@@ -56,14 +56,14 @@ public class UserControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateUserResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetUserResource> result1 = this.restTemplate.exchange("/users", HttpMethod.POST, entity1, GetUserResource.class);
+        ResponseEntity<GetUserResource> result1 = this.restTemplate.exchange("/api/users", HttpMethod.POST, entity1, GetUserResource.class);
         assertEquals(HttpStatus.CREATED, result1.getStatusCode());
         assertEquals(testGetResource , result1.getBody());
 
         // Test XML
         HttpEntity<CreateUserResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetUserResource> result2 = this.restTemplate.exchange("/users", HttpMethod.POST, entity2, GetUserResource.class);
+        ResponseEntity<GetUserResource> result2 = this.restTemplate.exchange("/api/users", HttpMethod.POST, entity2, GetUserResource.class);
         assertEquals(HttpStatus.CREATED, result2.getStatusCode());
         assertEquals(testGetResource , result2.getBody());
     }
@@ -80,14 +80,14 @@ public class UserControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetUserResource> result1 = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity1, GetUserResource.class);
+        ResponseEntity<GetUserResource> result1 = this.restTemplate.exchange("/api/users/1", HttpMethod.GET, entity1, GetUserResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource , result1.getBody());
 
         // Test XML
         HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
 
-        ResponseEntity<GetUserResource> result2 = this.restTemplate.exchange("/users/1", HttpMethod.GET, entity2, GetUserResource.class);
+        ResponseEntity<GetUserResource> result2 = this.restTemplate.exchange("/api/users/1", HttpMethod.GET, entity2, GetUserResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource , result2.getBody());
     }
@@ -105,14 +105,14 @@ public class UserControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateUserResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetUserResource> result1 = this.restTemplate.postForEntity("/users/1", entity1, GetUserResource.class);
+        ResponseEntity<GetUserResource> result1 = this.restTemplate.postForEntity("/api/users/1", entity1, GetUserResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<CreateUserResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetUserResource> result2 = this.restTemplate.postForEntity("/users/1", entity2, GetUserResource.class);
+        ResponseEntity<GetUserResource> result2 = this.restTemplate.postForEntity("/api/users/1", entity2, GetUserResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -130,14 +130,14 @@ public class UserControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetUserResource[]> result1 = this.restTemplate.exchange("/users", HttpMethod.GET, entity1, GetUserResource[].class);
+        ResponseEntity<GetUserResource[]> result1 = this.restTemplate.exchange("/api/users", HttpMethod.GET, entity1, GetUserResource[].class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertArrayEquals(expected, result1.getBody());
 
         // Test XML
         HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
 
-        ResponseEntity<GetUserResource[]> result2 = this.restTemplate.exchange("/users", HttpMethod.GET, entity2, GetUserResource[].class);
+        ResponseEntity<GetUserResource[]> result2 = this.restTemplate.exchange("/api/users", HttpMethod.GET, entity2, GetUserResource[].class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertArrayEquals(expected, result2.getBody());
     }
@@ -149,7 +149,7 @@ public class UserControllerTest extends ControllerTestTemplate {
     @Test
     public void testDeleteUser() throws UserNotFoundException {
         HttpEntity entity = new HttpEntity<>(headersXML);
-        ResponseEntity result2 = this.restTemplate.exchange("/users/1", HttpMethod.DELETE, entity, String.class);
+        ResponseEntity result2 = this.restTemplate.exchange("/api/users/1", HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(userService, Mockito.times(1)).deleteUser(1L);
     }
@@ -164,7 +164,7 @@ public class UserControllerTest extends ControllerTestTemplate {
 
         headersXML.remove("Authorization");
         HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser", "testPassword"), headersXML);
-        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
+        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/api/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
     }
@@ -178,7 +178,7 @@ public class UserControllerTest extends ControllerTestTemplate {
 
         headersXML.remove("Authorization");
         HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser123", "testPassword"), headersXML);
-        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
+        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/api/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertNotNull(result.getBody());
     }
@@ -192,7 +192,7 @@ public class UserControllerTest extends ControllerTestTemplate {
 
         headersXML.remove("Authorization");
         HttpEntity<LoginUserResource> entity = new HttpEntity<>(new LoginUserResource("testUser", "testPassword123"), headersXML);
-        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
+        ResponseEntity<AccessTokenResource> result = this.restTemplate.exchange("/api/users/login", HttpMethod.POST, entity, AccessTokenResource.class);
         assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
         assertNotNull(result.getBody());
     }

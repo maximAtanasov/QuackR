@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.1.4.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>de.webtech</groupId>
 	<artifactId>quackr-server</artifactId>
@@ -19,6 +19,13 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>de.webtech</groupId>
+			<artifactId>quackr-app</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -106,6 +113,28 @@
 					<forkMode>once</forkMode>
 					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<!-- here the phase you need -->
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/src/main/resources/META-INF/resources</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/../quackr-app/ui-src/META-INF/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

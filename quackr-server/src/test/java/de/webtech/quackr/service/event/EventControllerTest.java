@@ -69,14 +69,14 @@ public class EventControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateEventResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/user/1", HttpMethod.POST, entity1, GetEventResource.class);
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/api/events/user/1", HttpMethod.POST, entity1, GetEventResource.class);
         assertEquals(HttpStatus.CREATED, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<CreateEventResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/user/1", HttpMethod.POST, entity2, GetEventResource.class);
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/api/events/user/1", HttpMethod.POST, entity2, GetEventResource.class);
         assertEquals(HttpStatus.CREATED, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -95,14 +95,14 @@ public class EventControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetEventResource[]> result1 = this.restTemplate.exchange("/events/user/1", HttpMethod.GET, entity1, GetEventResource[].class);
+        ResponseEntity<GetEventResource[]> result1 = this.restTemplate.exchange("/api/events/user/1", HttpMethod.GET, entity1, GetEventResource[].class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertArrayEquals(expected, result1.getBody());
 
         // Test XML
         HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
 
-        ResponseEntity<GetEventResource[]> result2 = this.restTemplate.exchange("/events/user/1", HttpMethod.GET, entity2, GetEventResource[].class);
+        ResponseEntity<GetEventResource[]> result2 = this.restTemplate.exchange("/api/events/user/1", HttpMethod.GET, entity2, GetEventResource[].class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertArrayEquals(expected, result2.getBody());
     }
@@ -119,14 +119,14 @@ public class EventControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1", HttpMethod.GET, entity1, GetEventResource.class);
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/api/events/1", HttpMethod.GET, entity1, GetEventResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<String> entity2 = new HttpEntity<>(headersXML);
 
-        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1", HttpMethod.GET, entity2, GetEventResource.class);
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/api/events/1", HttpMethod.GET, entity2, GetEventResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -144,14 +144,14 @@ public class EventControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateEventResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1", HttpMethod.POST, entity1, GetEventResource.class);
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/api/events/1", HttpMethod.POST, entity1, GetEventResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<CreateEventResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1", HttpMethod.POST, entity2, GetEventResource.class);
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/api/events/1", HttpMethod.POST, entity2, GetEventResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -163,7 +163,7 @@ public class EventControllerTest extends ControllerTestTemplate {
     @Test
     public void testDeleteEvent() throws EventNotFoundException {
         HttpEntity entity = new HttpEntity<>(headersXML);
-        ResponseEntity result2 = this.restTemplate.exchange("/events/1", HttpMethod.DELETE, entity, String.class);
+        ResponseEntity result2 = this.restTemplate.exchange("/api/events/1", HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(eventService, Mockito.times(1)).deleteEvent(1L);
     }
@@ -187,14 +187,14 @@ public class EventControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<GetUserResource[]> entity1 = new HttpEntity<>(requestBody, headersJSON);
 
-        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1/add", HttpMethod.POST, entity1, GetEventResource.class);
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/api/events/1/add", HttpMethod.POST, entity1, GetEventResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<GetUserResource[]> entity2 = new HttpEntity<>(requestBody, headersXML);
 
-        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1/add", HttpMethod.POST, entity2, GetEventResource.class);
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/api/events/1/add", HttpMethod.POST, entity2, GetEventResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -215,14 +215,14 @@ public class EventControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<GetUserResource[]> entity1 = new HttpEntity<>(requestBody, headersJSON);
 
-        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/events/1/remove", HttpMethod.POST, entity1, GetEventResource.class);
+        ResponseEntity<GetEventResource> result1 = this.restTemplate.exchange("/api/events/1/remove", HttpMethod.POST, entity1, GetEventResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<GetUserResource[]> entity2 = new HttpEntity<>(requestBody, headersXML);
 
-        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/events/1/remove", HttpMethod.POST, entity2, GetEventResource.class);
+        ResponseEntity<GetEventResource> result2 = this.restTemplate.exchange("/api/events/1/remove", HttpMethod.POST, entity2, GetEventResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }

@@ -53,14 +53,14 @@ public class CommentControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateCommentResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/comments/event/1", HttpMethod.POST, entity1, GetCommentResource.class);
+        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/api/comments/event/1", HttpMethod.POST, entity1, GetCommentResource.class);
         assertEquals(HttpStatus.CREATED, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/comments/event/1", HttpMethod.POST, entity2, GetCommentResource.class);
+        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/api/comments/event/1", HttpMethod.POST, entity2, GetCommentResource.class);
         assertEquals(HttpStatus.CREATED, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -79,14 +79,14 @@ public class CommentControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetCommentResource[]> result1 = this.restTemplate.exchange("/comments/event/1", HttpMethod.GET, entity1, GetCommentResource[].class);
+        ResponseEntity<GetCommentResource[]> result1 = this.restTemplate.exchange("/api/comments/event/1", HttpMethod.GET, entity1, GetCommentResource[].class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertArrayEquals(expected, result1.getBody());
 
         // Test XML
         HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetCommentResource[]> result2 = this.restTemplate.exchange("/comments/event/1", HttpMethod.GET, entity2, GetCommentResource[].class);
+        ResponseEntity<GetCommentResource[]> result2 = this.restTemplate.exchange("/api/comments/event/1", HttpMethod.GET, entity2, GetCommentResource[].class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertArrayEquals(expected, result2.getBody());
     }
@@ -105,14 +105,14 @@ public class CommentControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<String> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetCommentResource[]> result1 = this.restTemplate.exchange("/comments/user/1", HttpMethod.GET, entity1, GetCommentResource[].class);
+        ResponseEntity<GetCommentResource[]> result1 = this.restTemplate.exchange("/api/comments/user/1", HttpMethod.GET, entity1, GetCommentResource[].class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertArrayEquals(expected, result1.getBody());
 
         // Test XML
         HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetCommentResource[]> result2 = this.restTemplate.exchange("/comments/user/1", HttpMethod.GET, entity2, GetCommentResource[].class);
+        ResponseEntity<GetCommentResource[]> result2 = this.restTemplate.exchange("/api/comments/user/1", HttpMethod.GET, entity2, GetCommentResource[].class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertArrayEquals(expected, result2.getBody());
     }
@@ -129,14 +129,14 @@ public class CommentControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateCommentResource> entity1 = new HttpEntity<>(headersJSON);
 
-        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/comments/1", HttpMethod.GET, entity1, GetCommentResource.class);
+        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/api/comments/1", HttpMethod.GET, entity1, GetCommentResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(headersXML);
 
-        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/comments/1", HttpMethod.GET, entity2, GetCommentResource.class);
+        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/api/comments/1", HttpMethod.GET, entity2, GetCommentResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -155,14 +155,14 @@ public class CommentControllerTest extends ControllerTestTemplate {
         // Test JSON
         HttpEntity<CreateCommentResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
 
-        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/comments/1", HttpMethod.POST, entity1, GetCommentResource.class);
+        ResponseEntity<GetCommentResource> result1 = this.restTemplate.exchange("/api/comments/1", HttpMethod.POST, entity1, GetCommentResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
         HttpEntity<CreateCommentResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
 
-        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/comments/1", HttpMethod.POST, entity2, GetCommentResource.class);
+        ResponseEntity<GetCommentResource> result2 = this.restTemplate.exchange("/api/comments/1", HttpMethod.POST, entity2, GetCommentResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         assertEquals(testGetResource, result2.getBody());
     }
@@ -174,7 +174,7 @@ public class CommentControllerTest extends ControllerTestTemplate {
     @Test
     public void testDeleteComment() throws CommentNotFoundException {
         HttpEntity entity = new HttpEntity<>(headersXML);
-        ResponseEntity result2 = this.restTemplate.exchange("/comments/3", HttpMethod.DELETE, entity, String.class);
+        ResponseEntity result2 = this.restTemplate.exchange("/api/comments/3", HttpMethod.DELETE, entity, String.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());
         Mockito.verify(commentService, Mockito.times(1)).deleteComment(3L);
     }

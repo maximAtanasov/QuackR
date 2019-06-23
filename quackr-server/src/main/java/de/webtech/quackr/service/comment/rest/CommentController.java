@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @RestController
-@Path("/comments")
+@Path("comments")
 public class CommentController {
 
     private final CommentService commentService;

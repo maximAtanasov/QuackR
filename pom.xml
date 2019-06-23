@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 	<description>Quackr backend</description>
     <modules>
+	<module>quackr-app</module>
         <module>quackr-server</module>
-		<module>quackr-app</module>
     </modules>
 </project>

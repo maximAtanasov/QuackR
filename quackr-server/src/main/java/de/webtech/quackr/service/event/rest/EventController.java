@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 import java.util.Collection;
 
 @RestController
-@Path("/events")
+@Path("events")
 public class EventController {
 
     private final EventService eventService;
