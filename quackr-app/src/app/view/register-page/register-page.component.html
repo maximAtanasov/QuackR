@@ -20,26 +20,41 @@
 
 </div>
 
-<form ngNativeValidate (ngSubmit)="submitForm()" class="form">
+<div class="col-12">
+  <div class="text col-6">
+    <h2>What is quackR?</h2>
+    <br>
 
-  <h2 class="text-secondary" style="margin-bottom: 30px">Sign up for quackR</h2>
+    <p>quackR was created to help with the organisation of all types of activities.
+      Whether it's organazing small barbeques or massive parites, there's a place for everyone.</p>
+    <p>Your ideas and suggestions help us to constantly improve quackR’s features.
+      Let us know how we can improve your experience at <b>quackr.gmbh@gmail.com</b></p>
+  </div>
 
-  <div class="form-group">
-    <label class="text-dark" for="inputUsername">Username </label>
-    <input type="text" maxlength="100" [(ngModel)]="username" autofocus class="form-control" name="inputUsername" id="inputUsername" placeholder="Enter username" required>
-    <div style="color: red" *ngIf="invalidUser">A user with this username already exists!</div>
-  </div>
-  <div class="form-group">
-    <label class="text-dark" for="inputPassword">Password</label>
-    <input type="password" maxlength="100" [(ngModel)]="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required>
-    <div style="color: red" *ngIf="invalidPassword">The password must be at least 8 symbols long and contain a digit!</div>
-  </div>
-  <div class="form-group">
-    <label class="text-dark" for="inputConfirmPassword">Confirm password</label>
-    <input type="password" maxlength="100" [(ngModel)]="confirmPassword" class="form-control" name="inputConfirmPassword" id="inputConfirmPassword" placeholder="Confirm password" required>
-    <div style="color: red" *ngIf="passwordsDoNotMatch">Passwords do not match!</div>
-  </div>
-  <button type="submit" class="btn btn-success text-light">Sign up</button>
-</form>
+  <form ngNativeValidate (ngSubmit)="submitForm()" class="form col-6">
+
+
+    <h2 class="text-secondary col-6" style="margin-bottom: 30px">Sign up for quackR</h2>
+
+    <div class="form-group">
+      <label class="text-dark" for="inputUsername">Username </label>
+      <input type="text" maxlength="100" [(ngModel)]="username" autofocus class="form-control" name="inputUsername" id="inputUsername" placeholder="Enter username" required>
+      <div style="color: red" *ngIf="invalidUser">A user with this username already exists!</div>
+    </div>
+    <div class="form-group">
+      <label class="text-dark" for="inputPassword">Password</label>
+      <input type="password" maxlength="100" [(ngModel)]="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required>
+      <div style="color: red" *ngIf="invalidPassword">The password must be at least 8 symbols long and contain a digit!</div>
+    </div>
+    <div class="form-group">
+      <label class="text-dark" for="inputConfirmPassword">Confirm password</label>
+      <input type="password" maxlength="100" [(ngModel)]="confirmPassword" class="form-control" name="inputConfirmPassword" id="inputConfirmPassword" placeholder="Confirm password" required>
+      <div style="color: red" *ngIf="passwordsDoNotMatch">Passwords do not match!</div>
+    </div>
+    <button type="submit" class="btn btn-success text-light">Sign up</button>
+  </form>
+</div>
+
+
 
 <app-footer></app-footer>

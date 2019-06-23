@@ -16,6 +16,7 @@ import { MyEventsComponent } from './view/my-events/my-events.component';
 import { VisitingEventsComponent } from './view/visiting-events/visiting-events.component';
 import { EditUserComponent } from './view/edit-user/edit-user.component';
 import { AboutComponent } from './view/about/about.component';
+import {TrimValueAccessorModule} from "ng-trim-value-accessor";
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -46,6 +47,7 @@ const appRoutes: Routes = [
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    TrimValueAccessorModule,
     RouterModule.forRoot(appRoutes),
   ],
   providers: [
