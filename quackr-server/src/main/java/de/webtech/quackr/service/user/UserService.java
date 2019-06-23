@@ -147,7 +147,7 @@ public class UserService {
                 JWTToken token = new JWTToken(TokenUtil.generate(userEntity.getUsername(), userEntity.getPassword()));
                 Subject currentUser = SecurityUtils.getSubject();
                 currentUser.login(token);
-                return new AccessTokenResource(userEntity.getId(), token.getCredentials().toString());
+                return new AccessTokenResource(userEntity.getId(), token.getCredentials().toString(), userEntity.getRole());
             } else {
                 throw new AuthenticationException("Wrong password");
             }

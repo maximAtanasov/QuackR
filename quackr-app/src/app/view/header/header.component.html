@@ -21,6 +21,7 @@
       </button>
       <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item text-dark" [routerLink]="'/edit-user/'+userId">Account settings</a>
+        <a class="dropdown-item text-dark" *ngIf="userRoleIsAdmin" [routerLink]="'/admin-menu/'+userId">Admin menu</a>
         <button class="dropdown-item text-danger" (click)="logout()">Logout</button>
       </div>
     </div>

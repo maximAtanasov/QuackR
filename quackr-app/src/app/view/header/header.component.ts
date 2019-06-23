@@ -13,7 +13,10 @@ export class HeaderComponent implements OnInit {
   @Input() public userId;
   @Input() public username;
 
+  public userRoleIsAdmin = false;
+
   ngOnInit() {
+    this.userRoleIsAdmin = UserService.getLoggedInUser().role === "ADMIN";
   }
 
   logout() {

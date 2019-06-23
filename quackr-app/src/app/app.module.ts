@@ -17,10 +17,12 @@ import { VisitingEventsComponent } from './view/visiting-events/visiting-events.
 import { EditUserComponent } from './view/edit-user/edit-user.component';
 import { AboutComponent } from './view/about/about.component';
 import {TrimValueAccessorModule} from "ng-trim-value-accessor";
+import { AdminMenuComponent } from './view/admin-menu/admin-menu.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginPageComponent },
   { path: 'about', component: AboutComponent },
+  { path: 'admin-menu/:id', component: AdminMenuComponent },
   { path: 'register', component: RegisterPageComponent },
   { path: 'home', component: HomepageComponent },
   {path: 'events/user/:id', component: MyEventsComponent},
@@ -40,7 +42,8 @@ const appRoutes: Routes = [
     MyEventsComponent,
     VisitingEventsComponent,
     EditUserComponent,
-    AboutComponent
+    AboutComponent,
+    AdminMenuComponent
   ],
   imports: [
     BrowserModule,

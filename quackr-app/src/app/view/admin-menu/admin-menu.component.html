@@ -1,0 +1,46 @@
+<app-header [userId]="userId" [username]="user.username"></app-header>
+
+<div class="col-12">
+  <div class="col-6" style="float: left; margin-bottom: 100px">
+    <h3 style="margin-left: 8%">All registered users:</h3>
+    <div class="cards" style="margin-left: 8%" *ngFor="let user_ of users">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-secondary"><b>{{user_.username}}</b></h5>
+            <div class="col-6" style="float: left">
+              <p class="card-text text-info">Role: {{user_.role}}</p>
+            </div>
+            <button (click)="deleteAccount(user_.id)" style="margin-right: 10px; width: 80px" class="btn btn-secondary text-light">Delete</button>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="col-6" style="float: right">
+    <h3>All events:</h3>
+    <h6 *ngIf="events.length === 0">No events</h6>
+    <div class="cards" style="margin-right: 2%" *ngFor="let event of events">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title text-secondary"><b>{{event.title}}</b></h5>
+          <div class="col-6" style="float: left">
+            <p class="card-text text-info">{{event.description}}</p>
+            <p class="card-text text-success"><b>Who's going:</b></p>
+            <div *ngFor="let attendee of event.attendees">
+              <p class="card-text text-success">{{attendee.username}}</p>
+            </div>
+          </div>
+          <div class="col-6" style="float:right;">
+            <p class="card-text text-success">Organizer: <b>{{getUserWithId(event.organizerId).username}}</b></p>
+            <p class="card-text text-success">Location: <b>{{event.location}}</b></p>
+            <p class="card-text text-success">Date: <b>{{event.date}}</b></p>
+            <p class="card-text text-success">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
+            <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-secondary text-light">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
