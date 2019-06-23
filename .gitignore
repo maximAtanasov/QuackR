@@ -1,4 +1,3 @@
-quackr-server/src/main/resources/META-INF
 
 # Compiled class file
 *.class
@@ -72,3 +71,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+quackr-server/src/main/resources/META-INF
