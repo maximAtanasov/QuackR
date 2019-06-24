@@ -73,8 +73,18 @@ export class AdminMenuComponent implements OnInit {
   }
 
   deleteAccount(id: number) {
+    this.events = this.events.filter(value => {
+      value.attendees = value.attendees.filter(value1 => value1.id !== id);
+      if(value.organizerId != id){
+        return true;
+      }
+    });
     this.userService.deleteUser(id)
-      .then(value => this.users = this.users.filter(value1 => value1.id !== id))
+      .then(() => {
+        if(id === this.user.id){
+          this.userService.logout();
+        }
+        this.users = this.users.filter(value1 => value1.id !== id);})
       .catch(e => {
         if(e.status === UNAUTHORIZED) {
           this.userService.logout();
@@ -89,11 +99,46 @@ export class AdminMenuComponent implements OnInit {
 
   deleteEvent(event: Event) {
     this.eventService.deleteEvent(event.id)
-      .then(value => this.events = this.events.filter(value1 => value1.id !== event.id))
+      .then(() => this.events = this.events.filter(value1 => value1.id !== event.id))
       .catch(e => {
         if(e.status === UNAUTHORIZED) {
           this.userService.logout();
         }
+      });
+  }
+
+  makeAdmin(id: number) {
+    let user = this.users.find(value => value.id === id);
+    this.userService.editUser(user.username, null, 'ADMIN', id)
+      .then(value => this.users.forEach(value1 => {
+        if(value1.id === id){
+          value1.role = "ADMIN";
+        }
+      }))
+      .catch(e => {
+        if(e.status === UNAUTHORIZED) {
+          this.userService.logout();
+        }
+      });
+  }
+
+  revokePermissions(id: number) {
+    let user = this.users.find(value => value.id === id);
+    this.userService.editUser(user.username, null, 'USER', id)
+      .then(value => {
+        this.users.forEach(value1 => {
+          if(value1.id === id){
+            value1.role = "USER";
+          }
+        });
+        if(id == this.user.id) {
+          this.userService.logout();
+        }
       })
+      .catch(e => {
+        if(e.status === UNAUTHORIZED) {
+          this.userService.logout();
+        }
+      });
   }
 }

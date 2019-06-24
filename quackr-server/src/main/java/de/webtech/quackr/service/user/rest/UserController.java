@@ -6,8 +6,8 @@ import de.webtech.quackr.service.authentication.AuthorizationService;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.UserService;
 import de.webtech.quackr.service.user.UserWithUsernameAlreadyExistsException;
-import de.webtech.quackr.service.user.resources.AccessTokenResource;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
+import de.webtech.quackr.service.user.resources.EditUserResource;
 import de.webtech.quackr.service.user.resources.LoginUserResource;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -96,7 +96,7 @@ public class UserController {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @RequiresAuthentication
     public Response editUser(@HeaderParam("Authorization") String authorization,
-                             @Valid @NotNull(message = "Request body may not be null") CreateUserResource resource,
+                             @Valid @NotNull(message = "Request body may not be null") EditUserResource resource,
                              @PathParam("id") long id) {
         try {
 

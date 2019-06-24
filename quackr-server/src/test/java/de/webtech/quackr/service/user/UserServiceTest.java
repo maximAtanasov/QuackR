@@ -4,6 +4,7 @@ import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.user.resources.CreateUserResource;
+import de.webtech.quackr.service.user.resources.EditUserResource;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.junit.Assert;
 import org.junit.Before;
@@ -125,7 +126,7 @@ public class UserServiceTest {
      */
     @Test
     public void testEditUser() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
-        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
+        EditUserResource resource = new EditUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
         GetUserResource result = userService.editUser(resource, 1L);
         Mockito.verify(userRepository, Mockito.times(1)).save(any());
 
@@ -141,7 +142,7 @@ public class UserServiceTest {
      */
     @Test(expected = UserNotFoundException.class)
     public void testEditUserThrowsExceptionWhenUserNotFound() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
-        CreateUserResource resource = new CreateUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
+        EditUserResource resource = new EditUserResource("testUser3", "testPassword3", 10L, UserRole.USER);
         userService.editUser(resource, 7L);
         Mockito.verify(userRepository, Mockito.times(0)).save(any());
     }
@@ -153,7 +154,7 @@ public class UserServiceTest {
      */
     @Test(expected = UserWithUsernameAlreadyExistsException.class)
     public void testEditUserWhenUsernameExists() throws UserWithUsernameAlreadyExistsException, UserNotFoundException {
-        CreateUserResource resource = new CreateUserResource("testUser4", "testPassword3", 10L, UserRole.USER);
+        EditUserResource resource = new EditUserResource("testUser4", "testPassword3", 10L, UserRole.USER);
         userService.editUser(resource, 1L);
         Mockito.verify(userRepository, Mockito.times(0)).save(any());
     }

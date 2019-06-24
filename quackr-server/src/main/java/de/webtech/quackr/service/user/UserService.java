@@ -5,10 +5,7 @@ import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.authentication.JWTToken;
 import de.webtech.quackr.service.authentication.TokenUtil;
-import de.webtech.quackr.service.user.resources.AccessTokenResource;
-import de.webtech.quackr.service.user.resources.CreateUserResource;
-import de.webtech.quackr.service.user.resources.GetUserResource;
-import de.webtech.quackr.service.user.resources.LoginUserResource;
+import de.webtech.quackr.service.user.resources.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -110,7 +107,7 @@ public class UserService {
      * already exists in the database.
      * @return A GetUserResource object.
      */
-    public GetUserResource editUser(CreateUserResource resource, long userId) throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
+    public GetUserResource editUser(EditUserResource resource, long userId) throws UserNotFoundException, UserWithUsernameAlreadyExistsException {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         if(userEntity.isPresent()){
             if(userRepository.existsByUsername(resource.getUsername()) &&
@@ -123,7 +120,7 @@ public class UserService {
             userRepository.save(userEntity.get());
 
             //Do not rehash the password if it has not changed
-            if(!BCrypt.checkpw(resource.getPassword(), userEntity.get().getPassword())){
+            if(resource.getPassword() != null && !BCrypt.checkpw(resource.getPassword(), userEntity.get().getPassword())){
                 userEntity.get().setPassword(BCrypt.hashpw(resource.getPassword(), BCrypt.gensalt()));
             }
             return userMapper.map(userEntity.get());

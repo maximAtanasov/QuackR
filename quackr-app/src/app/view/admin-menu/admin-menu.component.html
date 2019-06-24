@@ -11,6 +11,8 @@
               <p class="card-text text-info">Role: {{user_.role}}</p>
             </div>
             <button (click)="deleteAccount(user_.id)" style="margin-right: 10px; width: 80px" class="btn btn-secondary text-light">Delete</button>
+            <button (click)="makeAdmin(user_.id)" *ngIf="user_.role === 'USER'" style="margin-right: 10px; width: 180px" class="btn btn-primary text-light">Make admin</button>
+            <button (click)="revokePermissions(user_.id)" *ngIf="user_.role === 'ADMIN'" style="margin-right: 10px; width: 180px" class="btn btn-primary text-light">Revoke permissions</button>
           </div>
         </div>
     </div>

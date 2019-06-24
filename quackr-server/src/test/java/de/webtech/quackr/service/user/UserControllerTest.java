@@ -2,10 +2,7 @@ package de.webtech.quackr.service.user;
 
 import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ControllerTestTemplate;
-import de.webtech.quackr.service.user.resources.AccessTokenResource;
-import de.webtech.quackr.service.user.resources.CreateUserResource;
-import de.webtech.quackr.service.user.resources.GetUserResource;
-import de.webtech.quackr.service.user.resources.LoginUserResource;
+import de.webtech.quackr.service.user.resources.*;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.realm.Realm;
 import org.junit.Before;
@@ -33,6 +30,8 @@ public class UserControllerTest extends ControllerTestTemplate {
     private Realm realm;
 
     private CreateUserResource testCreateResource;
+    private EditUserResource testEditResource;
+
     private GetUserResource testGetResource;
 
     /**
@@ -42,6 +41,7 @@ public class UserControllerTest extends ControllerTestTemplate {
     public void setUp() {
         testGetResource = new GetUserResource(1L, "testUser", 50L, UserRole.USER);
         testCreateResource = new CreateUserResource("testUser", "testPassword", 50L, UserRole.USER);
+        testEditResource = new EditUserResource("testUser", null, 50L, UserRole.USER);
     }
 
     /**
@@ -103,14 +103,14 @@ public class UserControllerTest extends ControllerTestTemplate {
                 .thenReturn(testGetResource);
 
         // Test JSON
-        HttpEntity<CreateUserResource> entity1 = new HttpEntity<>(testCreateResource, headersJSON);
+        HttpEntity<EditUserResource> entity1 = new HttpEntity<>(testEditResource, headersJSON);
 
         ResponseEntity<GetUserResource> result1 = this.restTemplate.postForEntity("/api/users/1", entity1, GetUserResource.class);
         assertEquals(HttpStatus.OK, result1.getStatusCode());
         assertEquals(testGetResource, result1.getBody());
 
         // Test XML
-        HttpEntity<CreateUserResource> entity2 = new HttpEntity<>(testCreateResource, headersXML);
+        HttpEntity<EditUserResource> entity2 = new HttpEntity<>(testEditResource, headersXML);
 
         ResponseEntity<GetUserResource> result2 = this.restTemplate.postForEntity("/api/users/1", entity2, GetUserResource.class);
         assertEquals(HttpStatus.OK, result2.getStatusCode());

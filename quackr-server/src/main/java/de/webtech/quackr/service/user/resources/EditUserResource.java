@@ -9,20 +9,19 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Resource class used for creating users.
+ * Resource class used for editing users.
  * Maps directly to JSON/XML.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor // Needed for XML deserialization
-public class CreateUserResource {
+public class EditUserResource {
     @NotNull(message = "The username may not be null")
     @Size(max = 100)
     private String username;
 
-    @NotNull(message = "The password may not be null")
     @Size(max = 100)
-    private String password;
+    private String password; //Password can be null,
 
     @NotNull(message = "The rating may not be null")
     private Long rating;

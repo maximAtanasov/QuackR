@@ -21,6 +21,8 @@ public class QuackrApplication implements ErrorController {
 		SpringApplication.run(QuackrApplication.class, args);
 	}
 
+	//Forward unknown paths to index.html (angular)
+
 	private static final String PATH = "/error";
 
 	@RequestMapping(value = PATH)
