@@ -99,7 +99,6 @@ public class UserController {
                              @Valid @NotNull(message = "Request body may not be null") EditUserResource resource,
                              @PathParam("id") long id) {
         try {
-
             //Do not allow regular users to elevate their own privileges
             if(authorizationService.checkTokenWithUserId(authorization, id).getRole() != UserRole.ADMIN){
                 resource.setRole(UserRole.USER);
@@ -146,6 +145,7 @@ public class UserController {
      */
     @POST
     @Path("login")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response loginUser(@Valid @NotNull(message = "Request body may not be null") LoginUserResource resource) {
         try {

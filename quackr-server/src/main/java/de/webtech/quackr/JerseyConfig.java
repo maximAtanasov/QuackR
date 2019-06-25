@@ -1,6 +1,7 @@
 package de.webtech.quackr;
 
 import com.fasterxml.jackson.jaxrs.xml.JacksonXMLProvider;
+import de.webtech.quackr.service.ResetController;
 import de.webtech.quackr.service.authentication.rest.ShiroExceptionMapper;
 import de.webtech.quackr.service.comment.rest.CommentController;
 import de.webtech.quackr.service.event.rest.EventController;
@@ -19,5 +20,6 @@ public class JerseyConfig extends ResourceConfig {
         register(UserController.class);
         register(EventController.class);
         register(CommentController.class);
+        register(ResetController.class);
     }
 }

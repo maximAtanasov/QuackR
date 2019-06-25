@@ -64,6 +64,16 @@ public abstract class CrudRepository<T, E> {
     }
 
     /**
+     * Deletes all entities from the database.
+     */
+    public void deleteAll(){
+        entityManager.createQuery(
+                "DELETE FROM " + clazz.getName()).executeUpdate();
+        entityManager.flush();
+        entityManager.clear();
+    }
+
+    /**
      * Returns all entities of the given type.
      * @return All entities in the DB of type T.
      */

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DataJpaTest
 @ComponentScan("de.webtech.quackr")
 public abstract class RepositoryTestTemplate {
+
     @Autowired
     protected TestEntityManager entityManager;
 }

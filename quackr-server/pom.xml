@@ -12,6 +12,7 @@
 	<artifactId>quackr-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>quackr-server</name>
+	<packaging>war</packaging>
 	<description>WebTech2 project.</description>
 
 	<properties>
@@ -113,7 +114,6 @@
 				<executions>
 					<execution>
 						<id>copy-resources</id>
-						<!-- here the phase you need -->
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>

@@ -43,6 +43,10 @@ export class LoginPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    if(UserService.getLoggedInUser() && UserService.getLoggedInUser().username !== null
+    && UserService.getLoggedInUser().username !== undefined){
+      this.router.navigate(['/home']);
+    }
   }
 }
 
