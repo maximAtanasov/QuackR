@@ -17,7 +17,7 @@
     </ul>
     <div class="dropdown">
       <button class="btn btn-light dropdown-toggle text-secondary" style="width: 160px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{username}}
+        {{username.toString().slice(0, 10)}}
       </button>
       <div class="dropdown-menu" style="width: 100%;" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item text-dark" [routerLink]="'/edit-user/'+userId">Account settings</a>
