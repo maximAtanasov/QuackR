@@ -1,10 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {UserService} from "../../service/user.service";
-import {Event} from "../../model/event";
-import {EventService} from "../../service/event.service";
-import {UNAUTHORIZED} from "http-status-codes";
-import {User} from "../../model/user";
-import { ModalDirective } from "ngx-bootstrap/modal";
+import {UserService} from '../../service/user.service';
+import {Event} from '../../model/event';
+import {EventService} from '../../service/event.service';
+import {UNAUTHORIZED} from 'http-status-codes';
+import {User} from '../../model/user';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-homepage',
@@ -13,14 +14,16 @@ import { ModalDirective } from "ngx-bootstrap/modal";
 })
 export class HomepageComponent implements OnInit {
 
-  constructor(private userService: UserService, private eventService: EventService) {}
+  constructor(private titleService: Title, private userService: UserService, private eventService: EventService) {
+    titleService.setTitle('quackR - Home');
+  }
 
   @ViewChild('modal')
-  public modal:ElementRef;
+  public modal: ElementRef;
 
   event: Event = new Event();
 
-  public username = "";
+  public username = '';
   public users: User[] = [];
   public events: Event[] = [];
   userId: number;
@@ -28,7 +31,7 @@ export class HomepageComponent implements OnInit {
   ngOnInit() {
     this.events = [];
     this.users = [];
-    if(UserService.getLoggedInUser() !== null) {
+    if (UserService.getLoggedInUser() !== null) {
       this.userId = UserService.getLoggedInUser().id;
       this.username = UserService.getLoggedInUser().username;
     }
@@ -36,7 +39,7 @@ export class HomepageComponent implements OnInit {
       .then(result => {
         this.users = result;
         this.users.forEach(user => {
-          if(user.id === this.userId){
+          if (user.id === this.userId) {
             return;
           }
           this.eventService.getAllEvents(user.id)
@@ -54,13 +57,13 @@ export class HomepageComponent implements OnInit {
               });
             })
             .catch(e => {
-              if(e.status === UNAUTHORIZED) {
+              if (e.status === UNAUTHORIZED) {
                 this.logout();
               }
             });
         });
       }).catch(e => {
-      if(e.status === UNAUTHORIZED) {
+      if (e.status === UNAUTHORIZED) {
         this.logout();
       }
     });
@@ -75,20 +78,20 @@ export class HomepageComponent implements OnInit {
     this.eventService.createEvent(this.event, UserService.getLoggedInUser().id)
       .then(() => this.modal.nativeElement.click())
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
-      })
+      });
   }
 
   getUserWithId(id: number): User {
     return this.users.find(value => value.id === id);
   }
 
-  attendEvent(userId:number, eventId:number){
+  attendEvent(userId: number, eventId: number) {
     this.eventService.addAttendeeToEvent(eventId, this.getUserWithId(userId))
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
       });
@@ -98,7 +101,7 @@ export class HomepageComponent implements OnInit {
   unattendEvent(userId: number, eventId: number) {
     this.eventService.removeAttendeeFromEvent(eventId, this.getUserWithId(userId))
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
       });
@@ -112,7 +115,7 @@ export class HomepageComponent implements OnInit {
 
   now() {
     const date = new Date();
-    date.setDate(new Date().getDate()+1);
+    date.setDate(new Date().getDate() + 1);
     return date.toISOString().split('T')[0];
   }
 

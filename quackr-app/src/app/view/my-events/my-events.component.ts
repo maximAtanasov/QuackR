@@ -1,10 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {UserService} from "../../service/user.service";
-import {Event} from "../../model/event";
-import {EventService} from "../../service/event.service";
-import {UNAUTHORIZED} from "http-status-codes";
-import {User} from "../../model/user";
-import {ActivatedRoute, Router} from "@angular/router";
+import {UserService} from '../../service/user.service';
+import {Event} from '../../model/event';
+import {EventService} from '../../service/event.service';
+import {UNAUTHORIZED} from 'http-status-codes';
+import {User} from '../../model/user';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-my-events',
@@ -13,10 +14,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class MyEventsComponent implements OnInit {
 
-  constructor(private router: Router, private route: ActivatedRoute, private userService: UserService, private eventService: EventService) {}
+  constructor(private titleService: Title, private router: Router, private route: ActivatedRoute, private userService: UserService, private eventService: EventService) {
+    titleService.setTitle('quackR - My events');
+  }
 
   @ViewChild('modal')
-  public modal:ElementRef;
+  public modal: ElementRef;
 
   eventToEdit: Event = new Event();
 
@@ -27,13 +30,13 @@ export class MyEventsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userId = params.id;
-      if(this.userId != UserService.getLoggedInUser().id){
+      if (this.userId != UserService.getLoggedInUser().id) {
         this.router.navigate(['/home']);
       }
       this.userService.getUser(this.userId)
         .then(value => this.user = value)
         .catch(e => {
-          if(e.status === UNAUTHORIZED) {
+          if (e.status === UNAUTHORIZED) {
             this.logout();
           }
         });
@@ -52,7 +55,7 @@ export class MyEventsComponent implements OnInit {
           });
         })
         .catch(e => {
-          if(e.status === UNAUTHORIZED) {
+          if (e.status === UNAUTHORIZED) {
             this.logout();
           }
         });
@@ -67,10 +70,10 @@ export class MyEventsComponent implements OnInit {
     this.eventService.deleteEvent(event.id)
       .then(value => this.events = this.events.filter(value1 => value1.id !== event.id))
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
-      })
+      });
   }
 
   editEvent() {
@@ -78,15 +81,15 @@ export class MyEventsComponent implements OnInit {
       .then(() => this.modal.nativeElement.click())
       .catch(e => {
         console.log(e);
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
-      })
+      });
   }
 
   now() {
     const date = new Date();
-    date.setDate(new Date().getDate()+1);
+    date.setDate(new Date().getDate() + 1);
     return date.toISOString().split('T')[0];
   }
 }

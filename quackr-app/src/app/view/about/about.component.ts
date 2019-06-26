@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {User} from "../../model/user";
-import {Event} from "../../model/event";
-import {UNAUTHORIZED} from "http-status-codes";
-import {UserService} from "../../service/user.service";
+import {User} from '../../model/user';
+import {Event} from '../../model/event';
+import {UNAUTHORIZED} from 'http-status-codes';
+import {UserService} from '../../service/user.service';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-about',
@@ -11,13 +12,15 @@ import {UserService} from "../../service/user.service";
 })
 export class AboutComponent implements OnInit {
 
-  public username = "";
+  public username = '';
   userId;
 
-  constructor(private userService: UserService) { }
+  constructor(private titleService: Title, private userService: UserService) {
+    titleService.setTitle('quackR - About');
+  }
 
   ngOnInit() {
-    if(UserService.getLoggedInUser() !== null) {
+    if (UserService.getLoggedInUser() !== null) {
       this.userId = UserService.getLoggedInUser().id;
       this.username = UserService.getLoggedInUser().username;
     } else {

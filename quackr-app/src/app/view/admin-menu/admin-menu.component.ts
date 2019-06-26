@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../service/user.service";
-import {UNAUTHORIZED} from "http-status-codes";
-import {User} from "../../model/user";
-import {Event} from "../../model/event";
-import {EventService} from "../../service/event.service";
+import {ActivatedRoute, Router} from '@angular/router';
+import {UserService} from '../../service/user.service';
+import {UNAUTHORIZED} from 'http-status-codes';
+import {User} from '../../model/user';
+import {Event} from '../../model/event';
+import {EventService} from '../../service/event.service';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-admin-menu',
@@ -19,8 +20,10 @@ export class AdminMenuComponent implements OnInit {
   userId: number;
   user: User = new User();
 
-  constructor(private router: Router, private eventService: EventService,
-              private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private titleService: Title, private router: Router, private eventService: EventService,
+              private route: ActivatedRoute, private userService: UserService) {
+    titleService.setTitle('quackR - Admin menu');
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -31,7 +34,7 @@ export class AdminMenuComponent implements OnInit {
       this.userService.getUser(this.userId)
         .then(value => {
           this.user = value;
-          if(this.user.role === "USER"){
+          if (this.user.role === 'USER') {
             this.router.navigate(['/home']);
           }
         })
@@ -59,13 +62,13 @@ export class AdminMenuComponent implements OnInit {
                 });
               })
               .catch(e => {
-                if(e.status === UNAUTHORIZED) {
+                if (e.status === UNAUTHORIZED) {
                   this.userService.logout();
                 }
               });
           });
         }).catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.userService.logout();
         }
       });
@@ -75,21 +78,21 @@ export class AdminMenuComponent implements OnInit {
   deleteAccount(id: number) {
     this.events = this.events.filter(value => {
       value.attendees = value.attendees.filter(value1 => value1.id !== id);
-      if(value.organizerId != id){
+      if (value.organizerId != id) {
         return true;
       }
     });
     this.userService.deleteUser(id)
       .then(() => {
-        if(id === this.user.id){
+        if (id === this.user.id) {
           this.userService.logout();
         }
-        this.users = this.users.filter(value1 => value1.id !== id);})
+        this.users = this.users.filter(value1 => value1.id !== id); })
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.userService.logout();
         }
-      })
+      });
   }
 
 
@@ -101,42 +104,42 @@ export class AdminMenuComponent implements OnInit {
     this.eventService.deleteEvent(event.id)
       .then(() => this.events = this.events.filter(value1 => value1.id !== event.id))
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.userService.logout();
         }
       });
   }
 
   makeAdmin(id: number) {
-    let user = this.users.find(value => value.id === id);
+    const user = this.users.find(value => value.id === id);
     this.userService.editUser(user.username, null, 'ADMIN', id)
       .then(value => this.users.forEach(value1 => {
-        if(value1.id === id){
-          value1.role = "ADMIN";
+        if (value1.id === id) {
+          value1.role = 'ADMIN';
         }
       }))
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.userService.logout();
         }
       });
   }
 
   revokePermissions(id: number) {
-    let user = this.users.find(value => value.id === id);
+    const user = this.users.find(value => value.id === id);
     this.userService.editUser(user.username, null, 'USER', id)
       .then(value => {
         this.users.forEach(value1 => {
-          if(value1.id === id){
-            value1.role = "USER";
+          if (value1.id === id) {
+            value1.role = 'USER';
           }
         });
-        if(id == this.user.id) {
+        if (id == this.user.id) {
           this.userService.logout();
         }
       })
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.userService.logout();
         }
       });

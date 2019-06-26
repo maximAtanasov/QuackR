@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../service/user.service";
-import {User} from "../../model/user";
-import {CONFLICT, UNAUTHORIZED} from "http-status-codes";
+import {ActivatedRoute, Router} from '@angular/router';
+import {UserService} from '../../service/user.service';
+import {User} from '../../model/user';
+import {CONFLICT, UNAUTHORIZED} from 'http-status-codes';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-edit-user',
@@ -23,7 +24,9 @@ export class EditUserComponent implements OnInit {
   success: boolean;
   private oldUsername: string;
 
-  constructor(private router: Router, private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private titleService: Title, private router: Router, private route: ActivatedRoute, private userService: UserService) {
+    titleService.setTitle('quackR - Edit account');
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -37,10 +40,10 @@ export class EditUserComponent implements OnInit {
           this.oldUsername = this.user.username;
         })
         .catch(e => {
-          if(e.status === UNAUTHORIZED) {
+          if (e.status === UNAUTHORIZED) {
             this.userService.logout();
           }
-        })
+        });
     });
   }
 
@@ -56,7 +59,7 @@ export class EditUserComponent implements OnInit {
       this.userService.login(this.oldUsername, this.oldPassword)
         .then(
           () => {
-            this.userService.editUser(this.user.username, this.password, "USER", this.userId)
+            this.userService.editUser(this.user.username, this.password, 'USER', this.userId)
               .then(e => {
                 this.userService.login(this.user.username, this.password)
                   .then(() => this.success = true);
@@ -78,6 +81,6 @@ export class EditUserComponent implements OnInit {
     this.userService.deleteUser(this.userId)
       .then(() => {
         this.router.navigate(['/login']);
-      })
+      });
   }
 }

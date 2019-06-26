@@ -1,10 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {UserService} from "../../service/user.service";
-import {EventService} from "../../service/event.service";
-import {Event} from "../../model/event";
-import {User} from "../../model/user";
-import {UNAUTHORIZED} from "http-status-codes";
-import {ActivatedRoute, Router} from "@angular/router";
+import {UserService} from '../../service/user.service';
+import {EventService} from '../../service/event.service';
+import {Event} from '../../model/event';
+import {User} from '../../model/user';
+import {UNAUTHORIZED} from 'http-status-codes';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Title} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-visiting-events',
@@ -13,12 +14,14 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class VisitingEventsComponent implements OnInit {
 
-  constructor(private router: Router, private route: ActivatedRoute, private userService: UserService, private eventService: EventService) {}
+  constructor(private titleService: Title, private router: Router, private route: ActivatedRoute, private userService: UserService, private eventService: EventService) {
+    titleService.setTitle('quackR - Events I\'m visiting');
+  }
 
   @ViewChild('modal')
-  public modal:ElementRef;
+  public modal: ElementRef;
 
-  public username = "";
+  public username = '';
   public users: User[] = [];
   public events: Event[] = [];
   userId: number;
@@ -31,7 +34,7 @@ export class VisitingEventsComponent implements OnInit {
       if (this.userId != UserService.getLoggedInUser().id) {
         this.router.navigate(['/home']);
       }
-      if(UserService.getLoggedInUser() !== null) {
+      if (UserService.getLoggedInUser() !== null) {
         this.userId = UserService.getLoggedInUser().id;
         this.username = UserService.getLoggedInUser().username;
       }
@@ -39,13 +42,13 @@ export class VisitingEventsComponent implements OnInit {
         .then(result => {
           this.users = result;
           this.users.forEach(user => {
-            if(user.id === this.userId){
+            if (user.id === this.userId) {
               return;
             }
             this.eventService.getAllEvents(user.id)
               .then(result => {
                 result.forEach(r => {
-                  if(this.checkIsAttending(r, this.getUserWithId(this.userId))){
+                  if (this.checkIsAttending(r, this.getUserWithId(this.userId))) {
                     this.events.push(r);
                   }
                 });
@@ -61,13 +64,13 @@ export class VisitingEventsComponent implements OnInit {
                 });
               })
               .catch(e => {
-                if(e.status === UNAUTHORIZED) {
+                if (e.status === UNAUTHORIZED) {
                   this.logout();
                 }
               });
-          })
+          });
         }).catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
       });
@@ -86,7 +89,7 @@ export class VisitingEventsComponent implements OnInit {
     this.eventService.removeAttendeeFromEvent(eventId, this.getUserWithId(userId))
       .then(value => this.events = this.events.filter(value1 => value1.id !== eventId))
       .catch(e => {
-        if(e.status === UNAUTHORIZED) {
+        if (e.status === UNAUTHORIZED) {
           this.logout();
         }
       });
