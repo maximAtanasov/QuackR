@@ -10,13 +10,15 @@ export class HeaderComponent implements OnInit {
 
   constructor(private userService: UserService) { }
 
-  @Input() public userId;
-  @Input() public username;
+  public userId;
+  public username = "";
 
   public userRoleIsAdmin = false;
 
   ngOnInit() {
     this.userRoleIsAdmin = UserService.getLoggedInUser().role === "ADMIN";
+    this.username = UserService.getLoggedInUser().username;
+    this.userId = UserService.getLoggedInUser().id;
   }
 
   logout() {

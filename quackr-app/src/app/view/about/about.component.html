@@ -1,4 +1,4 @@
-<app-header *ngIf="userId !== null" [username]="username" [userId]="userId"></app-header>
+<app-header *ngIf="userId !== null"></app-header>
 <div *ngIf="userId === null">
   <nav class="fixed-top navbar navbar-expand-lg navbar-dark bg-primary shadow" style="height: 70px">
     <a class="navbar-brand" href="#" style="font-size: 20pt" [routerLink]="['/home']">
