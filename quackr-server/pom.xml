@@ -119,7 +119,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/META-INF/resources</outputDirectory>
+							<outputDirectory>${basedir}/target/classes/META-INF/resources</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${basedir}/../quackr-app/ui-src/META-INF/resources</directory>
@@ -131,5 +131,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

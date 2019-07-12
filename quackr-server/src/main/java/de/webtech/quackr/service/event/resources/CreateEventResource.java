@@ -31,7 +31,7 @@ public class CreateEventResource {
     private String description;
 
     @NotNull(message = "The attendeeLimit may not be null")
-    @Max(value = 50)
+    @Max(value = 200)
     @Min(value = 4)
     private Integer attendeeLimit;
 

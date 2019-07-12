@@ -26,7 +26,7 @@ public class TokenUtil {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withClaim("username", username)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            verifier.verify(token);
             return true;
         } catch (Exception exception) {
             return false;
@@ -34,7 +34,7 @@ public class TokenUtil {
     }
 
 
-    public static String getUsername(String token) {
+    static String getUsername(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("username").asString();

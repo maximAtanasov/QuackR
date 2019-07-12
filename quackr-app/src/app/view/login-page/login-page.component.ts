@@ -9,7 +9,7 @@ import {NOT_FOUND, UNAUTHORIZED} from 'http-status-codes';
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss']
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent {
 
   username: string;
   password: string;
@@ -40,13 +40,6 @@ export class LoginPageComponent implements OnInit {
           this.invalidPassword = true;
         }
       });
-  }
-
-  ngOnInit() {
-    if(UserService.getLoggedInUser() && UserService.getLoggedInUser().username !== null
-    && UserService.getLoggedInUser().username !== undefined){
-      this.router.navigate(['/home']);
-    }
   }
 }
 

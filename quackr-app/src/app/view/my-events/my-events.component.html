@@ -1,13 +1,15 @@
 <app-header></app-header>
 
-<h3  *ngIf="events.length > 0"><div class="text-success cards" style="font-size: 16pt; margin-bottom: 50px">
+<h3  *ngIf="events.length > 0">
+  <span class="text-success cards" style="font-size: 16pt; margin-bottom: 50px">
   Events you're currently holding:
-</div></h3>
+  </span>
+</h3>
 
 <div *ngIf="events.length === 0" class="cards text-dark" style="font-size: 18pt">
   Oops, it looks like you're not holding any events at the moment.
 </div>
-<!-- Create Event Modal Form shte e gotino i tuk da go ima-->
+<!-- Edit Event Modal Form -->
 <div class="cards" *ngFor="let event of events">
 
   <div class="card">
@@ -20,7 +22,7 @@
         <p class="card-text text-success">Location: <b>{{event.location}}</b></p>
         <p class="card-text text-success">Date: <b>{{event.date}}</b></p>
         <p class="card-text text-success">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
-        <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-secondary text-light">Delete</button>
+        <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-danger text-light">Delete</button>
         <button class="btn btn-success text-light" data-toggle="modal" data-target="#modal" (click)="eventToEdit = event" style="width: 80px">Edit</button>
       </div>
     </div>
@@ -58,7 +60,7 @@
           </div>
           <div class="form-group">
             <label class="text-secondary" for="inputAttendeeLimit">Attendee limit</label>
-            <input type="number" maxlength="255" min="4" max="50" class="form-control" [(ngModel)]="eventToEdit.attendeeLimit" name="inputAttendeeLimit" id="inputAttendeeLimit" placeholder="Attendee limit" required>
+            <input type="number" maxlength="255" min="4" max="200" class="form-control" [(ngModel)]="eventToEdit.attendeeLimit" name="inputAttendeeLimit" id="inputAttendeeLimit" placeholder="Attendee limit" required>
           </div>
         </form>
       </div>

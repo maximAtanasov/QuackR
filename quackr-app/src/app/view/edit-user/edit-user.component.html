@@ -1,11 +1,11 @@
 <app-header></app-header>
 
 <form ngNativeValidate (ngSubmit)="submitForm()" class="form">
+
+  <h2 class="text-secondary" style="margin-bottom: 30px">Edit your account</h2>
   <div *ngIf="success" class="alert alert-success bg-light text-info" role="alert">
     Changes successfully saved!
   </div>
-  <h2 class="text-secondary" style="margin-bottom: 30px">Edit your account</h2>
-
   <div class="form-group">
     <label class="text-success" for="inputUsername">Username</label>
     <input type="text" maxlength="255" [(ngModel)]="user.username" autofocus class="form-control" name="inputUsername" id="inputUsername" placeholder="Enter username" required>

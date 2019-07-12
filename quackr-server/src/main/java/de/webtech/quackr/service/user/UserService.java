@@ -16,10 +16,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -39,7 +36,8 @@ public class UserService {
      * @return All users saved in the database.
      */
     public Collection<GetUserResource> getUsers() {
-        List<UserEntity> result = new ArrayList<>(userRepository.findAll());
+        List<UserEntity> result = new ArrayList<>();
+        userRepository.findAll().iterator().forEachRemaining(result::add);;
         return userMapper.map(result);
     }
 

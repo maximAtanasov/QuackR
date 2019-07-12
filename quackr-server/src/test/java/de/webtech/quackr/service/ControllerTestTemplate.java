@@ -41,7 +41,7 @@ public abstract class ControllerTestTemplate {
     protected final HttpHeaders headersJSON = new HttpHeaders();
     protected final HttpHeaders headersXML = new HttpHeaders();
 
-    protected String testPassword = BCrypt.hashpw("testPassword3", BCrypt.gensalt());
+    private String testPassword = BCrypt.hashpw("testPassword3", BCrypt.gensalt());
 
 
     @Before
