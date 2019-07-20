@@ -36,6 +36,8 @@ target
 
 # dependencies
 quackr-app/node_modules
+quackr-app/node
+quackr-app/ui-src
 
 # profiling files
 chrome-profiler-events.json
