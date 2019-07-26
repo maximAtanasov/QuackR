@@ -4,7 +4,6 @@ import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.user.UserEntity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.util.Date;

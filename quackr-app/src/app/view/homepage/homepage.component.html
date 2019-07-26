@@ -71,10 +71,10 @@
         <button *ngIf="checkIsAttending(event, getUserWithId(userId))" (click)="unattendEvent(userId, event.id)" class="btn btn-secondary text-light">Unattend</button>
       </div>
       <div class="col-12" style="float: left">
-        <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        <button class="btn btn-link" style="float:right;" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
           Comments
         </button>
-        <div style="margin-top: 20px" class="collapse" id="collapseExample">
+        <div style="margin-top: 100px" class="collapse" id="collapseExample">
           <p *ngIf="event.comments.length === 0" class="card-text text-secondary">No comments</p>
           <div *ngFor="let comment of event.comments">
             <p class="card-text text-success">Posted by <b>{{getUserWithId(comment.posterId).username}}</b> on <b>{{comment.datePosted}}</b>
@@ -86,7 +86,7 @@
           <label class="text-success" for="inputComment">Leave a comment:</label>
           <form ngNativeValidate (ngSubmit)="postComment(event.id)">
             <div class="input-group mb-3">
-              <input type="text" class="form-control" [(ngModel)]="commentInput" name="inputComment" id="inputComment" placeholder="Comment Text" aria-label="Leave a comment" required>
+              <input maxlength="255" type="text" class="form-control" [(ngModel)]="commentInput" name="inputComment" id="inputComment" placeholder="Comment Text" aria-label="Leave a comment" required>
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit">Post comment</button>
               </div>

@@ -1,7 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {User} from '../../model/user';
-import {Event} from '../../model/event';
-import {UNAUTHORIZED} from 'http-status-codes';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../service/user.service';
 import {Title} from '@angular/platform-browser';
 

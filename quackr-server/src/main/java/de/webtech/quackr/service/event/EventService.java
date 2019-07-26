@@ -9,8 +9,6 @@ import de.webtech.quackr.service.event.resources.GetEventResource;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import de.webtech.quackr.service.user.resources.GetUserResource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output} from '@angular/core';
+import {Component, OnInit, Output} from '@angular/core';
 import {UserService} from "../../service/user.service";
 
 @Component({

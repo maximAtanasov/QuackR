@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {User} from "../model/user";
 import {Event} from "../model/event";
 import {AppComponent} from "../app.component";
-import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 
 @Injectable({

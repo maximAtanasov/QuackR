@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AppComponent} from "../app.component";
 import {HttpClient} from "@angular/common/http";
-import {Event} from "../model/event";
 import {Comment} from "../model/comment";
 
 @Injectable({

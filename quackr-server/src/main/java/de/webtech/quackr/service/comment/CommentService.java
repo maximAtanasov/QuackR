@@ -11,8 +11,6 @@ import de.webtech.quackr.service.comment.resources.GetCommentResource;
 import de.webtech.quackr.service.event.EventNotFoundException;
 import de.webtech.quackr.service.user.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

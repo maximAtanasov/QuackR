@@ -1,6 +1,5 @@
 package de.webtech.quackr.service.user;
 
-import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;

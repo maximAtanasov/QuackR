@@ -4,7 +4,6 @@ import {Event} from '../../model/event';
 import {EventService} from '../../service/event.service';
 import {UNAUTHORIZED} from 'http-status-codes';
 import {User} from '../../model/user';
-import { ModalDirective } from 'ngx-bootstrap/modal';
 import {Title} from '@angular/platform-browser';
 import {CommentService} from "../../service/comment.service";
 import {Comment} from "../../model/comment";
@@ -53,7 +52,7 @@ export class HomepageComponent implements OnInit {
               result.forEach(r => this.events.push(r));
               this.events.forEach(value => {
                 value.date = new Date(value.date).toISOString().split('T')[0]
-                value.comments.forEach(comment => comment.datePosted = new Date(comment.datePosted).toISOString().split('T')[0]);
+                value.comments.forEach(comment => comment.datePosted = new Date(comment.datePosted).toUTCString());
               });
               this.events.sort((a, b) => {
                 if (new Date(a.date).getTime() === new Date(b.date).getTime()) {
@@ -139,7 +138,7 @@ export class HomepageComponent implements OnInit {
     comment.eventId = eventId;
     this.commentService.createComment(comment)
       .then(result => {
-        result.datePosted = new Date(result.datePosted).toISOString().split('T')[0];
+        result.datePosted = new Date(result.datePosted).toUTCString();
         this.events.find(value => value.id === eventId).comments.push(result);
       })
       .catch(e => {
