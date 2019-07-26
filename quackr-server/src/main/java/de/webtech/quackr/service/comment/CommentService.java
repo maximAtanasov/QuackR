@@ -4,6 +4,7 @@ import de.webtech.quackr.persistence.comment.CommentEntity;
 import de.webtech.quackr.persistence.comment.CommentRepository;
 import de.webtech.quackr.persistence.event.EventEntity;
 import de.webtech.quackr.persistence.event.EventRepository;
+import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.service.comment.resources.CreateCommentResource;
 import de.webtech.quackr.service.comment.resources.GetCommentResource;
@@ -21,7 +22,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -79,13 +79,14 @@ public class CommentService {
     public GetCommentResource createComment(CreateCommentResource resource, long eventId) throws EventNotFoundException, UserNotFoundException {
         Optional<EventEntity> event = eventRepository.findById(eventId);
         if(event.isPresent()){
-            if(!userRepository.existsById(resource.getPosterId())){
+            Optional<UserEntity> user = userRepository.findById(resource.getPosterId());
+            if(!user.isPresent()){
                 throw new UserNotFoundException(resource.getPosterId());
             }
             CommentEntity newComment = new CommentEntity();
-            newComment.setEventId(eventId);
+            newComment.setEvent(event.get());
             newComment.setDatePosted(new Date());
-            newComment.setPosterId(resource.getPosterId());
+            newComment.setPoster(user.get());
             newComment.setText(resource.getText());
             event.get().getComments().add(newComment);
             commentRepository.save(newComment);
@@ -138,7 +139,7 @@ public class CommentService {
         Optional<CommentEntity> commentEntity = commentRepository.findById(commentId);
         if(commentEntity.isPresent()){
             commentEntity.get().setText(resource.getText());
-            if(!resource.getPosterId().equals(commentEntity.get().getPosterId())){
+            if(!resource.getPosterId().equals(commentEntity.get().getPoster().getId())){
                 throw new CannotChangePosterIdException();
             }
             commentRepository.save(commentEntity.get());

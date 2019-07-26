@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.comment.rest;
+package de.webtech.quackr.rest.comment;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

@@ -34,6 +34,11 @@ public class TokenUtil {
     }
 
 
+    /**
+     * Extracts the username from a JWT.
+     * @param token The JWT
+     * @return The username contained in the token or null if the token cannot be decoded.
+     */
     static String getUsername(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);

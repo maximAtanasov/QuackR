@@ -39,8 +39,10 @@ public class CommentServiceTest {
     @Before
     public void setUp() {
         commentService = new CommentService(commentRepository, eventRepository, userRepository);
+        UserEntity testUser = new UserEntity("testUser", "testPassword", 0L, UserRole.USER);
+        testUser.setId(3L);
         Mockito.when(userRepository.findById(3L))
-                .thenReturn(Optional.of(new UserEntity("testUser", "testPassword", 0L, UserRole.USER)));
+                .thenReturn(Optional.of(testUser));
 
         Mockito.when(userRepository.findById(7L))
                 .thenReturn(Optional.empty());
@@ -58,21 +60,21 @@ public class CommentServiceTest {
         Mockito.when(userRepository.findByUsername(any()))
                 .thenReturn(new UserEntity("testUser", "testPassword3", 10L, UserRole.USER));
 
-        EventEntity entity = new EventEntity();
-        entity.setTitle("BBQ");
-        entity.setDescription("BBQ at Stan");
-        entity.setAttendeeLimit(20);
-        entity.setOrganizer(new UserEntity());
-        entity.setLocation("Stan's place");
-        entity.setDate(new Date());
-        entity.setPublic(true);
-        entity.setAttendees(new ArrayList<>());
-        entity.setId(1L);
+        EventEntity eventEntity = new EventEntity();
+        eventEntity.setTitle("BBQ");
+        eventEntity.setDescription("BBQ at Stan");
+        eventEntity.setAttendeeLimit(20);
+        eventEntity.setOrganizer(new UserEntity());
+        eventEntity.setLocation("Stan's place");
+        eventEntity.setDate(new Date());
+        eventEntity.setPublic(true);
+        eventEntity.setAttendees(new ArrayList<>());
+        eventEntity.setId(2L);
 
-        Mockito.when(eventRepository.findByOrganizerId(anyLong())).thenReturn(Collections.singletonList(entity));
-        Mockito.when(eventRepository.findById(2L)).thenReturn(Optional.of(entity));
+        Mockito.when(eventRepository.findByOrganizerId(anyLong())).thenReturn(Collections.singletonList(eventEntity));
+        Mockito.when(eventRepository.findById(2L)).thenReturn(Optional.of(eventEntity));
         Mockito.when(eventRepository.findById(7L)).thenReturn(Optional.empty());
-        Mockito.when(eventRepository.findAll()).thenReturn(Collections.singletonList(entity));
+        Mockito.when(eventRepository.findAll()).thenReturn(Collections.singletonList(eventEntity));
 
         Mockito.when(eventRepository.existsById(2L))
                 .thenReturn(true);
@@ -83,9 +85,9 @@ public class CommentServiceTest {
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setText("text");
         commentEntity.setId(1L);
-        commentEntity.setPosterId(3L);
+        commentEntity.setPoster(testUser);
         commentEntity.setDatePosted(new Date());
-        commentEntity.setEventId(2L);
+        commentEntity.setEvent(eventEntity);
         Mockito.when(commentRepository.findById(1L)).thenReturn(Optional.of(commentEntity));
         Mockito.when(commentRepository.findByPosterId(3L)).thenReturn(Collections.singletonList(commentEntity));
         Mockito.when(commentRepository.findByEventId(2L)).thenReturn(Collections.singletonList(commentEntity));

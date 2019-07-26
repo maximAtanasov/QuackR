@@ -17,12 +17,16 @@
       <h4 class="card-title text-secondary"><b>{{event.title}}</b></h4>
       <div class="col-6" style="float: left">
         <p class="card-text text-info">{{event.description}}</p>
+        <p class="card-text text-success"><b>Who's going:</b></p>
+        <div *ngFor="let attendee of event.attendees">
+          <p class="card-text text-success">{{attendee.username}}</p>
+        </div>
       </div>
       <div class="col-6" style="float:right;">
         <p class="card-text text-success">Location: <b>{{event.location}}</b></p>
         <p class="card-text text-success">Date: <b>{{event.date}}</b></p>
         <p class="card-text text-success">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
-        <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-danger text-light">Delete</button>
+        <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-secondary text-light">Delete</button>
         <button class="btn btn-success text-light" data-toggle="modal" data-target="#modal" (click)="eventToEdit = event" style="width: 80px">Edit</button>
       </div>
     </div>

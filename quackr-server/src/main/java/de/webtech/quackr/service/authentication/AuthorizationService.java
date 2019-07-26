@@ -62,7 +62,7 @@ public class AuthorizationService {
         Long userId;
         Optional<CommentEntity> commentEntity = commentRepository.findById(commentId);
         if(commentEntity.isPresent()){
-            userId = commentEntity.get().getPosterId();
+            userId = commentEntity.get().getPoster().getId();
         } else {
             throw new CommentNotFoundException(commentId);
         }

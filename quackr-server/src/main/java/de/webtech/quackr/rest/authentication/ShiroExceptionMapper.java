@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.authentication.rest;
+package de.webtech.quackr.rest.authentication;
 
 import de.webtech.quackr.service.ErrorResponse;
 import org.apache.shiro.ShiroException;

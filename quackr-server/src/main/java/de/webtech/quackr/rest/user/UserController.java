@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.user.rest;
+package de.webtech.quackr.rest.user;
 
 import de.webtech.quackr.persistence.user.UserRole;
 import de.webtech.quackr.service.ErrorResponse;

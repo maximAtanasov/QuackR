@@ -1,10 +1,14 @@
 package de.webtech.quackr.persistence.user;
 
+import de.webtech.quackr.persistence.comment.CommentEntity;
+import de.webtech.quackr.persistence.event.EventEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Database user entry.
@@ -31,6 +35,12 @@ public class UserEntity {
 
     @Column(nullable = false)
     private UserRole role;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "attendees")
+    private Collection<EventEntity> events = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "poster")
+    private Collection<CommentEntity> comments = new ArrayList<>();
 
     public UserEntity(String username, String password, Long rating, UserRole role){
         this.username = username;

@@ -1,7 +1,10 @@
 package de.webtech.quackr.persistence.comment;
 
+import de.webtech.quackr.persistence.event.EventEntity;
+import de.webtech.quackr.persistence.user.UserEntity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,9 +28,9 @@ public class CommentEntity {
     @Column(nullable = false)
     private Date datePosted;
 
-    @Column(nullable = false)
-    private Long posterId;
+    @ManyToOne(optional = false)
+    private UserEntity poster;
 
-    @Column(nullable = false)
-    private Long eventId;
+    @ManyToOne(optional = false)
+    private EventEntity event;
 }

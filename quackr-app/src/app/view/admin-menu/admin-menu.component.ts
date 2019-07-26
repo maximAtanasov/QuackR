@@ -28,7 +28,7 @@ export class AdminMenuComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userId = params.id;
-      if (this.userId != UserService.getLoggedInUser().id) {
+      if (UserService.getLoggedInUser() == null || this.userId != UserService.getLoggedInUser().id) {
         this.router.navigate(['/home']);
       }
       this.userService.getUser(this.userId)

@@ -1,5 +1,7 @@
 package de.webtech.quackr.service.user;
 
+import de.webtech.quackr.persistence.event.EventEntity;
+import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.mock;
 public class UserServiceTest {
 
     private UserRepository userRepository = mock(UserRepository.class);
+    private EventRepository eventRepository = mock(EventRepository.class);
 
     private UserService userService;
 
@@ -34,7 +37,7 @@ public class UserServiceTest {
      */
     @Before
     public void setUp() {
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, eventRepository);
         Mockito.when(userRepository.findById(1L))
                 .thenReturn(Optional.of(new UserEntity("testUser", testPassword, 0L, UserRole.USER)));
 

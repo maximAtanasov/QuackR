@@ -20,7 +20,6 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class EventService {
 
     private final UserRepository userRepository;

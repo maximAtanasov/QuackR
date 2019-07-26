@@ -6,6 +6,8 @@ import {UNAUTHORIZED} from 'http-status-codes';
 import {User} from '../../model/user';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import {Title} from '@angular/platform-browser';
+import {CommentService} from "../../service/comment.service";
+import {Comment} from "../../model/comment";
 
 @Component({
   selector: 'app-homepage',
@@ -14,7 +16,10 @@ import {Title} from '@angular/platform-browser';
 })
 export class HomepageComponent implements OnInit {
 
-  constructor(private titleService: Title, private userService: UserService, private eventService: EventService) {
+  constructor(private commentService: CommentService,
+              private titleService: Title,
+              private userService: UserService,
+              private eventService: EventService) {
     titleService.setTitle('quackR - Home');
   }
 
@@ -27,6 +32,7 @@ export class HomepageComponent implements OnInit {
   public users: User[] = [];
   public events: Event[] = [];
   userId: number;
+  commentInput: string;
 
   ngOnInit() {
     this.events = [];
@@ -45,7 +51,10 @@ export class HomepageComponent implements OnInit {
           this.eventService.getAllEvents(user.id)
             .then(result => {
               result.forEach(r => this.events.push(r));
-              this.events.forEach(value => value.date = new Date(value.date).toISOString().split('T')[0]);
+              this.events.forEach(value => {
+                value.date = new Date(value.date).toISOString().split('T')[0]
+                value.comments.forEach(comment => comment.datePosted = new Date(comment.datePosted).toISOString().split('T')[0]);
+              });
               this.events.sort((a, b) => {
                 if (new Date(a.date).getTime() === new Date(b.date).getTime()) {
                   return 0;
@@ -70,11 +79,11 @@ export class HomepageComponent implements OnInit {
 
   }
 
-  logout() {
+  logout(): void {
     this.userService.logout();
   }
 
-  createEvent() {
+  createEvent(): void {
     this.eventService.createEvent(this.event, UserService.getLoggedInUser().id)
       .then(() => this.modal.nativeElement.click())
       .catch(e => {
@@ -88,7 +97,7 @@ export class HomepageComponent implements OnInit {
     return this.users.find(value => value.id === id);
   }
 
-  attendEvent(userId: number, eventId: number) {
+  attendEvent(userId: number, eventId: number): void {
     this.eventService.addAttendeeToEvent(eventId, this.getUserWithId(userId))
       .catch(e => {
         if (e.status === UNAUTHORIZED) {
@@ -98,7 +107,7 @@ export class HomepageComponent implements OnInit {
     this.events.find(value => value.id === eventId).attendees.push(this.getUserWithId(userId));
   }
 
-  unattendEvent(userId: number, eventId: number) {
+  unattendEvent(userId: number, eventId: number): void {
     this.eventService.removeAttendeeFromEvent(eventId, this.getUserWithId(userId))
       .catch(e => {
         if (e.status === UNAUTHORIZED) {
@@ -109,17 +118,35 @@ export class HomepageComponent implements OnInit {
      event.attendees = event.attendees.filter(value => value.id !== userId);
   }
 
-  checkIsAttending(event: Event, user: User) {
+  checkIsAttending(event: Event, user: User): boolean {
     return event.attendees.filter(value => value.id === user.id).length > 0;
   }
 
-  now() {
+  now(): string {
     const date = new Date();
     date.setDate(new Date().getDate() + 1);
     return date.toISOString().split('T')[0];
   }
 
-  isPastDate(date: any) {
+  isPastDate(date: any): boolean {
     return date < this.now();
+  }
+
+  postComment(eventId: number) {
+    const comment = new Comment();
+    comment.text = this.commentInput;
+    comment.posterId = this.userId;
+    comment.eventId = eventId;
+    this.commentService.createComment(comment)
+      .then(result => {
+        result.datePosted = new Date(result.datePosted).toISOString().split('T')[0];
+        this.events.find(value => value.id === eventId).comments.push(result);
+      })
+      .catch(e => {
+        if (e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      });
+    this.commentInput = "";
   }
 }

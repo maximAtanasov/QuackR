@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.user.rest;
+package de.webtech.quackr.rest.user;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

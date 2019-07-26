@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.event.rest;
+package de.webtech.quackr.rest.event;
 
 import de.webtech.quackr.service.ErrorResponse;
 import de.webtech.quackr.service.authentication.AuthorizationService;

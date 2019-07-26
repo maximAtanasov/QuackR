@@ -1,4 +1,4 @@
-package de.webtech.quackr.service.comment.rest;
+package de.webtech.quackr.rest.comment;
 
 import de.webtech.quackr.service.ErrorResponse;
 import de.webtech.quackr.service.authentication.AuthorizationService;

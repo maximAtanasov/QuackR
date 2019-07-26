@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output} from '@angular/core';
 import {UserService} from "../../service/user.service";
 
 @Component({
@@ -11,6 +11,8 @@ export class HeaderComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   public userId;
+
+  @Output()
   public username = "";
 
   public userRoleIsAdmin = false;

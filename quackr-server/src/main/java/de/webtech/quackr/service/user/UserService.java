@@ -1,5 +1,8 @@
 package de.webtech.quackr.service.user;
 
+import de.webtech.quackr.persistence.comment.CommentEntity;
+import de.webtech.quackr.persistence.event.EventEntity;
+import de.webtech.quackr.persistence.event.EventRepository;
 import de.webtech.quackr.persistence.user.UserEntity;
 import de.webtech.quackr.persistence.user.UserRepository;
 import de.webtech.quackr.persistence.user.UserRole;
@@ -11,8 +14,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,16 @@ import java.util.*;
 
 @Service
 @Transactional
-@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
     private final UserMapper userMapper = new UserMapper();
 
     @Autowired
-    UserService(UserRepository userRepository) {
+    UserService(UserRepository userRepository, EventRepository eventRepository) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -90,6 +92,17 @@ public class UserService {
     public void deleteUser(long userId) throws UserNotFoundException {
         Optional<UserEntity> entity = userRepository.findById(userId);
         if(entity.isPresent()){
+            Collection<EventEntity> eventsToEdit = new ArrayList<>();
+            for(EventEntity eventEntity : entity.get().getEvents()){
+                eventEntity.getAttendees().remove(entity.get());
+                eventsToEdit.add(eventEntity);
+            }
+            for(CommentEntity commentEntity : entity.get().getComments()){
+                commentEntity.getEvent().getComments().remove(commentEntity);
+                eventsToEdit.add(commentEntity.getEvent());
+            }
+            eventRepository.saveAll(eventsToEdit);
+            eventRepository.deleteAll(eventRepository.findByOrganizerId(userId));
             userRepository.delete(entity.get());
         }else{
             throw new UserNotFoundException(userId);

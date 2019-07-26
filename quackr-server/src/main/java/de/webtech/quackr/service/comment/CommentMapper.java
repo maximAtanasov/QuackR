@@ -9,6 +9,6 @@ public class CommentMapper extends AbstractMapper<GetCommentResource, CommentEnt
     @Override
     public GetCommentResource map(CommentEntity entity){
         return new GetCommentResource(entity.getId(),
-                entity.getText(),entity.getDatePosted(), entity.getPosterId(), entity.getEventId());
+                entity.getText(),entity.getDatePosted(), entity.getPoster().getId(), entity.getEvent().getId());
     }
 }
