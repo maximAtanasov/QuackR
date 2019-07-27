@@ -80,6 +80,7 @@
             <p class="card-text text-success">Posted by <b>{{getUserWithId(comment.posterId).username}}</b> on <b>{{comment.datePosted}}</b>
               <br>
               <span class="text-body">{{comment.text}}</span>
+              <button  *ngIf="comment.posterId === userId || getUserWithId(userId).role === 'ADMIN'" class="btn btn-link" style="float: right" (click)="deleteComment(comment.id, event.id)">remove</button>
             </p>
             <hr>
           </div>

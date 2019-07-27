@@ -18,4 +18,8 @@ export class CommentService {
       posterId: comment.posterId
     }).toPromise();
   }
+
+  public deleteComment(commentId: number): Promise<any> {
+    return this.httpClient.delete<Comment>(this.apiURL + 'comments/' + commentId).toPromise();
+  }
 }

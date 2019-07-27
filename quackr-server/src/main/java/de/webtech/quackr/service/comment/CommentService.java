@@ -119,6 +119,8 @@ public class CommentService {
     public void deleteComment(long commentId) throws CommentNotFoundException {
         Optional<CommentEntity> commentEntity = commentRepository.findById(commentId);
         if(commentEntity.isPresent()){
+            commentEntity.get().getEvent().getComments().remove(commentEntity.get());
+            eventRepository.save(commentEntity.get().getEvent());
             commentRepository.delete(commentEntity.get());
         }else{
             throw new CommentNotFoundException(commentId);

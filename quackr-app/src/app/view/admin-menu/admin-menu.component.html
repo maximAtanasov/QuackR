@@ -39,6 +39,22 @@
             <p class="card-text text-success">Attendance: <b>{{event.attendees.length}} / {{event.attendeeLimit}}</b></p>
             <button (click)="deleteEvent(event)" style="margin-right: 10px; width: 80px" class="btn btn-secondary text-light">Delete</button>
           </div>
+          <div class="col-12" style="float: left">
+            <button class="btn btn-link" style="float:right;" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+              Comments
+            </button>
+            <div style="margin-top: 100px" class="collapse" id="collapseExample">
+              <p *ngIf="event.comments.length === 0" class="card-text text-secondary">No comments</p>
+              <div *ngFor="let comment of event.comments">
+                <p class="card-text text-success">Posted by <b>{{getUserWithId(comment.posterId).username}}</b> on <b>{{comment.datePosted}}</b>
+                  <br>
+                  <span class="text-body">{{comment.text}}</span>
+                  <button class="btn btn-link" style="float: right" (click)="deleteComment(comment.id, event.id)">remove</button>
+                </p>
+                <hr>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

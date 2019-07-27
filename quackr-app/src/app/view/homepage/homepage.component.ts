@@ -148,4 +148,18 @@ export class HomepageComponent implements OnInit {
       });
     this.commentInput = "";
   }
+
+  deleteComment(id: number, eventId: number) {
+    this.commentService.deleteComment(id)
+      .then(() => {
+        const event = this.events.find(value => value.id === eventId);
+        event.comments = event.comments.filter(value => value.id !== id);
+      })
+      .catch(e => {
+        console.log(e);
+        if (e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      });
+  }
 }

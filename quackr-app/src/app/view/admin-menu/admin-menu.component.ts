@@ -6,6 +6,7 @@ import {User} from '../../model/user';
 import {Event} from '../../model/event';
 import {EventService} from '../../service/event.service';
 import {Title} from '@angular/platform-browser';
+import {CommentService} from "../../service/comment.service";
 
 @Component({
   selector: 'app-admin-menu',
@@ -20,8 +21,12 @@ export class AdminMenuComponent implements OnInit {
   userId: number;
   user: User = new User();
 
-  constructor(private titleService: Title, private router: Router, private eventService: EventService,
-              private route: ActivatedRoute, private userService: UserService) {
+  constructor(private  commentService: CommentService,
+              private titleService: Title,
+              private router: Router,
+              private eventService: EventService,
+              private route: ActivatedRoute,
+              private userService: UserService) {
     titleService.setTitle('quackR - Admin menu');
   }
 
@@ -78,6 +83,7 @@ export class AdminMenuComponent implements OnInit {
   deleteAccount(id: number) {
     this.events = this.events.filter(value => {
       value.attendees = value.attendees.filter(value1 => value1.id !== id);
+      value.comments = value.comments.filter(value1 => value1.posterId !== id);
       if (value.organizerId != id) {
         return true;
       }
@@ -139,6 +145,20 @@ export class AdminMenuComponent implements OnInit {
         }
       })
       .catch(e => {
+        if (e.status === UNAUTHORIZED) {
+          this.userService.logout();
+        }
+      });
+  }
+
+  deleteComment(id: number, eventId: number) {
+    this.commentService.deleteComment(id)
+      .then(() => {
+        const event = this.events.find(value => value.id === eventId);
+        event.comments = event.comments.filter(value => value.id !== id);
+      })
+      .catch(e => {
+        console.log(e);
         if (e.status === UNAUTHORIZED) {
           this.userService.logout();
         }

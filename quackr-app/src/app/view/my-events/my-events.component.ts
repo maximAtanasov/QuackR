@@ -6,6 +6,8 @@ import {UNAUTHORIZED} from 'http-status-codes';
 import {User} from '../../model/user';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Title} from '@angular/platform-browser';
+import {Comment} from "../../model/comment";
+import {CommentService} from "../../service/comment.service";
 
 @Component({
   selector: 'app-my-events',
@@ -14,7 +16,12 @@ import {Title} from '@angular/platform-browser';
 })
 export class MyEventsComponent implements OnInit {
 
-  constructor(private titleService: Title, private router: Router, private route: ActivatedRoute, private userService: UserService, private eventService: EventService) {
+  constructor(private commentService: CommentService,
+              private titleService: Title,
+              private router: Router,
+              private route: ActivatedRoute,
+              private userService: UserService,
+              private eventService: EventService) {
     titleService.setTitle('quackR - My events');
   }
 
@@ -25,6 +32,8 @@ export class MyEventsComponent implements OnInit {
 
   public user: User = new User();
   public events: Event[] = [];
+  public commentInput: string;
+  private commenters: User[] = [];
   userId: number;
 
   ngOnInit() {
@@ -43,6 +52,17 @@ export class MyEventsComponent implements OnInit {
       this.eventService.getAllEvents(this.userId)
         .then(result => {
           result.forEach(r => this.events.push(r));
+          result.forEach(result => result.comments.forEach(comment => {
+            this.userService.getUser(comment.posterId).then(result => {
+              if(this.commenters.find(val => val.id === result.id) === undefined){
+                this.commenters.push(result);
+              }
+            }).catch(e => {
+                if (e.status === UNAUTHORIZED) {
+                  this.logout();
+                }
+              });
+          }));
           this.events.forEach(value => value.date = new Date(value.date).toISOString().split('T')[0]);
           this.events.sort((a, b) => {
             if (new Date(a.date).getTime() === new Date(b.date).getTime()) {
@@ -91,5 +111,48 @@ export class MyEventsComponent implements OnInit {
     const date = new Date();
     date.setDate(new Date().getDate() + 1);
     return date.toISOString().split('T')[0];
+  }
+
+
+  postComment(eventId: number) {
+    const comment = new Comment();
+    comment.text = this.commentInput;
+    comment.posterId = this.userId;
+    comment.eventId = eventId;
+    this.commentService.createComment(comment)
+      .then(result => {
+        result.datePosted = new Date(result.datePosted).toUTCString();
+        this.events.find(value => value.id === eventId).comments.push(result);
+        this.commenters.push(this.user);
+      })
+      .catch(e => {
+        if (e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      });
+    this.commentInput = "";
+  }
+
+  deleteComment(id: number, eventId: number) {
+    this.commentService.deleteComment(id)
+      .then(() => {
+        const event = this.events.find(value => value.id === eventId);
+        event.comments = event.comments.filter(value => value.id !== id);
+      })
+      .catch(e => {
+        console.log(e);
+        if (e.status === UNAUTHORIZED) {
+          this.logout();
+        }
+      });
+  }
+
+  getUserWithId(id: number): User {
+    const result = this.commenters.find(value => value.id === id);
+    if(result === undefined){
+      return  new User();
+    }else {
+      return result;
+    }
   }
 }
