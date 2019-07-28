@@ -53,6 +53,7 @@ export class MyEventsComponent implements OnInit {
         .then(result => {
           result.forEach(r => this.events.push(r));
           result.forEach(result => result.comments.forEach(comment => {
+            comment.datePosted = new Date(comment.datePosted).toUTCString();
             this.userService.getUser(comment.posterId).then(result => {
               if(this.commenters.find(val => val.id === result.id) === undefined){
                 this.commenters.push(result);

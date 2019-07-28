@@ -54,6 +54,8 @@ export class AdminMenuComponent implements OnInit {
           this.users.forEach(user => {
             this.eventService.getAllEvents(user.id)
               .then(result => {
+                result.forEach(r => r.comments.forEach(comment =>
+                  comment.datePosted = new Date(comment.datePosted).toUTCString()));
                 result.forEach(r => this.events.push(r));
                 this.events.forEach(value => value.date = new Date(value.date).toISOString().split('T')[0]);
                 this.events.sort((a, b) => {
@@ -100,7 +102,6 @@ export class AdminMenuComponent implements OnInit {
         }
       });
   }
-
 
   getUserWithId(id: number): User {
     return this.users.find(value => value.id === id);
