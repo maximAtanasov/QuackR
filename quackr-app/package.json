@@ -22,7 +22,7 @@
     "bootstrap": "^4.3.1",
     "core-js": "^2.5.4",
     "http-status-codes": "latest",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "ng-trim-value-accessor": "^2.0.4",
     "ng2-bs3-modal": "^0.15.0",
     "ngx-bootstrap": "^4.2.0",
